@@ -4,10 +4,11 @@ const app = express()
 require('dotenv').config()
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 
 const bookRouter = require('./routes/book.router')
 
-app.use("/api", bookRouter)
+app.use("/", bookRouter)
 
 app.listen(3000, () => console.log("Server is running on port 5000"))
