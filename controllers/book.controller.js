@@ -11,7 +11,20 @@ const bookController = {
     create: (req, res) => {
         try {
             const { username, password } = req.body;
-            res.json({msg: "OK", username, password});
+            
+            const usernameTrucho="usernameTrucho"
+            const passwordTrucha="passwordTrucha"
+
+            if (username===usernameTrucho && password===passwordTrucha) {
+                console.log("Estoy en if")
+                res.cookie('session_id', 'secret', {
+                    httpOnly: true, // Make the cookie inaccessible to client-side JavaScript
+                    secure: 'secret', // Use secure cookies in production
+                    sameSite: 'Strict' // Helps prevent CSRF attacks
+                });
+                return res.json({msg: "OK", username, password});
+            }
+            res.json({msg: "Bad, credenciales incorrectas."});
         } catch (error) {
             res.json({msg: error.msg})
         }
