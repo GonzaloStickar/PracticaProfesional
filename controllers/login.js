@@ -1,14 +1,14 @@
 const path = require('path');
 
-const bookController = {
-    getAll: (req, res) => {
+const login = {
+    get: (req, res) => {
         try {
             res.sendFile(path.join(__dirname, '..', 'components', 'login.htm'));
         } catch (error) {
             res.json({msg: error.msg})
         }
     },
-    create: (req, res) => {
+    post: (req, res) => {
         try {
             const { username, password } = req.body;
             
@@ -16,7 +16,6 @@ const bookController = {
             const passwordTrucha="passwordTrucha"
 
             if (username===usernameTrucho && password===passwordTrucha) {
-                console.log("Estoy en if")
                 res.cookie('session_id', 'secret', {
                     secret: 'secret',
                     resave: false,
@@ -31,4 +30,4 @@ const bookController = {
     }
 }
 
-module.exports = bookController
+module.exports = login
