@@ -23,7 +23,10 @@ router.get("/inicio", main.getInicio)
 
 router.get("/login", login.getLogin)
 router.post("/login", login.postLogin)
-router.get("/rutaPrivada", isAuth, main.rutaPrivada)
+
+router.post("/logout", isAuth, login.logout)
+
+router.get("/cuenta", isAuth, main.cuenta)
 
 router.get("/", (req, res) => {
     res.redirect('/inicio');

@@ -103,7 +103,7 @@ const login = {
                     resave: false,
                     saveUninitialized: false
                 });
-                return res.redirect('/rutaPrivada')
+                return res.redirect('/cuenta')
             }
             else {
                 return loginUserPOSTwrong(req, res);
@@ -111,6 +111,14 @@ const login = {
         } catch (error) {
             res.json({msg: error.msg})
         }
+    },
+    logout: (req, res) => {
+        res.cookie('session_id', '', {
+            secret: '',
+            resave: false,
+            saveUninitialized: false
+        });
+        return res.redirect('/inicio')
     }
 }
 
