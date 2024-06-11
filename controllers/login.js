@@ -1,6 +1,6 @@
 const path = require('path');
 const bcrypt = require('bcryptjs');
-const { loginUserName, loginPassword, sessionSecret } = require('./config.js').default;
+const { loginUserName, loginPassword, sessionSecret } = require('./config.js');
 
 const hash = async (password) => {
     const saltRounds = 10;
