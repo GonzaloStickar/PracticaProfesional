@@ -1,14 +1,14 @@
 const path = require('path');
 
 const login = {
-    get: (req, res) => {
+    getLogin: (req, res) => {
         try {
             res.sendFile(path.join(__dirname, '..', 'components', 'login.htm'));
         } catch (error) {
             res.json({msg: error.msg})
         }
     },
-    post: (req, res) => {
+    postLogin: (req, res) => {
         try {
             const { username, password } = req.body;
             

@@ -1,14 +1,15 @@
 const express = require("express")
 const router = express.Router()
 
+const main = require('../controllers/main')
 const login = require('../controllers/login')
 
 
-router.get("/inicio", login.get)
+router.get("/inicio", main.getInicio)
 
-router.get("/login", login.get)
-router.post("/login", login.post)
+router.get("/login", login.getLogin)
+router.post("/login", login.postLogin)
 
-router.all("*", login.get)
+router.all("*", main.notFound)
 
 module.exports = router

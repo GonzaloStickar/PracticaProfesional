@@ -1,12 +1,15 @@
 const path = require('path');
 
 const main = {
-    get: (req, res) => {
+    getInicio: (req, res) => {
         try {
-            res.sendFile(path.join(__dirname, '..', 'components', 'login.htm'));
+            res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
         } catch (error) {
             res.json({msg: error.msg})
         }
+    },
+    notFound: (req,res) => {
+        res.send("Página no encontrada.");
     }
 }
 
