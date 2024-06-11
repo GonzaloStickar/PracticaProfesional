@@ -7,8 +7,6 @@ const isAuth = (req, res) => {
 		console.log("session_id exists");
 		if (cookies.session_id===sessionSecret) {
             res.sendFile(path.join(__dirname, '..', 'components', 'indexLogout.htm'));
-        } else {
-            res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
         }
 	} else {
         res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
