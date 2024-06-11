@@ -10,7 +10,9 @@ router.get("/inicio", main.getInicio)
 router.get("/login", login.getLogin)
 router.post("/login", login.postLogin)
 
-router.get("/", main.getInicio)
+router.get("/", (req, res) => {
+    res.redirect('/inicio');
+});
 
 router.all("*", main.notFound)
 
