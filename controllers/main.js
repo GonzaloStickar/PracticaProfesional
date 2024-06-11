@@ -12,6 +12,9 @@ const main = {
     },
     notFound: (req,res) => {
         res.send("Página no encontrada.");
+    },
+    rutaPrivada: (req, res) => {
+        res.send("Estás en una ruta privada.");
     }
 }
 
