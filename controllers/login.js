@@ -113,11 +113,12 @@ const login = {
         }
     },
     logout: (req, res) => {
-        res.cookie('session_id', '', {
-            secret: '',
-            resave: false,
-            saveUninitialized: false
-        });
+        //res.cookie('session_id', '', {
+        //    secret: '',
+        //    resave: false,
+        //    saveUninitialized: false
+        //});
+        res.clearCookie('session_id');
         return res.redirect('/inicio')
     }
 }

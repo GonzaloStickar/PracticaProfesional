@@ -10,7 +10,9 @@ const isAuth = (req, res) => {
         } else {
             res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
         }
-	}
+	} else {
+        res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
+    }
 };
 
 const main = {
