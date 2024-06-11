@@ -12,46 +12,15 @@
     </form>
 
     <div class="panel_control">
-        <p>Mostrando las últimas 10 reparaciones.</p>
-        <ul id="reparaciones-lista">
-            
-        </ul>
-        <button id="mostrarMas">Mostrar más</button>
+        <p>Mostrar reparaciones.</p>
+        <button id="mostrar">Mostrar</button>
     </div>
 
     <script>
-        // Variable que contiene las reparaciones, definida en el controlador
-        const reparaciones = null; // Esta línea se reemplazará con los datos reales en el controlador
-
-        let reparacionesMostradas = 0; // Inicializa el contador de reparaciones mostradas
-
-        // Define la función para mostrar las reparaciones
-        function mostrarReparaciones(reparaciones) {
-            const listaReparaciones = document.getElementById('reparaciones-lista');
-
-            // Si hay más reparaciones para mostrar
-            if (reparacionesMostradas < reparaciones.length) {
-                const reparacion = reparaciones[reparacionesMostradas];
-                const li = document.createElement('li');
-                li.textContent = reparacion.persona;
-                listaReparaciones.appendChild(li);
-                reparacionesMostradas++;
-            } else {
-                // Si no hay más reparaciones, oculta el botón "Mostrar más"
-                document.getElementById('mostrarMas').style.display = 'none';
-            }
-        }
-
-        //Primeras 10 reparaciones al cargar la página.
-        for (let i=0; i<10; i++) {
-            mostrarReparaciones(reparaciones);
-        }
-
-        //Muestra 10 reparaciones más.
-        document.getElementById('mostrarMas').addEventListener('click', function() {
-            for (let i=0; i<10; i++) {
-                mostrarReparaciones(reparaciones);
-            }
+        document.getElementById('mostrar').addEventListener('click', function() {
+            const numReparaciones = 3;
+            const url = `/cuenta/reparaciones?reparaciones=${numReparaciones}`;
+            window.location.href = url;
         });
     </script>
 </body>
