@@ -18,9 +18,9 @@ const bookController = {
             if (username===usernameTrucho && password===passwordTrucha) {
                 console.log("Estoy en if")
                 res.cookie('session_id', 'secret', {
-                    httpOnly: true, // Make the cookie inaccessible to client-side JavaScript
-                    secure: 'secret', // Use secure cookies in production
-                    sameSite: 'Strict' // Helps prevent CSRF attacks
+                    secret: 'secret',
+                    resave: false,
+                    saveUninitialized: false
                 });
                 return res.json({msg: "OK", username, password});
             }

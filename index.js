@@ -8,12 +8,6 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use(session({
-    secret: 'secret',
-    resave: false,
-    saveUninitialized: false,
-}));
-
 const bookRouter = require('./routes/book.router')
 
 app.use("/", bookRouter)
