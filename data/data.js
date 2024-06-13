@@ -1,3 +1,7 @@
+//Toda modificación acá en este archivo data.js
+//Requiere que se modifique también el archivo dashboard.js
+//Y es requerido modificar dashboard.htm si es que agregamos / eliminamos o algo.
+
 let dataLocal = {
     personas: [],
     reparaciones: []

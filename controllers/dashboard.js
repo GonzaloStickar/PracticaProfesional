@@ -47,12 +47,101 @@ const fs = require('fs');
 const path = require('path');
 
 const { dataLocal } = require('../data/data')
+const { agregarPersonaLocalDB, agregarReparacionLocalDB } = require('../data/data')
 
-let numReparacionesQueryMax = 0;
+//Suponiendo que es toda nuestra DB
+agregarPersonaLocalDB(1, "Juan Pérez", "Calle Falsa 123", "123-456-7890", "juan.perez@example.com", "11.222.333");
+agregarPersonaLocalDB(2, "María Gómez", "Avenida Siempreviva 456", "098-765-4321", "maria.gomez@example.com", "12.222.333");
+agregarPersonaLocalDB(3, "Carlos Díaz", "Boulevard del Sol 789", "111-222-3333", "carlos.diaz@example.com", "13.222.333");
+
+agregarReparacionLocalDB(1, 1, "Cambio de pantalla", "Electrónica", "2024-06-13T10:00:00Z", "Completado");
+agregarReparacionLocalDB(2, 2, "Reparación de plaqueta", "Electrónica", "2024-06-14T12:30:00Z", "En progreso");
+agregarReparacionLocalDB(3, 3, "Instalación de software", "Informática", "2024-06-15T15:45:00Z", "Pendiente");
+
+let numReparacionesQueryMaxOld = 0;
 
 const mostrarPersonasReparaciones = (req, res) => {
-    const numReparacionesQueryMax = parseInt(req.query.reparaciones);
-    console.log(numReparacionesQueryMax)
+    const numReparacionesQueryMaxNew = parseInt(req.query.reparaciones);
+
+    //console.log(dataLocal.reparaciones.length);
+
+    if (numReparacionesQueryMaxNew>0 && numReparacionesQueryMaxNew<=50) {
+        numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
+    }
+    else {
+        return res.status(401).send(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Dashboard</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            </head>
+            <body>
+                <h1>Cuenta</h1>
+                <form action="/logout" method="POST">
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+
+            <div id="error_message">
+                No se puede consultar por 0 o más de 50
+            </div>
+            <style>
+                #error_message {
+                    text-align: center;
+                    color: red;
+                    margin-top: 10px;
+                }
+            </style>
+            </body>
+            </html>
+        `);
+    }
+
+    //console.log(numReparacionesQueryMaxOld);
+
+    //Primero chequear que 'numReparacionesQueryMaxNew' sea mayor a '1' (o '0') y sea menor a '50' (o '49').
+    //Quiero decir, que la consulta sea de mínimo 1, y que no sea mayor a 50.
+    
+        //if (dataLocal.length) == 0 {
+            //Set nuevo numero Máximo de query
+            //numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
+
+            //Conseguir data
+            //const dataObtenida = dataGetMinMax(0, numReparacionesQueryMaxOld);
+            //Hay que ver si es 0 o 1, y si hay que poner 50 o 49 (Si resto -1 o no)
+
+            //Separar personas y reparaciones
+            //const personas = [];
+            //const reparaciones = [];
+            
+            //añadir a dataLocal personas y reparaciones
+            //dataLocalPostPersona();
+            //dataLocalPostReparacion();
+        //} else {
+            //if (numReparacionesQueryMaxNew>numReparacionesQueryMaxOld) {
+                //numReparacionesQueryMaxOld=numReparacionesQueryMaxNew;
+
+                //Conseguir data entre rango de data.lenght y numReparacionesQueryMaxOld
+                //const dataObtenida = dataGetMinMax(data.length, numReparacionesQueryMaxOld);
+                //Hay que ver si es data.length o "- 1", y si hay que poner numReparacionesQueryMaxOld o "- 1" (Si resto -1 o no)
+
+                //Separar personas y reparaciones
+                //const personas = [];
+                //const reparaciones = [];
+                
+                //añadir a dataLocal personas y reparaciones
+                //dataLocalPostPersona();
+                //dataLocalPostReparacion();
+            //} else {
+                //Mostrar dataLocal;
+                //Ya está disponible (no hace falta hacer ninguna nueva consulta, ya que el tamaño de la consulta
+                //es equivalente al tamaño de dataLocal)
+            //}
+        //} else {
+        //mostrar mensaje de intervalo entre 1 consulta y 50.
+    //}
 
     let dataAniadir = '';
 
