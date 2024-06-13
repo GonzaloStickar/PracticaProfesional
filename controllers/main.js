@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const { sessionSecret } = require('../controllers/config.js');
 
 const isAuth = (req, res) => {
@@ -27,8 +26,8 @@ const main = {
     notFound: (req,res) => {
         res.send("Página no encontrada.");
     },
-    cuenta: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'cuenta.htm'));
+    dashboard: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard.htm'));
     }
 }
 

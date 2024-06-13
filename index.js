@@ -1,4 +1,4 @@
-const { sessionSecret } = require('./controllers/config.js');
+//const { sessionSecret } = require('./controllers/config.js');
 
 const path = require('path');
 const express = require("express")

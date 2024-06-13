@@ -103,7 +103,7 @@ const login = {
                     resave: false,
                     saveUninitialized: false
                 });
-                return res.redirect('/cuenta')
+                return res.redirect('/dashboard')
             }
             else {
                 return loginUserPOSTwrong(req, res);
