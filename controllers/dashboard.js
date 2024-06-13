@@ -54,7 +54,42 @@ const mostrarPersonasReparaciones = (req, res) => {
     const numReparacionesQueryMax = parseInt(req.query.reparaciones);
     console.log(numReparacionesQueryMax)
 
-    const dataParaEnviar = dataLocal;
+    let dataAniadir = '';
+
+    dataLocal.personas.forEach(persona => {
+        // Buscar las reparaciones de esta persona
+        const reparacionesDePersona = dataLocal.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
+
+        // Si la persona tiene reparaciones, agregar filas para cada una
+        if (reparacionesDePersona.length > 0) {
+            reparacionesDePersona.forEach((reparacion) => {
+                const fila = `
+                    <tr>
+                        <td>${persona.nombre}</td>
+                        <td>${persona.direccion}</td>
+                        <td>${persona.telefono}</td>
+                        <td>${persona.email}</td>
+                        <td>${persona.dni}</td>
+                        <td>${reparacion.descripcion}</td>
+                        <td>${reparacion.tipo}</td>
+                        <td>${reparacion.fecha}</td>
+                        <td>${reparacion.estado}</td>
+                        <td>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex">
+                                    <button class="btn btn-info mr-2" onclick="editar(${persona.id})">Editar</button>
+                                    <button class="btn btn-danger" onclick="eliminar(${persona.id})">Eliminar</button>
+                                </div>
+                                <button class="btn btn-primary mt-2" onclick="redirectToInforme(${persona.id})">Ver Informe</button>
+                            </div>
+                        </td>
+                    </tr>`;
+                
+                // Agregar la fila al bloque de HTML dinámico
+                dataAniadir += fila;
+            });
+        }
+    });
 
     fs.readFile(path.join(__dirname, '..', 'components', 'dashboard.htm'), 'utf8', (err, html) => {
         if (err) {
@@ -62,13 +97,13 @@ const mostrarPersonasReparaciones = (req, res) => {
             return res.status(500).send('Error interno del servidor');
         }
 
-        // Insertar los datos en el HTML como una variable JavaScript
-        const htmlWithData = html.replace('const dataLocal = null;', `const dataLocal = ${JSON.stringify(dataParaEnviar)};`);
+        const htmlWithData = html.replace('<tbody id="dynamicTableBody"></tbody>', `<tbody id="dynamicTableBody">${dataAniadir}</tbody>`);
 
         // Enviar el HTML modificado al cliente
         res.send(htmlWithData);
     });
 }
+
 
 module.exports = {
     mostrarPersonasReparaciones

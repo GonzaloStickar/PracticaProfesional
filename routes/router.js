@@ -9,7 +9,7 @@ const { sessionSecret } = require('../controllers/config.js');
 const isAuth = (req, res, next) => {
 	const { cookies } = req;
 	if (cookies.session_id) {
-		console.log("session_id exists");
+		//console.log("session_id exists");
 		if (cookies.session_id===sessionSecret) {
             next();
         } else {

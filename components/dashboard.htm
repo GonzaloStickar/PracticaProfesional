@@ -13,13 +13,15 @@
     </form>
 
     <div class="panel_control">
-        <p>Mostrando las últimas 10 reparaciones.</p>
-        <button id="mostrar">Mostrar</button>
+        <button id="mostrar">Mostrar Reparaciones</button>
     </div>
 
     <div class="container mt-5">
         <h1 class="mb-4">Tabla de Personas y Reparaciones</h1>
-        
+        <div class="btn-group mt-2">
+            <button class="btn btn-success" onclick="agregar()">Agregar</button>
+            <button class="btn btn-secondary ml-2" onclick="buscar()">Buscar</button>
+        </div>
         <table id="tablaPersonasReparaciones" class="table table-striped table-bordered">
             <thead class="table-dark">
                 <tr>
@@ -35,48 +37,11 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody id="dynamicTableBody"></tbody>
         </table>
     </div>
 
     <script>
-        const dataLocal = null;
-
-        // Función para llenar la tabla de personas y reparaciones
-        function llenarTablaPersonasYReparaciones() {
-            const tabla = document.getElementById('tablaPersonasReparaciones');
-            const tbody = tabla.querySelector('tbody');
-
-            dataLocal.personas.forEach(persona => {
-                // Busca las reparaciones de esta persona
-                const reparacionesDePersona = dataLocal.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
-
-                // Si la persona tiene reparaciones, agregar filas para cada una
-                if (reparacionesDePersona.length > 0) {
-                    reparacionesDePersona.forEach((reparacion, index) => {
-                        const fila = `
-                            <tr>
-                                <td>${persona.nombre}</td>
-                                <td>${persona.direccion}</td>
-                                <td>${persona.telefono}</td>
-                                <td>${persona.email}</td>
-                                <td>${persona.dni}</td>
-                                <td>${reparacion.descripcion}</td>
-                                <td>${reparacion.tipo}</td>
-                                <td>${reparacion.fecha}</td>
-                                <td>${reparacion.estado}</td>
-                                <td>
-                                    <button class="btn btn-primary" onclick="redirectToInforme(${persona.id})">Ver Informe</button>
-                                </td>
-                            </tr>`;
-                        tbody.innerHTML += fila;
-                    });
-                }
-            });
-        }
-
-        // Función para redirigir al informe de la persona seleccionada
         function redirectToInforme(personaId) {
             window.location.href = `/dashboard/informe/persona_id?=${personaId}`;
         }
@@ -90,8 +55,6 @@
             }
             window.location.href = `/dashboard/reparaciones?reparaciones=${numReparaciones}`;
         });
-
-        llenarTablaPersonasYReparaciones();
     </script>
 </body>
 </html>
