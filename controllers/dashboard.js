@@ -130,7 +130,7 @@ const mostrarPersonasReparaciones = (req, res) => {
                         <td>
                             <div class="d-flex flex-column">
                                 <div class="d-flex">
-                                    <button class="btn btn-info mr-2" onclick="editar(${persona.id})">Editar</button>
+                                    <button class="btn btn-info mr-2" onclick="redirectToEditar(${persona.id})">Editar</button>
                                     <button class="btn btn-danger" onclick="eliminar(${persona.id})">Eliminar</button>
                                 </div>
                                 <button class="btn btn-primary mt-2" onclick="redirectToInforme(${persona.id})">Ver Informe</button>
@@ -160,7 +160,25 @@ const dashboardPage = (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'components', 'dashboard.htm'));
 }
 
+const dashboardCRUD = {
+    agregar: (req, res) => {
+        //res.send("Estoy en agregar")
+
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar.htm'));
+    },
+    buscar: (req,res) => {
+        res.send("buscar");
+    },
+    editar: (req,res) => {
+        res.send("editar");
+    },
+    informe: (req,res) => {
+        res.send("informe");
+    }
+}
+
 module.exports = {
     dashboardPage,
-    mostrarPersonasReparaciones
+    mostrarPersonasReparaciones,
+    dashboardCRUD
 }
