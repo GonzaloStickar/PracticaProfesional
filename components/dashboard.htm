@@ -18,7 +18,7 @@
 
     <div class="container mt-5">
         <h1 class="mb-4">Tabla de Personas y Reparaciones</h1>
-        <div class="btn-group mt-2">
+        <div class="caja-botones-agregar-buscar">
             <button class="btn btn-success" onclick="agregar()">Agregar</button>
             <button class="btn btn-secondary ml-2" onclick="buscar()">Buscar</button>
         </div>
@@ -51,10 +51,21 @@
             let numReparaciones = urlParams.get('reparaciones');
 
             if (numReparaciones === null || isNaN(parseInt(numReparaciones))) {
-                numReparaciones = 10;
+                numReparaciones = 1; //Debo cambiar este número a '10' por ejemplo
             }
             window.location.href = `/dashboard/reparaciones?reparaciones=${numReparaciones}`;
         });
     </script>
+
+    <style>
+        .caja-botones-agregar-buscar {
+            margin-bottom: 15px;
+        }
+
+        .d-flex button {
+            margin-right: 3px !important;
+            margin-left: 3px !important;
+        }
+    </style>
 </body>
 </html>

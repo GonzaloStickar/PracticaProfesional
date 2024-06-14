@@ -2,37 +2,41 @@
 //Requiere que se modifique también el archivo dashboard.js
 //Y es requerido modificar dashboard.htm si es que agregamos / eliminamos o algo.
 
+//Local
+//Esta base de datos local es la cual va a ser utilizada para reutilizar datos que ya habremos consultado / obtenido.
 let dataLocal = {
     personas: [],
     reparaciones: []
 };
 
-function agregarPersonaLocalDB(id, nombre, direccion, telefono, email, dni) {
-    const nuevaPersona = {
-        id: id,
-        nombre: nombre,
-        direccion: direccion,
-        telefono: telefono,
-        email: email,
-        dni: dni
-    };
-    dataLocal.personas.push(nuevaPersona);
+//Local
+function dataLocalGET(min, max) {
+    let personasFiltradas = dataLocal.personas.slice(min - 1, max);
+
+    let personas = [];
+    let reparaciones = [];
+
+    personasFiltradas.forEach(persona => {
+        let reparacionesDePersona = dataLocal.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
+        personas.push({ ...persona });
+        reparaciones.push(...reparacionesDePersona);
+    });
+
+    return { personas, reparaciones };
 }
 
-function agregarReparacionLocalDB(id, persona_id, descripcion, tipo, fecha, estado) {
-    const nuevaReparacion = {
-        id: id,
-        persona_id: persona_id,
-        descripcion: descripcion,
-        tipo: tipo,
-        fecha: fecha,
-        estado: estado
-    };
-    dataLocal.reparaciones.push(nuevaReparacion);
+//Local
+function dataLocalPostPersona(personas) {
+    dataLocal.personas.push(...personas);
+}
+
+//Local
+function dataLocalPostReparacion(reparaciones) {
+    dataLocal.reparaciones.push(...reparaciones);
 }
 
 module.exports = {
-    dataLocal,
-    agregarPersonaLocalDB,
-    agregarReparacionLocalDB
+    dataLocalGET,
+    dataLocalPostPersona,
+    dataLocalPostReparacion
 };

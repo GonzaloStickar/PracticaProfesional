@@ -25,9 +25,6 @@ const main = {
     },
     notFound: (req,res) => {
         res.send("Página no encontrada.");
-    },
-    dashboard: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard.htm'));
     }
 }
 

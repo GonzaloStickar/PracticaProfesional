@@ -3,7 +3,7 @@ const router = express.Router()
 
 const main = require('../controllers/main')
 const login = require('../controllers/login')
-const { mostrarPersonasReparaciones } = require('../controllers/dashboard')
+const { dashboardPage, mostrarPersonasReparaciones } = require('../controllers/dashboard')
 const { sessionSecret } = require('../controllers/config.js');
 
 const isAuth = (req, res, next) => {
@@ -27,7 +27,7 @@ router.post("/login", login.postLogin)
 
 router.post("/logout", isAuth, login.logout)
 
-router.get("/dashboard", isAuth, main.dashboard)
+router.get("/dashboard", isAuth, dashboardPage)
 
 router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparaciones);
 
