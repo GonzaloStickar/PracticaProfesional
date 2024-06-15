@@ -36,8 +36,42 @@ function dataOriginalGET(min, max) {
     return { personas, reparaciones };
 }
 
+//Test
+function dataOriginalGETbusqueda (dataEnviadaBuscar) {
+
+    const encontrados = {
+        personas: [],
+        reparaciones: []
+    };
+
+    dataBaseOriginal.personas.forEach(persona => {
+
+        const nombreMinusculas = dataEnviadaBuscar.nombre.toLowerCase();
+        const direccionMinusculas = dataEnviadaBuscar.direccion.toLowerCase();
+        const telefonoSinBarrasNiParentesis = dataEnviadaBuscar.telefono;
+        const emailMinusculas = dataEnviadaBuscar.email.toLowerCase();
+        const dniSinPuntos = dataEnviadaBuscar.dni;
+
+        if (
+            persona.nombre.toLowerCase().includes(nombreMinusculas) ||
+            persona.direccion.toLowerCase().includes(direccionMinusculas) ||
+            persona.telefono.replace(/[^+\d]+/g, '').includes(telefonoSinBarrasNiParentesis) ||
+            persona.email.toLowerCase().includes(emailMinusculas) ||
+            persona.dni.replace(/\./g, '').includes(dniSinPuntos)
+        ) {
+            encontrados.personas.push(persona);
+
+            const reparacionesPersona = dataBaseOriginal.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
+            encontrados.reparaciones.push(...reparacionesPersona);
+        }
+    });
+
+    return encontrados;
+}
+
 module.exports = {
     dataOriginalPostPersona,
     dataOriginalPostReparacion,
-    dataOriginalGET
+    dataOriginalGET,
+    dataOriginalGETbusqueda
 }

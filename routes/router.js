@@ -32,6 +32,13 @@ router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparaciones);
 
 router.get("/dashboard/agregar", isAuth, dashboardCRUD.agregarGET);
 
+router.get("/agregar/persona", isAuth, dashboardCRUD.agregarPersonaGET);
+router.get("/agregar/reparacion", isAuth, dashboardCRUD.agregarReparacionGET);
+router.get("/agregar/ambos", isAuth, dashboardCRUD.agregarPersonaReparacionGET);
+
+router.post("/agregar/persona", isAuth, dashboardCRUD.agregarPersonaPOST);
+router.post("/agregar/reparacion", isAuth, dashboardCRUD.agregarReparacionPOST);
+router.post("/agregar/ambos", isAuth, dashboardCRUD.agregarPersonaReparacionPOST);
 
 router.get("/dashboard/buscar", isAuth, dashboardCRUD.buscarGET);
 router.post("/dashboard/buscar", isAuth, dashboardCRUD.buscarPOST);

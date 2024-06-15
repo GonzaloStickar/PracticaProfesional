@@ -12,13 +12,13 @@ const path = require('path');
 //dataLocal
 const { 
     dataLocalPostPersona, dataLocalPostReparacion,
-    dataLocalGET, dataLocalGETbusqueda
+    dataLocalGET
 } = require('../data/data')
 
 //db "Real"
 const { 
     dataOriginalPostPersona, dataOriginalPostReparacion,
-    dataOriginalGET
+    dataOriginalGET, dataOriginalGETbusqueda
 } = require('../data/db');
 
 //Suponiendo que es toda nuestra DB
@@ -176,9 +176,25 @@ const dashboardPage = (req, res) => {
 
 const dashboardCRUD = {
     agregarGET: (req, res) => {
-        //res.send("agregar")
-
         res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar.htm'));
+    },
+    agregarPersonaGET: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar_persona.htm'));
+    },
+    agregarReparacionGET: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar_reparacion.htm'));
+    },
+    agregarPersonaReparacionGET: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar_persona_reparacion.htm'));
+    },
+    agregarPersonaPOST: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar_persona.htm'));
+    },
+    agregarReparacionPOST: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar_reparacion.htm'));
+    },
+    agregarPersonaReparacionPOST: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard_agregar_persona_reparacion.htm'));
     },
     buscarGET: (req,res) => {
         try {
@@ -199,7 +215,10 @@ const dashboardCRUD = {
                 dni: dni === '' ? 'undefined' : dni
             };
 
-            armarTablaInformacionPersonasReparacion(req, res, dataLocalGETbusqueda(dataRecibida));
+            const dataOriginalBusqueda = dataOriginalGETbusqueda(dataRecibida);
+
+            armarTablaInformacionPersonasReparacion(req, res, dataOriginalBusqueda);
+
         } catch (error) {
             res.json({msg: error.msg})
         }

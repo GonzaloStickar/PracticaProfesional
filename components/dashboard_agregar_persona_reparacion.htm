@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persona y Reparacion</title>
+    <link rel="stylesheet" href="/styles/dashboard_agregar_post.css">
+</head>
+<body>
+    <form action="/agregar/ambos" method="POST">
+        <div class="section-heading">Datos de Persona</div>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion">
+
+        <label for="telefono">Teléfono:</label>
+        <input type="tel" id="telefono" name="telefono">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+
+        <label for="dni">DNI:</label>
+        <input type="text" id="dni" name="dni" pattern="[0-9]{8}[A-Za-z]{1}" title="Debe contener 8 números seguidos de una letra" required>
+
+        <div class="section-heading">Datos de Reparación</div>
+        <label for="descripcion">Descripción de la reparación:</label>
+        <input type="text" id="descripcion" name="descripcion" required>
+
+        <label for="tipo">Tipo de reparación:</label>
+        <input type="text" id="tipo" name="tipo" required>
+
+        <label for="fecha">Fecha de ingreso:</label>
+        <input type="date" id="fecha" name="fecha" required>
+
+        <label for="estado">Estado de la reparación:</label>
+        <select id="estado" name="estado" required>
+            <option value="">Seleccionar estado...</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Proceso">En Proceso</option>
+            <option value="Finalizado">Finalizado</option>
+            <option value="Entregado">Entregado</option>
+            <option value="Cancelado">Cancelado</option>
+        </select>
+
+        <input type="submit" value="Crear Persona con Reparacion">
+    </form>
+</body>
+</html>
