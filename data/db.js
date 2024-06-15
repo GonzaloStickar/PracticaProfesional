@@ -1,3 +1,6 @@
+const { persona } = require('../models/persona')
+const { reparacion } = require('../models/reparacion')
+
 //Hago de cuenta que esta es nuestra base de datos desplegada en PostgreeSQL.
 //Test
 let dataBaseOriginal = {
@@ -7,28 +10,14 @@ let dataBaseOriginal = {
 
 //Test
 function dataOriginalPostPersona(id, nombre, direccion, telefono, email, dni) {
-    const nuevaPersona = {
-        id: id,
-        nombre: nombre,
-        direccion: direccion,
-        telefono: telefono,
-        email: email,
-        dni: dni
-    };
-    dataBaseOriginal.personas.push(nuevaPersona);
+    let personaNueva = new persona(id, nombre, direccion, telefono, email, dni);
+    dataBaseOriginal.personas.push(personaNueva);
 }
 
 //Test
 function dataOriginalPostReparacion(id, persona_id, descripcion, tipo, fecha, estado) {
-    const nuevaReparacion = {
-        id: id,
-        persona_id: persona_id,
-        descripcion: descripcion,
-        tipo: tipo,
-        fecha: fecha,
-        estado: estado
-    };
-    dataBaseOriginal.reparaciones.push(nuevaReparacion);
+    let reparacionNueva = new reparacion(id, persona_id, descripcion, tipo, fecha, estado);
+    dataBaseOriginal.reparaciones.push(reparacionNueva);
 }
 
 //Test

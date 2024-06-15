@@ -29,8 +29,13 @@ router.post("/logout", isAuth, login.logout)
 router.get("/dashboard", isAuth, dashboardPage)
 
 router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparaciones);
-router.get("/dashboard/agregar", isAuth, dashboardCRUD.agregar);
-router.get("/dashboard/buscar", isAuth, dashboardCRUD.buscar);
+
+router.get("/dashboard/agregar", isAuth, dashboardCRUD.agregarGET);
+
+
+router.get("/dashboard/buscar", isAuth, dashboardCRUD.buscarGET);
+router.post("/dashboard/buscar", isAuth, dashboardCRUD.buscarPOST);
+
 router.get("/dashboard/editar", isAuth, dashboardCRUD.editar);
 router.get("/dashboard/informe", isAuth, dashboardCRUD.informe);
 
