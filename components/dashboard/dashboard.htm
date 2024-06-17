@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/styles/dashboard.css">
+</head>
+<body>
+    <div class="main_container">
+        <div class="side_izquierda">
+            <h1 class="titulo_side_izquierda">Cuenta</h1>
+
+            <div class="botones_side_izquirda">
+                <form action="/logout" method="get">
+                    <button id="logout" type="submit" class="boton_cerrar_sesion">Cerrar sesión</button>
+                </form>
+                <form action="/dashboard/clientes" method="get">
+                    <button id="logout" type="submit" class="boton_mostrar_clientes">Clientes</button>
+                </form>
+            </div>
+
+            <button id="mostrar" class="boton_mostrar_reparaciones">Mostrar Reparaciones</button>
+        </div>
+        <div class="side_derecha">
+            <div class="container">
+                <h1 class="container_titulo">Tabla de Personas y Reparaciones</h1>
+                <div class="caja_botones_agregar_buscar">
+                    <button class="boton_agregar" onclick="redirectToAgregar()">Agregar</button>
+                    <button class="boton_buscar" onclick="redirectToBuscar()">Buscar</button>
+                </div>
+                <div class="container_tabla">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>DNI</th>
+
+                                <!--<th>Dirección</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Descripción</th>-->
+                                
+                                <th>Tipo</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dynamicTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function redirectToAgregar() {
+            window.location.href = `/dashboard/agregar`;
+        }
+
+        function redirectToBuscar() {
+            window.location.href = `/dashboard/buscar`;
+        }
+
+        function redirectToEditar(personaId) {
+            window.location.href = `/dashboard/editar?persona_id=${personaId}`;
+        }
+        
+        //El de eliminar, seguramente sea un cartel de advertencia / alert
+        //que diga si realmente quiere eliminar la persona tal, con reparaciones tal, datos tal...
+
+        function redirectToInforme(personaId) {
+            window.location.href = `/dashboard/informe?persona_id=${personaId}`;
+        }
+
+        document.getElementById('mostrar').addEventListener('click', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let numReparaciones = urlParams.get('reparaciones');
+
+            if (numReparaciones === null || isNaN(parseInt(numReparaciones))) {
+                numReparaciones = 1; //Debo cambiar este número a '10' por ejemplo
+            }
+            window.location.href = `/dashboard/reparaciones?reparaciones=${numReparaciones}`;
+        });
+    </script>
+</body>
+</html>

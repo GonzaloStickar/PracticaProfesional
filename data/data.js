@@ -35,8 +35,25 @@ function dataLocalPostReparacion(reparaciones) {
     dataLocal.reparaciones.push(...reparaciones);
 }
 
+function dataLocalSearchPorPersonaId(personaId) {
+    const persona = dataLocal.personas.find(persona => persona.id === personaId);
+
+    const resultado = {
+        encontrada: false,
+        personaEncontrada: []
+    };
+
+    if (persona) {
+        resultado.encontrada = true;
+        resultado.personaEncontrada.push(persona);
+    }
+
+    return resultado;
+}
+
 module.exports = {
     dataLocalGET,
     dataLocalPostPersona,
-    dataLocalPostReparacion
+    dataLocalPostReparacion,
+    dataLocalSearchPorPersonaId
 };

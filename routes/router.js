@@ -24,7 +24,7 @@ router.get("/inicio", main.getInicio)
 router.get("/login", login.getLogin)
 router.post("/login", login.postLogin)
 
-router.post("/logout", isAuth, login.logout)
+router.get("/logout", isAuth, login.logout)
 
 router.get("/dashboard", isAuth, dashboardPage)
 
@@ -43,7 +43,7 @@ router.post("/agregar/ambos", isAuth, dashboardCRUD.agregarPersonaReparacionPOST
 router.get("/dashboard/buscar", isAuth, dashboardCRUD.buscarGET);
 router.post("/dashboard/buscar", isAuth, dashboardCRUD.buscarPOST);
 
-router.get("/dashboard/editar", isAuth, dashboardCRUD.editar);
+router.get("/dashboard/editar", isAuth, dashboardCRUD.editarGET);
 router.get("/dashboard/informe", isAuth, dashboardCRUD.informe);
 
 router.get("/", (req, res) => {
