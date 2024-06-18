@@ -1,3 +1,11 @@
+//IMPLEMENTAR CONSULTAS SQL:
+//verificarPersonaExisteDataBaseOriginal, 
+//encontrarPersonaDataBaseOriginalPorDNI,
+//dataOriginalPostPersona, 
+//dataOriginalPostReparacion,
+//dataOriginalGET (Esta consulta va a estar entre rangos min y max),
+
+
 const { persona } = require('../models/persona')
 const { reparacion } = require('../models/reparacion')
 
@@ -10,13 +18,27 @@ let dataBaseOriginal = {
 
 //Una vez hecha la base de datos, esto no va a ser necesario, ya que va a ser un autoincrement de cada persona nueva o reparacion
 //por lo que no necesitaremos ver cada id o ir sumando, sino que la base de datos ya lo hará automáticamente por sí misma.
-let idPersonaNueva = 0;
-let idReparacionNueva = 0;
+let idPersonaNueva = 0; //De la tabla personas, cada persona tiene un id
+let idReparacionNueva = 0; //De la tabla reparaciones, cada persona tiene un id
 
 //Esta función va a estar encargada de consultar a la base de datos, si es que se encuentra una persona con el mismo DNI
 //Hay que implementar la consulta de sql
 function verificarPersonaExisteDataBaseOriginal(dni) {
+
+
     return dataBaseOriginal.personas.some(persona => persona.dni === dni);
+}
+
+//Utilizada para crear una reparación y poder asignarle el persona_id el id de la persona que existe.
+//Ejemplo, si yo creo una reparación, le asigno un DNI, una vez verificado que existe la persona
+//por la función 'verificarPersonaExisteDataBaseOriginal', entonces podré buscar la persona, a partir de 
+//'encontrarPersonaDataBaseOriginalPorDNI' y poder traer a esa persona, con la persona que me devuelva (1 sola)
+//ya que el DNI es único... Podré obtener el id de la persona y así asignarle a la reparación (persona_id), el id de la persona
+//que recién encontré en esta función 'encontrarPersonaDataBaseOriginalPorDNI'.
+function encontrarPersonaDataBaseOriginalPorDNI(dni) {
+
+
+    return dataBaseOriginal.personas.find(persona => persona.dni === dni);
 }
 
 //Esta función va a ser la encargada de un INSERT INTO persona VALUES(...)
@@ -38,12 +60,12 @@ function dataOriginalPostPersona(nombre, direccion, telefono, email, dni) {
 //Lo mismo que la función de dataOriginalPostPersona, solo que con una reparacion.
 function dataOriginalPostReparacion(persona_id, descripcion, tipo, fecha, estado) {
 
-
+    //Creo una nueva persona para después añadirla a la base de datos.
     let reparacionNueva = new reparacion(idReparacionNueva, persona_id, descripcion, tipo, fecha, estado);
 
-    idPersonaNueva++;
+    idReparacionNueva++;
 
-
+    //INSERT INTO reparaciones VALUES(nombre, direccion, telefono, email, dni);
     dataBaseOriginal.reparaciones.push(reparacionNueva);
 
     return reparacionNueva;
@@ -124,5 +146,5 @@ module.exports = {
     dataOriginalPostReparacion,
     dataOriginalGET,
     dataOriginalGETbusqueda,
-    verificarPersonaExisteDataBaseOriginal
+    verificarPersonaExisteDataBaseOriginal, encontrarPersonaDataBaseOriginalPorDNI
 }

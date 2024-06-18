@@ -1,88 +1,20 @@
 const path = require('path');
 
 const { 
-    dataOriginalPostPersona
+    dataOriginalPostPersona, dataOriginalPostReparacion
 } = require('../dashboard');
+
+const { html } = require('./crud_form_post_pressed');
 
 //db "Local"
 const { 
-    verificarPersonaExisteDataBaseLocal,
     dataLocalAgregar
 } = require('../../data/data');
 
 //db "Real"
 const { 
-    verificarPersonaExisteDataBaseOriginal
+    verificarPersonaExisteDataBaseOriginal, encontrarPersonaDataBaseOriginalPorDNI
 } = require('../../data/db');
-
-const mensajeHtml = (mensaje) => {
-    return `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Añadir</title>
-        </head>
-            <body>
-                <div class="mensaje-box">
-                    <p>${mensaje}</p>
-
-                    <button class="boton_agregar" onclick="redirectToDashboard()">Volver</button>
-                </div>
-
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 100vh;
-                        margin: 0;
-                        background-color: #f0f0f0;
-                    }
-                    
-                    .mensaje-box {
-                        background-color: #fff;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        padding: 20px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        max-width: 400px;
-                        width: 100%;
-                        text-align: center;
-                    }
-
-                    p {
-                        margin: 0 0 20px 0;
-                        font-size: 18px;
-                        color: #333;
-                    }
-
-                    .boton_agregar {
-                        background-color: #4CAF50;
-                        color: white;
-                        padding: 10px 20px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    }
-                    
-                    .boton_agregar:hover {
-                        background-color: #45a049;
-                    }
-                </style>
-
-                <script>
-                    function redirectToDashboard() {
-                        window.location.href = "/dashboard/reparaciones?reparaciones=10";
-                    }
-            </script>
-            </body>
-        </html>
-    `;
-};
 
 const dashboardAgregar = {
     agregarFormGET: (req, res) => {
@@ -101,8 +33,6 @@ const dashboardAgregar = {
         try {
             const { nombre, direccion, telefono, email, dni } = req.body;
 
-            //console.log(nombre, direccion, telefono, email, dni)
-
             //Primero hay que verificar si la persona no está dentro de la base de datos consultando
             //si es que su dni ya está incluido
             if (!verificarPersonaExisteDataBaseOriginal(dni)) {
@@ -116,25 +46,19 @@ const dashboardAgregar = {
                     dni
                 );
 
-                //console.log(personaCreada);
-
                 //Subo a la base de datos local
-                if (!verificarPersonaExisteDataBaseLocal(dni)) {
+                dataLocalAgregar.dataLocalPostUnaPersona(
+                    personaCreada.id, 
+                    personaCreada.nombre, 
+                    personaCreada.direccion, 
+                    personaCreada.telefono, 
+                    personaCreada.email, 
+                    personaCreada.dni
+                );
 
-                    dataLocalAgregar.dataLocalPostUnaPersona(personaCreada.id, 
-                        personaCreada.nombre, 
-                        personaCreada.direccion, 
-                        personaCreada.telefono, 
-                        personaCreada.email, 
-                        personaCreada.dni
-                    )
-
-                    return res.send(mensajeHtml("Se creo la persona correctamente."))
-                } else {
-                    return res.send(mensajeHtml("Se creo la persona en la base de datos"))
-                }
+                return res.send(html("Añadir Persona", "Se creo la persona correctamente.", "redirectToDashboard"))
             } else {
-                return res.send(mensajeHtml(`Ya existe una persona con DNI: ${dni}`))
+                return res.send(html("Añadir Persona", `Ya existe una persona con DNI: ${dni}`, "goBack"))
             }
 
         } catch (error) {
@@ -142,13 +66,121 @@ const dashboardAgregar = {
         }
     },
     agregarReparacionPOST: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_reparacion.htm'));
+        try {
+            const { dni, descripcion, tipo, fecha, estado } = req.body;
+
+            //console.log(dni, descripcion, tipo, fecha, estado)
+
+            //Primero hay que verificar si la persona no está dentro de la base de datos consultando
+            //si es que su dni ya está incluido
+            if (verificarPersonaExisteDataBaseOriginal(dni)) {
+
+                //Primero tengo que buscar la persona por su dni en la base de datos (dataOriginal)
+                //Una vez obtenga esa persona por el dni, ya que se que existe, tendré que obtener su 'id', y asignarlo
+                //a la reparación nueva que realizaré
+                const personaEncontrada = encontrarPersonaDataBaseOriginalPorDNI(dni);
+
+                const reparacionCreada = dataOriginalPostReparacion(
+                    personaEncontrada.id, 
+                    descripcion, 
+                    tipo, 
+                    fecha, 
+                    estado
+                );
+
+                //Subo a la base de datos local
+                dataLocalAgregar.dataLocalPostUnaReparacion(
+                    reparacionCreada.id,
+                    personaEncontrada.id, 
+                    descripcion, 
+                    tipo, 
+                    fecha, 
+                    estado
+                );
+
+                return res.send(html("Añadir Reparacion", "Se creo la reparacion correctamente.", "redirectToDashboard"))
+
+            } else {
+                return res.send(html("Añadir Reparacion", `No existe una persona con DNI: ${dni}`, "goBack"))
+            }
+
+        } catch (error) {
+            res.json({msg: error.msg})
+        }
     },
     agregarAmbosPOST: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_ambos.htm'));
+        try {
+            const { dni, descripcion, tipo, fecha, estado, nombre, direccion, telefono, email } = req.body;
+    
+            // Verificar si la persona NO existe en la base de datos original
+            if (!verificarPersonaExisteDataBaseOriginal(dni)) {
+                // Si la persona NO existe, crearla y obtener el objeto persona creado
+                const personaCreada = dataOriginalPostPersona(nombre, direccion, telefono, email, dni);
+    
+                // Subir a la base de datos local la persona creada
+                dataLocalAgregar.dataLocalPostUnaPersona(
+                    personaCreada.id,
+                    personaCreada.nombre,
+                    personaCreada.direccion,
+                    personaCreada.telefono,
+                    personaCreada.email,
+                    personaCreada.dni
+                );
+
+                if (personaCreada) {
+                    // Crear la reparación utilizando el ID de la persona encontrada
+                    const reparacionCreada = dataOriginalPostReparacion(
+                        personaCreada.id,
+                        descripcion,
+                        tipo,
+                        fecha,
+                        estado
+                    );
+        
+                    // Subir a la base de datos local la reparación creada
+                    dataLocalAgregar.dataLocalPostUnaReparacion(
+                        reparacionCreada.id,
+                        personaCreada.id,
+                        descripcion,
+                        tipo,
+                        fecha,
+                        estado
+                    );
+        
+                    return res.send(html("Añadir Ambos", "Se creó la persona y la reparación correctamente.", "redirectToDashboard"));
+                } else {
+                    return res.send(html("Añadir Ambos", `No se pudo encontrar ni crear una persona con DNI: ${dni}`, "goBack"));
+                }
+            }
+    
+        } catch (error) {
+            res.json({ msg: error.msg });
+        }
+    }
+}
+
+function verificarPersonaExisteDataBaseOriginalDNI(dni) {
+    return new Promise((resolve, reject) => {
+        const dniExists = verificarPersonaExisteDataBaseOriginal(dni);
+        resolve(dniExists);
+    });
+}
+
+const verificarDisponibilidadDNI = async (req, res) => {
+    const dni = req.query.dni;
+    if (!dni) {
+        return res.status(400).send({ error: 'DNI es requerido' });
+    }
+
+    try {
+        const exists = await verificarPersonaExisteDataBaseOriginalDNI(dni);
+        res.send({ exists });
+    } catch (error) {
+        res.status(500).send({ error: 'Error al verificar el DNI' });
     }
 }
 
 module.exports = {
-    dashboardAgregar
+    dashboardAgregar,
+    verificarDisponibilidadDNI
 }

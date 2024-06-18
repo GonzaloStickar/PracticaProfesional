@@ -9,6 +9,15 @@
 <body>
     <form action="/agregar/ambos" method="POST">
         <div class="section-heading">Datos de Persona</div>
+
+        <div class="caja_dni">
+            <label for="dni">DNI del cliente:</label>
+            <input type="number" id="dni" name="dni" pattern="[0-9]+" required>
+            <button type="button" id="verificar-btn">Verificar</button>
+        </div>
+
+        <div id="mensaje-disponibilidad" class="mensaje-disponibilidad"></div>
+        
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
 
@@ -16,17 +25,14 @@
         <input type="text" id="direccion" name="direccion" required>
 
         <label for="telefono">Teléfono:</label>
-        <input type="tel" id="telefono" name="telefono" pattern="[0-9]+" required>
+        <input type="number" id="telefono" name="telefono" pattern="[0-9]+" required>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
 
-        <label for="dni">DNI:</label>
-        <input type="text" id="dni" name="dni" pattern="[0-9]+" required>
-
         <div class="section-heading">Datos de Reparación</div>
         <label for="descripcion">Descripción de la reparación:</label>
-        <input type="text" id="descripcion" name="descripcion">
+        <input type="text" id="descripcion" name="descripcion" required>
 
         <label for="tipo">Tipo de reparación:</label>
         <input type="text" id="tipo" name="tipo" required>
@@ -46,5 +52,7 @@
 
         <input type="submit" value="Crear Persona con Reparacion">
     </form>
+
+    <script src="/script/check_DNI_persona.js"></script>
 </body>
 </html>

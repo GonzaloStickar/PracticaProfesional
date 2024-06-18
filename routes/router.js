@@ -5,7 +5,7 @@ const main = require('../controllers/main')
 const login = require('../controllers/login')
 
 const { dashboardPage, mostrarPersonasReparaciones } = require('../controllers/dashboard')
-const { dashboardAgregar } = require('../controllers/crud/dashboard_agregar')
+const { dashboardAgregar, verificarDisponibilidadDNI } = require('../controllers/crud/dashboard_agregar')
 const { dashboardBuscar } = require('../controllers/crud/dashboard_buscar')
 const { dashboardInforme } = require('../controllers/crud/dashboard_informe')
 
@@ -36,11 +36,15 @@ router.get("/dashboard", isAuth, dashboardPage)
 router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparaciones);
 
 //Formulario de que agregar, persona, reparacion o ambos
+router.get("/dashboard/verificar/dni", isAuth, verificarDisponibilidadDNI);
+
 router.get("/dashboard/agregar", isAuth, dashboardAgregar.agregarFormGET);
+
 //GET de agregar
 router.get("/agregar/persona", isAuth, dashboardAgregar.agregarPersonaGET);
 router.get("/agregar/reparacion", isAuth, dashboardAgregar.agregarReparacionGET);
 router.get("/agregar/ambos", isAuth, dashboardAgregar.agregarAmbosGET);
+
 //POST de agregar
 router.post("/agregar/persona", isAuth, dashboardAgregar.agregarPersonaPOST);
 router.post("/agregar/reparacion", isAuth, dashboardAgregar.agregarReparacionPOST);

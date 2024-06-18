@@ -93,8 +93,8 @@ const dataLocalAgregar = {
     //Cuando se agrega UNA reparacion (por el botón agregar reparacion o ambos), se activa esta función
     //1) Se le asigna a dataOriginal la nueva reparacion (encargado en db.js)
     //2) Se le asigna a dataLocal la nueva reparacion (encargado en data.js)
-    dataLocalPostUnaReparacion: (idReparacionNueva, persona_id, descripcion, tipo, fecha, estado) => {
-        let reparacionNueva = new reparacion(idReparacionNueva, persona_id, descripcion, tipo, fecha, estado);
+    dataLocalPostUnaReparacion: (id, persona_id, descripcion, tipo, fecha, estado) => {
+        let reparacionNueva = new reparacion(id, persona_id, descripcion, tipo, fecha, estado);
         dataLocal.reparaciones.push(reparacionNueva);
     }
 }
@@ -104,6 +104,5 @@ module.exports = {
     dataLocalPostPersonas,
     dataLocalPostReparaciones,
     dataLocalSearchPorPersonaId,
-    verificarPersonaExisteDataBaseLocal,
     dataLocalAgregar
 };

@@ -8,6 +8,15 @@
 </head>
 <body>
     <form action="/agregar/persona" method="POST">
+        
+        <div class="caja_dni">
+            <label for="dni">DNI del cliente:</label>
+            <input type="number" id="dni" name="dni" pattern="[0-9]+" required>
+            <button type="button" id="verificar-btn">Verificar</button>
+        </div>
+
+        <div id="mensaje-disponibilidad" class="mensaje-disponibilidad"></div>
+
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
 
@@ -20,10 +29,9 @@
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
 
-        <label for="dni">DNI:</label>
-        <input type="number" id="dni" name="dni" pattern="[0-9]+" required>
-
         <input type="submit" value="Crear Persona">
     </form>
+
+    <script src="/script/check_DNI_persona.js"></script>
 </body>
 </html>

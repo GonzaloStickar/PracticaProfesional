@@ -1,8 +1,10 @@
+
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
     background-color: #f0f0f0;
 }
+
 form {
     max-width: 600px;
     margin: auto;
@@ -12,17 +14,20 @@ form {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
 h2 {
     text-align: center;
     color: #333;
 }
+
 label {
     font-weight: bold;
     display: block;
     margin-bottom: 8px;
     color: #555;
 }
-input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="date"], select {
+
+input[type="text"], input[type="email"], input[type="number"], input[type="date"], select {
     width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 15px;
@@ -31,6 +36,7 @@ input[type="text"], input[type="email"], input[type="tel"], input[type="number"]
     font-size: 14px;
     color: #333;
 }
+
 input[type="submit"] {
     background-color: #4CAF50;
     color: white;
@@ -39,16 +45,66 @@ input[type="submit"] {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease;
     width: 100%;
     box-sizing: border-box;
 }
+
 input[type="submit"]:hover {
     background-color: #45a049;
 }
+
+input[type="submit"]:active {
+    background-color: #3e8d42;
+    transition: background-color 0.3s ease;
+}
+
 .section-heading {
     margin-top: 20px;
     font-size: 18px;
     font-weight: bold;
     color: #333;
+}
+
+.caja_dni {
+    display: flex;
+    align-items: center;
+}
+
+.caja_dni input {
+    flex-grow: 1;
+    margin-right: 10px;
+    margin-left: -20px;
+}
+
+.caja_dni button {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.caja_dni button:hover {
+    background-color: #0056b3;
+}
+
+.caja_dni button:active {
+    background-color: #004ea1;
+    transition: background-color 0.3s ease;
+}
+
+.mensaje-disponibilidad {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.mensaje-disponibilidad.disponible {
+    color: green;
+}
+
+.mensaje-disponibilidad.no-disponible {
+    color: red;
 }
