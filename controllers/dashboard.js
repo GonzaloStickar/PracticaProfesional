@@ -11,28 +11,27 @@ const path = require('path');
 
 //dataLocal
 const { 
-    dataLocalPostPersona, dataLocalPostReparacion,
-    dataLocalGET, dataLocalSearchPorPersonaId
+    dataLocalPostPersonas, dataLocalPostReparaciones,
+    dataLocalGET
 } = require('../data/data')
 
 //db "Real"
 const { 
     dataOriginalPostPersona, dataOriginalPostReparacion,
-    dataOriginalGET, dataOriginalGETbusqueda
+    dataOriginalGET
 } = require('../data/db');
-const persona = require('../models/persona');
 
 //Suponiendo que es toda nuestra DB
 //Para seleccionar y cambiar todos a la vez, apretar Ctrl + D (y selecciona "agregarPersonaLocalDB" los 3 por igual y cambiamos los 3 a la vez).
-dataOriginalPostPersona(1, "Juan Pérez", "Calle Falsa 123", "123-456-7890", "juan.perez@example.com", "11.222.333");
-dataOriginalPostPersona(2, "María Gómez", "Avenida Siempreviva 456", "098-765-4321", "maria.gomez@example.com", "12.222.333");
-dataOriginalPostPersona(3, "Carlos Díaz", "Boulevard del Sol 789", "111-222-3333", "carlos.diaz@example.com", "13.222.333");
-dataOriginalPostPersona(4, "Juan Falso", "Calle Falsa 123", "11111111", "juan.falso@example.com", "12.122.122");
+dataOriginalPostPersona("Juan Pérez", "Calle Falsa 123", "1234567890", "juan.perez@example.com", "11222333");
+dataOriginalPostPersona("María Gómez", "Avenida Siempreviva 456", "0987654321", "maria.gomez@example.com", "12222333");
+dataOriginalPostPersona("Carlos Díaz", "Boulevard del Sol 789", "1112223333", "carlos.diaz@example.com", "13222333");
+dataOriginalPostPersona("Juan Falso", "Calle Falsa 123", "11111111", "juan.falso@example.com", "12122122");
 
-dataOriginalPostReparacion(1, 1, "Cambio de pantalla", "Televisor", "2024-06-13T10:00:00Z", "Completado");
-dataOriginalPostReparacion(2, 1, "Reparación de plaqueta", "Televisor", "2024-06-14T12:30:00Z", "En progreso");
-dataOriginalPostReparacion(3, 2, "Instalación de software", "Televisor", "2024-06-15T15:45:00Z", "Pendiente");
-dataOriginalPostReparacion(4, 3, "Reparación", "Microondas", "2024-06-14T12:30:00Z", "En progreso");
+dataOriginalPostReparacion(0, "Cambio de pantalla", "Televisor", "2024-06-13T10:00:00Z", "Completado");
+dataOriginalPostReparacion(0, "Reparación de plaqueta", "Televisor", "2024-06-14T12:30:00Z", "En progreso");
+dataOriginalPostReparacion(1, "Instalación de software", "Televisor", "2024-06-15T15:45:00Z", "Pendiente");
+dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14T12:30:00Z", "En progreso");
 
 let numReparacionesQueryMaxOld = 0;
 let dataObtenidaOriginalDB = null;
@@ -122,8 +121,8 @@ const mostrarPersonasReparaciones = (req, res) => {
 
             dataObtenidaOriginalDB = dataOriginalGET(1, numReparacionesQueryMaxOld);
 
-            dataLocalPostPersona(dataObtenidaOriginalDB.personas);
-            dataLocalPostReparacion(dataObtenidaOriginalDB.reparaciones);
+            dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
+            dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
 
             armarTablaInformacionPersonasReparacion(req, res, dataLocalGET(1, numReparacionesQueryMaxOld));
         }
@@ -134,8 +133,8 @@ const mostrarPersonasReparaciones = (req, res) => {
 
                 dataObtenidaOriginalDB = dataOriginalGET(numReparacionesQueryMaxOld + 1, numReparacionesQueryMaxNew);
                 
-                dataLocalPostPersona(dataObtenidaOriginalDB.personas);
-                dataLocalPostReparacion(dataObtenidaOriginalDB.reparaciones);
+                dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
+                dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
                 
                 numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
 
@@ -182,73 +181,10 @@ const dashboardPage = (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard.htm'));
 }
 
-const dashboardCRUD = {
-    agregarGET: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_agregar.htm'));
-    },
-    agregarPersonaGET: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_agregar_persona.htm'));
-    },
-    agregarReparacionGET: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_agregar_reparacion.htm'));
-    },
-    agregarPersonaReparacionGET: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_agregar_ambos.htm'));
-    },
-    agregarPersonaPOST: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_agregar_persona.htm'));
-    },
-    agregarReparacionPOST: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_agregar_reparacion.htm'));
-    },
-    agregarPersonaReparacionPOST: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_agregar_ambos.htm'));
-    },
-    buscarGET: (req,res) => {
-        try {
-            res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard_buscar.htm'));
-        } catch (error) {
-            res.json({msg: error.msg})
-        }
-    },
-    buscarPOST: (req,res) => {
-        try {
-            const { nombre, direccion, telefono, email, dni } = req.body;
-
-            const dataRecibida = {
-                nombre: nombre === '' ? 'undefined' : nombre,
-                direccion: direccion === '' ? 'undefined' : direccion,
-                telefono: telefono === '' ? 'undefined' : telefono,
-                email: email === '' ? 'undefined' : email,
-                dni: dni === '' ? 'undefined' : dni
-            };
-
-            const dataOriginalBusqueda = dataOriginalGETbusqueda(dataRecibida);
-
-            armarTablaInformacionPersonasReparacion(req, res, dataOriginalBusqueda);
-
-        } catch (error) {
-            res.json({msg: error.msg})
-        }
-    },
-    editarGET: (req,res) => {
-        const persona_id = parseInt(req.query.persona_id);
-
-        const personaEncontradaDataLocal = dataLocalSearchPorPersonaId(persona_id);
-        
-        if (personaEncontradaDataLocal.encontrada==true) {
-            res.send(personaEncontradaDataLocal.personaEncontrada[0])
-        } else {
-            res.send(`No se encontró la persona con id: ${persona_id}`);
-        }
-    },
-    informe: (req,res) => {
-        res.send("informe");
-    }
-}
-
 module.exports = {
     dashboardPage,
     mostrarPersonasReparaciones,
-    dashboardCRUD
+    armarTablaInformacionPersonasReparacion,
+    dataOriginalPostPersona,
+    dataOriginalPostReparacion
 }

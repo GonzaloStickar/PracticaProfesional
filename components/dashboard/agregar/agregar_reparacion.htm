@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nueva Reparacion</title>
-    <link rel="stylesheet" href="/styles/dashboard_agregar_post.css">
+    <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
 </head>
 <body>
     <form action="/agregar/reparacion" method="POST">
         <label for="dni">DNI del cliente:</label>
-        <input type="text" id="dni" name="dni" pattern="[0-9]{8}[A-Za-z]{1}" title="Debe contener 8 números seguidos de una letra" required>
+        <input type="text" id="dni" name="dni" pattern="[0-9]+" required>
 
         <label for="descripcion">Descripción de la reparación:</label>
         <input type="text" id="descripcion" name="descripcion" required>

@@ -3,7 +3,12 @@ const router = express.Router()
 
 const main = require('../controllers/main')
 const login = require('../controllers/login')
-const { dashboardPage, mostrarPersonasReparaciones, dashboardCRUD } = require('../controllers/dashboard')
+
+const { dashboardPage, mostrarPersonasReparaciones } = require('../controllers/dashboard')
+const { dashboardAgregar } = require('../controllers/crud/dashboard_agregar')
+const { dashboardBuscar } = require('../controllers/crud/dashboard_buscar')
+const { dashboardInforme } = require('../controllers/crud/dashboard_informe')
+
 const { sessionSecret } = require('../controllers/config.js');
 
 const isAuth = (req, res, next) => {
@@ -30,21 +35,26 @@ router.get("/dashboard", isAuth, dashboardPage)
 
 router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparaciones);
 
-router.get("/dashboard/agregar", isAuth, dashboardCRUD.agregarGET);
+//Formulario de que agregar, persona, reparacion o ambos
+router.get("/dashboard/agregar", isAuth, dashboardAgregar.agregarFormGET);
+//GET de agregar
+router.get("/agregar/persona", isAuth, dashboardAgregar.agregarPersonaGET);
+router.get("/agregar/reparacion", isAuth, dashboardAgregar.agregarReparacionGET);
+router.get("/agregar/ambos", isAuth, dashboardAgregar.agregarAmbosGET);
+//POST de agregar
+router.post("/agregar/persona", isAuth, dashboardAgregar.agregarPersonaPOST);
+router.post("/agregar/reparacion", isAuth, dashboardAgregar.agregarReparacionPOST);
+router.post("/agregar/ambos", isAuth, dashboardAgregar.agregarAmbosPOST);
 
-router.get("/agregar/persona", isAuth, dashboardCRUD.agregarPersonaGET);
-router.get("/agregar/reparacion", isAuth, dashboardCRUD.agregarReparacionGET);
-router.get("/agregar/ambos", isAuth, dashboardCRUD.agregarPersonaReparacionGET);
+//GET de buscar
+router.get("/dashboard/buscar", isAuth, dashboardBuscar.buscarGET);
+router.post("/dashboard/buscar", isAuth, dashboardBuscar.buscarPOST);
 
-router.post("/agregar/persona", isAuth, dashboardCRUD.agregarPersonaPOST);
-router.post("/agregar/reparacion", isAuth, dashboardCRUD.agregarReparacionPOST);
-router.post("/agregar/ambos", isAuth, dashboardCRUD.agregarPersonaReparacionPOST);
+//GET de editar
+//router.get("/dashboard/editar", isAuth, dashboardEditar.editarGET);
 
-router.get("/dashboard/buscar", isAuth, dashboardCRUD.buscarGET);
-router.post("/dashboard/buscar", isAuth, dashboardCRUD.buscarPOST);
-
-router.get("/dashboard/editar", isAuth, dashboardCRUD.editarGET);
-router.get("/dashboard/informe", isAuth, dashboardCRUD.informe);
+//GET de informe
+router.get("/dashboard/informe", isAuth, dashboardInforme.informe);
 
 router.get("/", (req, res) => {
     res.redirect('/inicio');

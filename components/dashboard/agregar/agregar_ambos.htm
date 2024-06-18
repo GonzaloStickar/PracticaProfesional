@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Persona y Reparacion</title>
-    <link rel="stylesheet" href="/styles/dashboard_agregar_post.css">
+    <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
 </head>
 <body>
     <form action="/agregar/ambos" method="POST">
@@ -13,20 +13,20 @@
         <input type="text" id="nombre" name="nombre" required>
 
         <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" name="direccion">
+        <input type="text" id="direccion" name="direccion" required>
 
         <label for="telefono">Teléfono:</label>
-        <input type="tel" id="telefono" name="telefono">
+        <input type="tel" id="telefono" name="telefono" pattern="[0-9]+" required>
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
+        <input type="email" id="email" name="email" required>
 
         <label for="dni">DNI:</label>
-        <input type="text" id="dni" name="dni" pattern="[0-9]{8}[A-Za-z]{1}" title="Debe contener 8 números seguidos de una letra" required>
+        <input type="text" id="dni" name="dni" pattern="[0-9]+" required>
 
         <div class="section-heading">Datos de Reparación</div>
         <label for="descripcion">Descripción de la reparación:</label>
-        <input type="text" id="descripcion" name="descripcion" required>
+        <input type="text" id="descripcion" name="descripcion">
 
         <label for="tipo">Tipo de reparación:</label>
         <input type="text" id="tipo" name="tipo" required>
