@@ -36,144 +36,38 @@ dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14T12:30:00Z
 let numReparacionesQueryMaxOld = 0;
 let dataObtenidaOriginalDB = null;
 
-function armarTablaInformacionPersonasReparacion(req, res, dataTrabajar)  {
-
-    let dataAniadir = '';
-
-    dataTrabajar.personas.forEach(persona => {
-        // Buscar las reparaciones de esta persona
-        const reparacionesDePersona = dataTrabajar.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
-
-        // Si la persona tiene reparaciones, agregar filas para cada una
-        if (reparacionesDePersona.length > 0) {
-            reparacionesDePersona.forEach((reparacion) => {
-                const fila = `
-                    <tr>
-                        <td>${persona.nombre}</td>
-                        <td>${persona.dni}</td>
-
-                        <!--<td>${persona.direccion}</td>
-                        <td>${persona.telefono}</td>
-                        <td>${persona.email}</td>
-                        <td>${reparacion.descripcion}</td>-->
-
-                        <td>${reparacion.tipo}</td>
-                        <td>${reparacion.fecha}</td>
-                        <td>${reparacion.estado}</td>
-                        <td>
-                            <div class="container_botones_tabla">
-                                <button class="boton_editar" onclick="redirectToEditar(${persona.id})">Editar</button>
-                                <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
-                                <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
-                            </div>
-                        </td>
-                    </tr>`;
-
-                dataAniadir += fila;
-            });
-        } else {
-            const fila = `
-                <tr>
-                    <td>${persona.nombre}</td>
-                    <td>${persona.dni}</td>
-                    
-                    <!--<td>${persona.direccion}</td>
-                    <td>${persona.telefono}</td>
-                    <td>${persona.email}</td>-->
-
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>
-                        <div class="container_botones_tabla">
-                            <button class="boton_editar" onclick="redirectToEditar(${persona.id})">Editar</button>
-                            <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
-                            <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
-                        </div>
-                    </td>
-                </tr>`;
-            dataAniadir += fila;
-        }
-    });
-
-    fs.readFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard.htm'), 'utf8', (err, html) => {
-        if (err) {
-            console.error('Error al leer el archivo HTML:', err);
-            return res.status(500).send('Error interno del servidor');
-        }
-
-        const htmlWithData = html.replace('<tbody id="dynamicTableBody"></tbody>', `<tbody id="dynamicTableBody">${dataAniadir}</tbody>`);
-
-        // Enviar el HTML modificado al cliente
-        return res.send(htmlWithData);
-    });
-}
-
 const mostrarPersonasReparaciones = (req, res) => {
 
     const numReparacionesQueryMaxNew = parseInt(req.query.reparaciones);
 
-    if (numReparacionesQueryMaxNew>0 && numReparacionesQueryMaxNew<=50) {
+    if (dataLocalGET().personas.length==0) {
+        
+        numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
 
-        if (dataLocalGET().personas.length==0) {
+        dataObtenidaOriginalDB = dataOriginalGET(1, numReparacionesQueryMaxOld);
+
+        dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
+        dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
+
+        return res.json(dataLocalGET(1, numReparacionesQueryMaxOld));
+    }
+    else {
+
+        //Test con 1 y 3 de numReparacionesQuery
+        if (numReparacionesQueryMaxNew > numReparacionesQueryMaxOld) {
+
+            dataObtenidaOriginalDB = dataOriginalGET(numReparacionesQueryMaxOld + 1, numReparacionesQueryMaxNew);
+            
+            dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
+            dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
             
             numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
 
-            dataObtenidaOriginalDB = dataOriginalGET(1, numReparacionesQueryMaxOld);
-
-            dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
-            dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
-
-            armarTablaInformacionPersonasReparacion(req, res, dataLocalGET(1, numReparacionesQueryMaxOld));
+            return res.json(dataLocalGET(1, numReparacionesQueryMaxOld));
         }
         else {
-
-            //Test con 1 y 3 de numReparacionesQuery
-            if (numReparacionesQueryMaxNew > numReparacionesQueryMaxOld) {
-
-                dataObtenidaOriginalDB = dataOriginalGET(numReparacionesQueryMaxOld + 1, numReparacionesQueryMaxNew);
-                
-                dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
-                dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
-                
-                numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
-
-                armarTablaInformacionPersonasReparacion(req, res, dataLocalGET(1, numReparacionesQueryMaxOld));
-            }
-            else {
-                armarTablaInformacionPersonasReparacion(req, res, dataLocalGET(1, numReparacionesQueryMaxNew));
-            }
+            return res.json(dataLocalGET(1, numReparacionesQueryMaxNew));
         }
-    }
-    else {
-        return res.status(401).send(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Dashboard</title>
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-            </head>
-            <body>
-                <h1>Cuenta</h1>
-                <form action="/logout" method="POST">
-                    <button type="submit">Cerrar sesión</button>
-                </form>
-
-            <div id="error_message">
-                No se puede consultar por 0 o más de 50
-            </div>
-            <style>
-                #error_message {
-                    text-align: center;
-                    color: red;
-                    margin-top: 10px;
-                }
-            </style>
-            </body>
-            </html>
-        `);
     }
 }
 
@@ -184,7 +78,6 @@ const dashboardPage = (req, res) => {
 module.exports = {
     dashboardPage,
     mostrarPersonasReparaciones,
-    armarTablaInformacionPersonasReparacion,
     dataOriginalPostPersona,
     dataOriginalPostReparacion
 }

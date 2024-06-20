@@ -5,10 +5,6 @@ const {
     dataOriginalGETbusqueda
 } = require('../../data/db');
 
-const { 
-    armarTablaInformacionPersonasReparacion
-} = require('../dashboard');
-
 const dashboardBuscar = {
     buscarGET: (req,res) => {
         try {
@@ -31,7 +27,7 @@ const dashboardBuscar = {
 
             const dataOriginalBusqueda = dataOriginalGETbusqueda(dataRecibida);
 
-            armarTablaInformacionPersonasReparacion(req, res, dataOriginalBusqueda);
+            return res.json(dataOriginalBusqueda);
 
         } catch (error) {
             res.json({msg: error.msg})

@@ -87,6 +87,14 @@ const dataLocalAgregar = {
     //1) Se le asigna a dataOriginal la nueva persona (encargado en db.js)
     //2) Se le asigna a dataLocal la nueva persona (encargado en data.js)
     dataLocalPostUnaPersona: (idPersonaNueva, nombre, direccion, telefono, email, dni) => {
+        const personaExistente = dataLocal.personas.find(persona => persona.dni === dni);
+
+        if (personaExistente) {
+            console.log(`Ya existe una persona con DNI ${dni}. No se puede agregar.`);
+            return; // Salir de la función si ya existe
+        }
+
+        // Si no existe, crear y agregar la nueva persona
         let personaNueva = new persona(idPersonaNueva, nombre, direccion, telefono, email, dni);
         dataLocal.personas.push(personaNueva);
     },
@@ -94,6 +102,15 @@ const dataLocalAgregar = {
     //1) Se le asigna a dataOriginal la nueva reparacion (encargado en db.js)
     //2) Se le asigna a dataLocal la nueva reparacion (encargado en data.js)
     dataLocalPostUnaReparacion: (id, persona_id, descripcion, tipo, fecha, estado) => {
+         // Verificar si ya existe una reparación con el mismo ID
+        const reparacionExistente = dataLocal.reparaciones.find(reparacion => reparacion.id === id);
+
+        if (reparacionExistente) {
+            console.log(`Ya existe una reparación con ID ${id}. No se puede agregar.`);
+            return; // Salir de la función si ya existe
+        }
+
+        // Si no existe, crear y agregar la nueva reparación
         let reparacionNueva = new reparacion(id, persona_id, descripcion, tipo, fecha, estado);
         dataLocal.reparaciones.push(reparacionNueva);
     }

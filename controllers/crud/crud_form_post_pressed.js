@@ -17,7 +17,7 @@ const html = (titulo, mensaje, botonFuncion) => {
 
                 <script>
                     function redirectToDashboard() {
-                        window.location.href = "/dashboard/reparaciones?reparaciones=10";
+                        window.location.href = "/dashboard";
                     }
 
                     function goBack() {

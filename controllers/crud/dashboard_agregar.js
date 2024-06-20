@@ -16,6 +16,9 @@ const {
     verificarPersonaExisteDataBaseOriginal, encontrarPersonaDataBaseOriginalPorDNI
 } = require('../../data/db');
 
+//La función agregar Persona, agregar Reparacion, agregar Ambos
+//Lo que hace es que a la dataOriginal, se asigna una nueva persona / reparacion / ambos a la base de datos
+//Mientras que al mismo tiempo, se asigna la persona nueva a dataLocal solo sí es que no está asignada
 const dashboardAgregar = {
     agregarFormGET: (req, res) => {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_form.htm'));
@@ -115,7 +118,13 @@ const dashboardAgregar = {
             // Verificar si la persona NO existe en la base de datos original
             if (!verificarPersonaExisteDataBaseOriginal(dni)) {
                 // Si la persona NO existe, crearla y obtener el objeto persona creado
-                const personaCreada = dataOriginalPostPersona(nombre, direccion, telefono, email, dni);
+                const personaCreada = dataOriginalPostPersona(
+                    nombre, 
+                    direccion, 
+                    telefono, 
+                    email, 
+                    dni
+                );
     
                 // Subir a la base de datos local la persona creada
                 dataLocalAgregar.dataLocalPostUnaPersona(
