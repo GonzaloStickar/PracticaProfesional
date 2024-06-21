@@ -116,10 +116,12 @@ const dashboardBuscar = {
         }
     },
     buscarReparacionPOST: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_reparacion.htm'));
+        res.send("ok")
+        //res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_reparacion.htm'));
     },
     buscarAmbosPOST: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_ambos.htm'));
+        res.send("ok")
+        //res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_ambos.htm'));
     },
 }
 
