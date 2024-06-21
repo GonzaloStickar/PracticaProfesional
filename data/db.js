@@ -99,46 +99,90 @@ function dataOriginalGET(min, max) {
 //Esta función está encargada de realizar la consulta (y primero armar dicha consulta)
 //Lo que va a ser importante para armar la consulta está dentro de esta función, y se realizará la consulta a la DB
 //para poder traer aquellas personas, reparaciones, o ambos que hayamos consultado.
-function dataOriginalGETbusqueda (dataEnviadaBuscar) {
-
+const dataOriginalGETbusqueda = {
+    
     //Lo que vamos a hacer en esta función es ver si se asignó la busqueda a cada uno
     //Ejemplo: Si nosotros en dataEnviadaBuscar, recibimos nombre == '', direccion == ''
     //Entonces, no añadiremos eso a nuestra consulta, pero por lo contrario... si recibimos
     //telefono == '123', dni == '11', entonces armaremos nuestra consulta para que se busque respecto
     //a si están incluidos o empiezan con esos términos ('123', '11', entre otros que asignemos...)
 
-    return dataEnviadaBuscar;
+    buscarPersona: (dataEnviadaBuscar) => {
 
-    ```
-    const encontrados = {
-        personas: [],
-        reparaciones: []
-    };
+        let resultados = {
+            personas:[],
+            reparaciones:[]
+        };
 
-    dataBaseOriginal.personas.forEach(persona => {
+        dataBaseOriginal.personas.forEach(persona => {
+            let match = true;
+            
+            if (dataEnviadaBuscar.nombre !== 'undefined' && !persona.nombre.toLowerCase().includes(dataEnviadaBuscar.nombre.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.direccion !== 'undefined' && !persona.direccion.toLowerCase().includes(dataEnviadaBuscar.direccion.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.telefono !== 'undefined' && !persona.telefono.includes(dataEnviadaBuscar.telefono)) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.email !== 'undefined' && !persona.email.toLowerCase().includes(dataEnviadaBuscar.email.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.dni !== 'undefined' && !persona.dni.includes(dataEnviadaBuscar.dni)) {
+                match = false;
+            }
 
-        const nombreMinusculas = dataEnviadaBuscar.nombre.toLowerCase();
-        const direccionMinusculas = dataEnviadaBuscar.direccion.toLowerCase();
-        const telefonoSinBarrasNiParentesis = dataEnviadaBuscar.telefono;
-        const emailMinusculas = dataEnviadaBuscar.email.toLowerCase();
-        const dniSinPuntos = dataEnviadaBuscar.dni;
+            if (match) {
+                resultados.personas.push(persona);
+            }
+        });
 
-        if (
-            persona.nombre.toLowerCase().includes(nombreMinusculas) ||
-            persona.direccion.toLowerCase().includes(direccionMinusculas) ||
-            persona.telefono.replace(/[^+\d]+/g, '').includes(telefonoSinBarrasNiParentesis) ||
-            persona.email.toLowerCase().includes(emailMinusculas) ||
-            persona.dni.replace(/\./g, '').includes(dniSinPuntos)
-        ) {
-            encontrados.personas.push(persona);
+        //Consulta SQL
+        let baseConsultaBusqueda = "SELECT * FROM personas WHERE";
+        let condiciones = [];
 
-            const reparacionesPersona = dataBaseOriginal.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
-            encontrados.reparaciones.push(...reparacionesPersona);
+        if (dataEnviadaBuscar.nombre !== 'undefined') {
+            condiciones.push(`LOWER(nombre) LIKE '%${dataEnviadaBuscar.nombre}%'`);
         }
-    });
+        if (dataEnviadaBuscar.direccion !== 'undefined') {
+            condiciones.push(`LOWER(direccion) LIKE '%${dataEnviadaBuscar.direccion}%'`);
+        }
+        if (dataEnviadaBuscar.telefono !== 'undefined') {
+            condiciones.push(`telefono LIKE '%${dataEnviadaBuscar.telefono}%'`);
+        }
+        if (dataEnviadaBuscar.email !== 'undefined') {
+            condiciones.push(`LOWER(email) LIKE '%${dataEnviadaBuscar.email}%'`);
+        }
+        if (dataEnviadaBuscar.dni !== 'undefined') {
+            condiciones.push(`dni LIKE '%${dataEnviadaBuscar.dni}%'`);
+        }
 
-    return encontrados;
-    ```
+        // Construir la consulta final añadiendo las condiciones
+        if (condiciones.length > 0) {
+            baseConsultaBusqueda += " AND " + condiciones.join(" AND ");
+        }
+
+        baseConsultaBusqueda+=";"
+
+        //console.log(baseConsultaBusqueda)
+
+        return resultados;
+    },
+    buscarReparacion: (dataEnviadaBuscar) => {
+        
+        let resultados = {
+            personas:[],
+            reparaciones:[]
+        };
+
+        console.log(dataEnviadaBuscar);
+
+        return resultados;
+    },
+    buscarAmbos: (dataEnviadaBuscar) => {
+        return dataEnviadaBuscar;
+    }
 }
 
 module.exports = {
