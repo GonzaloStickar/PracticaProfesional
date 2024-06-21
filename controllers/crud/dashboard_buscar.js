@@ -99,25 +99,6 @@ const dashboardBuscar = {
     },
     buscarPersonaPOST: (req, res) => {
         try {
-            const { estado, descripcion, tipo, fecha, dni } = req.body;
-
-            const dataRecibida = {
-                estado: estado === '' ? 'undefined' : estado,
-                descripcion: descripcion === '' ? 'undefined' : descripcion,
-                tipo: tipo === '' ? 'undefined' : tipo,
-                fecha: fecha === '' ? 'undefined' : fecha,
-                dni: dni === '' ? 'undefined' : dni
-            };
-
-            armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarReparacion(dataRecibida))
-
-        } catch (error) {
-            res.json({msg: error.msg})
-        }
-    },
-    buscarReparacionPOST: (req, res) => {
-
-        try {
             const { nombre, direccion, telefono, email, dni } = req.body;
 
             const dataRecibida = {
@@ -128,11 +109,14 @@ const dashboardBuscar = {
                 dni: dni === '' ? 'undefined' : dni
             };
 
-            armarTablaInformacionPersonasReparacion(req, res, dataOriginalGETbusqueda.buscarPersona(dataRecibida))
+            armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarPersona(dataRecibida))
 
         } catch (error) {
             res.json({msg: error.msg})
         }
+    },
+    buscarReparacionPOST: (req, res) => {
+        res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_reparacion.htm'));
     },
     buscarAmbosPOST: (req, res) => {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_ambos.htm'));
