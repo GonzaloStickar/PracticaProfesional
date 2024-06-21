@@ -10,6 +10,7 @@
     <div class="main_container">
         <div class="side_izquierda">
             <h1 class="titulo_side_izquierda">Cuenta</h1>
+
             <div class="botones_side_izquirda">
                 <form action="/logout" method="get">
                     <button id="logout" type="submit" class="boton_cerrar_sesion">Cerrar sesión</button>
@@ -41,14 +42,25 @@
                         <tbody id="dynamicTableBody"></tbody>
                     </table>
                 </div>
-
-                <div id="paginationContainer" class="pagination"></div>
-                
-                <button id="loadMoreBtn" class="boton_cargar_mas">Cargar más</button>
             </div>
         </div>
     </div>
-
-    <script src="/script/dashboard_main.js"></script>
+    <script>
+        function redirectToAgregar() {
+            window.location.href = `/dashboard/agregar`;
+        }
+        function redirectToBuscar() {
+            window.location.href = `/dashboard/buscar`;
+        }
+        function redirectToEditar(personaId) {
+            window.location.href = `/dashboard/editar?persona_id=${personaId}`;
+        }
+        
+        //El de eliminar, seguramente sea un cartel de advertencia / alert
+        //que diga si realmente quiere eliminar la persona tal, con reparaciones tal, datos tal...
+        function redirectToInforme(personaId) {
+            window.location.href = `/dashboard/informe?persona_id=${personaId}`;
+        }
+    </script>
 </body>
 </html>

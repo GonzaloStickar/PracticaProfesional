@@ -50,9 +50,17 @@ router.post("/agregar/persona", isAuth, dashboardAgregar.agregarPersonaPOST);
 router.post("/agregar/reparacion", isAuth, dashboardAgregar.agregarReparacionPOST);
 router.post("/agregar/ambos", isAuth, dashboardAgregar.agregarAmbosPOST);
 
+router.get("/dashboard/buscar", isAuth, dashboardBuscar.buscarFormGET);
+
 //GET de buscar
-router.get("/dashboard/buscar", isAuth, dashboardBuscar.buscarGET);
-router.post("/dashboard/buscar", isAuth, dashboardBuscar.buscarPOST);
+router.get("/dashboard/buscar/persona", isAuth, dashboardBuscar.buscarPersonaGET);
+router.get("/dashboard/buscar/reparacion", isAuth, dashboardBuscar.buscarReparacionGET);
+router.get("/dashboard/buscar/ambos", isAuth, dashboardBuscar.buscarAmbosGET);
+
+//POST de buscar
+router.post("/dashboard/buscar/persona", isAuth, dashboardBuscar.buscarPersonaPOST);
+router.post("/dashboard/buscar/reparacion", isAuth, dashboardBuscar.buscarReparacionPOST);
+router.post("/dashboard/buscar/ambos", isAuth, dashboardBuscar.buscarAmbosPOST);
 
 //GET de editar
 //router.get("/dashboard/editar", isAuth, dashboardEditar.editarGET);

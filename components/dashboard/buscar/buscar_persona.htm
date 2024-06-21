@@ -4,8 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar Persona</title>
+    <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
 </head>
 <body>
-    
+    <form action="/dashboard/buscar/persona" method="POST">
+        
+        <label for="dni">DNI del cliente:</label>
+        <input type="number" id="dni" name="dni" pattern="[0-9]+">
+
+        <label for="nombre">Nombre / Apellido:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion">
+
+        <label for="telefono">Teléfono:</label>
+        <input type="number" id="telefono" name="telefono" pattern="[0-9]+">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+
+        <input type="submit" value="Buscar Persona">
+    </form>
 </body>
 </html>
