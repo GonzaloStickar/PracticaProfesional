@@ -10,19 +10,19 @@
     <form action="/dashboard/buscar/reparacion" method="POST">
 
         <label for="dni">DNI del cliente:</label>
-        <input type="number" id="dni" name="dni" pattern="[0-9]+" required>
+        <input type="number" id="dni" name="dni" pattern="[0-9]+">
 
         <label for="descripcion">Descripción de la reparación:</label>
-        <input type="text" id="descripcion" name="descripcion" required>
+        <input type="text" id="descripcion" name="descripcion">
 
         <label for="tipo">Tipo de reparación:</label>
-        <input type="text" id="tipo" name="tipo" required>
+        <input type="text" id="tipo" name="tipo">
 
         <label for="fecha">Fecha de ingreso:</label>
-        <input type="date" id="fecha" name="fecha" required>
+        <input type="date" id="fecha" name="fecha">
 
         <label for="estado">Estado de la reparación:</label>
-        <select id="estado" name="estado" required>
+        <select id="estado" name="estado">
             <option value="">Seleccionar estado...</option>
             <option value="Pendiente">Pendiente</option>
             <option value="En Proceso">En Proceso</option>

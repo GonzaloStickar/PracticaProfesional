@@ -41,6 +41,10 @@ function encontrarPersonaDataBaseOriginalPorDNI(dni) {
     return dataBaseOriginal.personas.find(persona => persona.dni === dni);
 }
 
+function encontrarPersonaDataBaseOriginalPorID(persona_id) {
+    return dataBaseOriginal.personas.find(persona => persona.id === persona_id);
+}
+
 //Esta función va a ser la encargada de un INSERT INTO persona VALUES(...)
 //Va a estar conectada con la base de datos, y de personaNueva vamos a tener los 'get'
 //para poder obtener los datos de forma segura y poder asignarlos al INSERT de nuestra petición a la DB.
@@ -176,12 +180,86 @@ const dataOriginalGETbusqueda = {
             reparaciones:[]
         };
 
-        console.log(dataEnviadaBuscar);
+        dataBaseOriginal.reparaciones.forEach(reparacion => {
+
+            let match = true;
+            
+            if (dataEnviadaBuscar.estado !== 'undefined' && !reparacion.estado.toLowerCase().includes(dataEnviadaBuscar.estado.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.descripcion !== 'undefined' && !reparacion.descripcion.toLowerCase().includes(dataEnviadaBuscar.descripcion.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.tipo !== 'undefined' && !reparacion.tipo.toLowerCase().includes(dataEnviadaBuscar.tipo.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.fecha !== 'undefined' && !reparacion.fecha.includes(dataEnviadaBuscar.fecha)) {
+                match = false;
+            }
+            if (dataEnviadaBuscar.dni !== 'undefined' && !reparacion.dni.includes(dataEnviadaBuscar.dni)) {
+                match = false;
+            }
+
+            if (match) {
+                resultados.reparaciones.push(reparacion);
+
+                const persona = encontrarPersonaDataBaseOriginalPorID(reparacion.persona_id);
+                if (persona && !resultados.personas.some(p => p.id === persona.id)) {
+                    resultados.personas.push(persona);
+                }
+            }
+        });
+
+        //Consulta SQL
+        let baseConsultaBusqueda = "SELECT * FROM reparaciones WHERE";
+        let condiciones = [];
+
+        if (dataEnviadaBuscar.estado !== 'undefined') {
+            condiciones.push(`LOWER(estado) LIKE '%${dataEnviadaBuscar.estado}%'`);
+        }
+        if (dataEnviadaBuscar.descripcion !== 'undefined') {
+            condiciones.push(`LOWER(descripcion) LIKE '%${dataEnviadaBuscar.descripcion}%'`);
+        }
+        if (dataEnviadaBuscar.tipo !== 'undefined') {
+            condiciones.push(`tipo LIKE '%${dataEnviadaBuscar.tipo}%'`);
+        }
+        if (dataEnviadaBuscar.fecha !== 'undefined') {
+            condiciones.push(`LOWER(fecha) LIKE '%${dataEnviadaBuscar.fecha}%'`);
+        }
+        if (dataEnviadaBuscar.dni !== 'undefined') {
+            condiciones.push(`dni LIKE '%${dataEnviadaBuscar.dni}%'`);
+        }
+
+        // Construir la consulta final añadiendo las condiciones
+        if (condiciones.length > 0) {
+            baseConsultaBusqueda += " AND " + condiciones.join(" AND ");
+        }
+
+        baseConsultaBusqueda+=";"
+
+        //console.log(baseConsultaBusqueda)
 
         return resultados;
     },
-    buscarAmbos: (dataEnviadaBuscar) => {
-        return dataEnviadaBuscar;
+    buscarAmbos: (dataEnviadaBuscarPersona, dataEnviadaBuscarReparacion) => {
+
+        //Consulta SQL por cada función independientemente
+        const resultadosPersonas = dataOriginalGETbusqueda.buscarPersona(dataEnviadaBuscarPersona);
+        const resultadosReparaciones = dataOriginalGETbusqueda.buscarReparacion(dataEnviadaBuscarReparacion);
+
+        //Filtrar las reparaciones para incluir solo las que corresponden a personas buscadas
+        // Ejemplo: Si yo busco 'juan' con estado de reparacion 'Finalizado', deberían aparecerme todos los 'juan'
+        // que tengan reparaciones con estado 'Finalizado', por eso es que le asigno un filtro dentro del servidor
+        // para no tener que crear un filtro en una consulta SQL.
+        const personasIds = new Set(resultadosPersonas.personas.map(persona => persona.id));
+        const reparacionesFiltradas = resultadosReparaciones.reparaciones.filter(reparacion => personasIds.has(reparacion.persona_id));
+
+        const resultados = {
+            personas: resultadosPersonas.personas,
+            reparaciones: reparacionesFiltradas
+        };
+
+        return resultados;
     }
 }
 

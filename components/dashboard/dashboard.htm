@@ -10,12 +10,15 @@
     <div class="main_container">
         <div class="side_izquierda">
             <h1 class="titulo_side_izquierda">Cuenta</h1>
-            <div class="botones_side_izquirda">
-                <form action="/logout" method="get">
+            <div class="botones_side_izquierda">
+                <button class="boton_utlima_busqueda" onclick="redirectToClientes()">Clientes</button>
+
+                <button id="loadMoreBtn" class="boton_cargar_mas">Cargar más</button>
+
+                <button class="boton_utlima_busqueda" onclick="redirectToUltimaBusqueda()">Ultima Busqueda</button>
+
+                <form action="/logout" method="get" class="logout_form">
                     <button id="logout" type="submit" class="boton_cerrar_sesion">Cerrar sesión</button>
-                </form>
-                <form action="/dashboard/clientes" method="get">
-                    <button id="clientes" type="submit" class="boton_mostrar_clientes">Clientes</button>
                 </form>
             </div>
         </div>
@@ -43,8 +46,6 @@
                 </div>
 
                 <div id="paginationContainer" class="pagination"></div>
-                
-                <button id="loadMoreBtn" class="boton_cargar_mas">Cargar más</button>
             </div>
         </div>
     </div>

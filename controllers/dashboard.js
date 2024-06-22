@@ -25,13 +25,13 @@ const {
 //Para seleccionar y cambiar todos a la vez, apretar Ctrl + D (y selecciona "agregarPersonaLocalDB" los 3 por igual y cambiamos los 3 a la vez).
 dataOriginalPostPersona("Juan Pérez", "Calle Falsa 123", "1234567890", "juan.perez@example.com", "11222333");
 dataOriginalPostPersona("María Gómez", "Avenida Siempreviva 456", "0987654321", "maria.gomez@example.com", "12222333");
-dataOriginalPostPersona("Carlos Díaz", "Boulevard del Sol 789", "1112223333", "carlos.diaz@example.com", "13222333");
-dataOriginalPostPersona("Juan Falso", "Calle Falsa 123", "11111111", "juan.falso@example.com", "12122122");
+dataOriginalPostPersona("Juan Díaz", "Boulevard del Sol 789", "1112223333", "carlos.diaz@example.com", "13222333");
+dataOriginalPostPersona("Carlos Falso", "Calle Falsa 123", "11111111", "juan.falso@example.com", "12122122");
 
-dataOriginalPostReparacion(0, "Cambio de pantalla", "Televisor", "2024-06-13T10:00:00Z", "Completado");
-dataOriginalPostReparacion(0, "Reparación de plaqueta", "Televisor", "2024-06-14T12:30:00Z", "En progreso");
-dataOriginalPostReparacion(1, "Instalación de software", "Televisor", "2024-06-15T15:45:00Z", "Pendiente");
-dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14T12:30:00Z", "En progreso");
+dataOriginalPostReparacion(0, "Cambio de pantalla", "Televisor", "2024-06-13T10:00:00Z", "Finalizado");
+dataOriginalPostReparacion(0, "Reparación de plaqueta", "Televisor", "2024-06-14T12:30:00Z", "Finalizado");
+dataOriginalPostReparacion(1, "Instalación de software", "Televisor", "2024-06-15T15:45:00Z", "Finalizado");
+dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14T12:30:00Z", "Finalizado");
 
 let numReparacionesQueryMaxOld = 0;
 let dataObtenidaOriginalDB = null;

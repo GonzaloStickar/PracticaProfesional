@@ -16,3 +16,11 @@ function redirectToEditar(personaId) {
 function redirectToInforme(personaId) {
     window.location.href = `/dashboard/informe?persona_id=${personaId}`;
 }
+
+function redirectToClientes() {
+    window.location.href = `/dashboard/clientes`;
+}
+
+function redirectToUltimaBusqueda() {
+    window.location.href = `/dashboard/ultima/busqueda`;
+}

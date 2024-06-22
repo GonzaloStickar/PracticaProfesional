@@ -116,12 +116,48 @@ const dashboardBuscar = {
         }
     },
     buscarReparacionPOST: (req, res) => {
-        res.send("ok")
-        //res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_reparacion.htm'));
+        try {
+            const { estado, descripcion, tipo, fecha, dni } = req.body;
+
+            const dataRecibida = {
+                estado: estado === '' ? 'undefined' : estado,
+                descripcion: descripcion === '' ? 'undefined' : descripcion,
+                tipo: tipo === '' ? 'undefined' : tipo,
+                fecha: fecha === '' ? 'undefined' : fecha,
+                dni: dni === '' ? 'undefined' : dni
+            };
+
+            armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarReparacion(dataRecibida))
+
+        } catch (error) {
+            res.json({msg: error.msg})
+        }
     },
     buscarAmbosPOST: (req, res) => {
-        res.send("ok")
-        //res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_ambos.htm'));
+        try {
+            const { nombre, direccion, telefono, email, estado, descripcion, tipo, fecha, dni } = req.body;
+
+            const dataRecibidaPersona = {
+                nombre: nombre === '' ? 'undefined' : nombre,
+                direccion: direccion === '' ? 'undefined' : direccion,
+                telefono: telefono === '' ? 'undefined' : telefono,
+                email: email === '' ? 'undefined' : email,
+                dni: dni === '' ? 'undefined' : dni
+            };
+
+            const dataRecibidaReparacion = {
+                estado: estado === '' ? 'undefined' : estado,
+                descripcion: descripcion === '' ? 'undefined' : descripcion,
+                tipo: tipo === '' ? 'undefined' : tipo,
+                fecha: fecha === '' ? 'undefined' : fecha,
+                dni: dni === '' ? 'undefined' : dni
+            };
+
+            armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarAmbos(dataRecibidaPersona, dataRecibidaReparacion))
+
+        } catch (error) {
+            res.json({msg: error.msg})
+        }
     },
 }
 
