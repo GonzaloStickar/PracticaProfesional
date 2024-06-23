@@ -14,16 +14,23 @@ body {
 }
 
 .side_izquierda {
-    background-color: #ee5050;
+    background-color: #00172e;
     color: white;
     box-sizing: border-box; 
     width: 15%;
-    transition: background-color 0.3s;
 }
 
 .side_izquierda:hover {
-    background-color: #ed3d3d;
-    transition: 0.3s;
+    background-color: #003d64;
+}
+
+.side_izquierda, .side_izquierda:hover, 
+.botones_side_izquierda button, .botones_side_izquierda button:hover, 
+.boton_agregar, .boton_agregar:hover
+.boton_buscar, .boton_buscar:hover,
+td button, td button:hover,
+tr, tr:hover {
+    transition: background-color 0.2s;
 }
 
 .side_derecha {
@@ -35,8 +42,100 @@ body {
     text-align: center;
 }
 
-.botones_side_izquierda button, .boton_mostrar_reparaciones {
+.botones_side_izquierda button {
     width: 100%;
+}
+
+.boton_clientes,
+.boton_cargar_mas,
+.boton_utlima_busqueda {
+    background-color: #00172e;
+}
+
+.boton_clientes:hover,
+.boton_cargar_mas:hover,
+.boton_utlima_busqueda:hover {
+    background-color: #006ea5;
+}
+
+.boton_clientes:active,
+.boton_cargar_mas:active,
+.boton_utlima_busqueda:active {
+    background-color: #00172e;
+}
+
+.boton_clientes,
+.boton_cargar_mas,
+.boton_utlima_busqueda,
+.boton_cerrar_sesion,
+.boton_agregar,
+.boton_buscar {
+    border: none;
+    padding: 14px 28px;
+    cursor: pointer;
+    color:white;
+}
+
+.boton_editar,
+.boton_eliminar,
+.boton_informe {
+    cursor: pointer;
+    color:white;
+    border-style: none;
+}
+
+.boton_cerrar_sesion, .boton_eliminar {
+    background-color: #d5261a;
+}
+
+.boton_cerrar_sesion:hover, .boton_eliminar:hover {
+    background: #a81107;
+}
+
+.boton_agregar {
+    background-color: #04AA6D;
+} 
+.boton_agregar:hover {
+    background-color: #46a049;
+}
+
+.boton_buscar {
+    background-color: #e7e7e7; color: black;
+}
+
+.boton_buscar:hover {
+    background: #ddd;
+}
+
+.boton_agregar,
+.boton_buscar, 
+.boton_editar,
+.boton_eliminar,
+.boton_informe {
+    border-radius: 5px;
+}
+
+.boton_editar {
+    background-color: #ff9800;
+}
+
+.boton_editar:hover {
+    background: #e68a00;
+}
+
+.boton_informe {
+    background-color: #007bff;
+}
+
+.boton_informe:hover {
+    background: #0a69b7;
+}
+
+.boton_editar,
+.boton_eliminar,
+.boton_informe {
+    margin:3px;
+    padding: 7px 14px;
 }
 
 .side_derecha {
@@ -59,21 +158,24 @@ table {
     border-collapse: collapse;
     padding:20px;
     margin-bottom: 0 !important;
-    font-size:medium;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #d7d7d7;
+    background-color: #e0e1f6;
 }
 
 thead {
-    background-color: #d7d7d7;
+    background-color: #131a35;
+    color:white;
 }
 
 tbody tr:nth-child(odd) {
-    background-color: #f5f5f5;
+    background-color: #d5d5d5;
 }
 
+tbody tr:hover {
+    background-color: #fdf1ff;
+}
 
 table, th, td {
     border: 0.1px solid #000;
@@ -86,17 +188,54 @@ th, td {
     max-width:0;
 }
 
+th {
+    padding-left: 3px;
+}
+
 .container_botones {
     display: flex;
     flex-direction: column;
 }
 
-.boton_utlima_busqueda,
+.boton_clientes,
 .boton_cargar_mas,
 .boton_utlima_busqueda,
-.boton_cerrar_sesion {
+.boton_cerrar_sesion,
+.boton_agregar,
+.boton_buscar {
     font-size: 12.5px;
     box-sizing: border-box;
+}
+
+#paginationContainer {
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.pagination-button {
+    float: left;
+    padding: 9px 18px;
+    border: none;
+    cursor: pointer;
+    background-color: white; border: 2px solid #007bff;
+}
+
+.pagination-button:hover {
+    background: #0a69b7;
+}
+
+.pagination-button:active {
+    background: #007bff;
+}
+
+#paginationContainer button {
+    border-radius: 5px;
+    margin:2.5px;
+}
+
+.selected {
+    background-color: #007bff;;
+    color: white;
 }
 
 @media (max-width: 1000px) {
@@ -134,7 +273,7 @@ th, td {
 
 @media (max-width: 500px) {
 
-    .boton_utlima_busqueda,
+    .boton_clientes,
     .boton_cargar_mas,
     .boton_utlima_busqueda,
     .boton_cerrar_sesion {
@@ -174,7 +313,7 @@ th, td {
         font-size: small;
     }
 
-    .boton_utlima_busqueda,
+    .boton_clientes,
     .boton_cargar_mas,
     .boton_utlima_busqueda,
     .boton_cerrar_sesion {
@@ -203,7 +342,7 @@ th, td {
         font-size: x-small;
     }
 
-    .boton_utlima_busqueda,
+    .boton_clientes,
     .boton_cargar_mas,
     .boton_utlima_busqueda,
     .boton_cerrar_sesion {
@@ -224,7 +363,7 @@ th, td {
         font-size: xx-small;
     }
 
-    .boton_utlima_busqueda,
+    .boton_clientes,
     .boton_cargar_mas,
     .boton_utlima_busqueda,
     .boton_cerrar_sesion {

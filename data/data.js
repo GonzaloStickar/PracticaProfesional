@@ -67,7 +67,8 @@ function dataLocalPostReparaciones(reparaciones) {
 }
 
 function dataLocalSearchPorPersonaId(personaId) {
-    const persona = dataLocal.personas.find(persona => persona.id === personaId);
+    const personaIdNum = parseInt(personaId, 10); // Convertir número a base 10
+    const persona = dataLocal.personas.find(persona => persona.id === personaIdNum);
 
     const resultado = {
         encontrada: false,

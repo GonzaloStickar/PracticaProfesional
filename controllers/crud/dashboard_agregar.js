@@ -4,11 +4,12 @@ const {
     dataOriginalPostPersona, dataOriginalPostReparacion
 } = require('../dashboard');
 
-const { html } = require('./crud_form_post_pressed');
+const { htmlFormEnviado, editarAgregarReparacion } = require('./crud_form_post_pressed');
 
 //db "Local"
 const { 
-    dataLocalAgregar
+    dataLocalAgregar,
+    dataLocalSearchPorPersonaId
 } = require('../../data/data');
 
 //db "Real"
@@ -27,7 +28,41 @@ const dashboardAgregar = {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_persona.htm'));
     },
     agregarReparacionGET: (req, res) => {
-        res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_reparacion.htm'));
+
+        //Caso 1)
+        //Debo buscar la persona por el id
+        //Encontrar su DNI
+        //Asignarle al editarAgregarReparacion(dni de la persona encontrada)
+        //Se busca por la dataLocal ya que es por que apretamos en el botón "Editar" de una persona
+        //que no tenía ninguna reparación.
+
+        //Caso 2)
+        //En caso de que no se encuentre, mostrar mensaje que no se encontró una persona con 'id' especificado
+        //Este caso es muy raro que suceda, ya que no va a ser común que ingrese el 'id' de una persona por la url
+        //Así que no me la complicaré mucho, en caso de que se implemente, se debería conectar a la base de datos
+        //o dataOriginal para poder consultar si es que hay una persona que coincida con el id especificado
+
+        //Ejemplo: Si en dataLocal hay personas y reparaciones, pero de las personas el máximo 'id' disponible es 4
+        //Entonces, si buscamos por el número 500, obviamente no va a estar en la base de datos local (dataLocal)
+        //Pero sí tendremos que consultar a la base de datos original (dataOriginal), y realizar una consulta
+        //respecto a devolver la persona que coincida con el 'id' buscado.
+
+        //Al fin y al cabo, implementaré el Caso 1)
+
+        const personaIdEnParams = req.query.persona_id;
+
+        if (personaIdEnParams===undefined || personaIdEnParams==='undefined') {
+            res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_reparacion.htm'));
+        } else {
+            //Busco persona en dataLocal y devuelvo su dni
+            const dniPersonaBuscadaPorIdEnDataLocal = dataLocalSearchPorPersonaId(personaIdEnParams)
+
+            if (dniPersonaBuscadaPorIdEnDataLocal.encontrada==false) {
+                res.send(`No se encontró una persona con ID: ${personaIdEnParams}`);
+            } else {
+                res.send(editarAgregarReparacion(dniPersonaBuscadaPorIdEnDataLocal.personaEncontrada[0].dni))
+            }
+        }
     },
     agregarAmbosGET: (req, res) => {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_ambos.htm'));
@@ -59,9 +94,9 @@ const dashboardAgregar = {
                     personaCreada.dni
                 );
 
-                return res.send(html("Añadir Persona", "Se creo la persona correctamente.", "redirectToDashboard"))
+                return res.send(htmlFormEnviado("Añadir Persona", "Se creo la persona correctamente.", "redirectToDashboard"))
             } else {
-                return res.send(html("Añadir Persona", `Ya existe una persona con DNI: ${dni}`, "goBack"))
+                return res.send(htmlFormEnviado("Añadir Persona", `Ya existe una persona con DNI: ${dni}`, "goBack"))
             }
 
         } catch (error) {
@@ -101,10 +136,10 @@ const dashboardAgregar = {
                     estado
                 );
 
-                return res.send(html("Añadir Reparacion", "Se creo la reparacion correctamente.", "redirectToDashboard"))
+                return res.send(htmlFormEnviado("Añadir Reparacion", "Se creo la reparacion correctamente.", "redirectToDashboard"))
 
             } else {
-                return res.send(html("Añadir Reparacion", `No existe una persona con DNI: ${dni}`, "goBack"))
+                return res.send(htmlFormEnviado("Añadir Reparacion", `No existe una persona con DNI: ${dni}`, "goBack"))
             }
 
         } catch (error) {
@@ -156,9 +191,9 @@ const dashboardAgregar = {
                         estado
                     );
         
-                    return res.send(html("Añadir Ambos", "Se creó la persona y la reparación correctamente.", "redirectToDashboard"));
+                    return res.send(htmlFormEnviado("Añadir Ambos", "Se creó la persona y la reparación correctamente.", "redirectToDashboard"));
                 } else {
-                    return res.send(html("Añadir Ambos", `No se pudo encontrar ni crear una persona con DNI: ${dni}`, "goBack"));
+                    return res.send(htmlFormEnviado("Añadir Ambos", `No se pudo encontrar ni crear una persona con DNI: ${dni}`, "goBack"));
                 }
             }
     

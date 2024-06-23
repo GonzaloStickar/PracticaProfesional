@@ -34,7 +34,7 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                             <td>${reparacion.estado}</td>
                             <td>
                                 <div class="container_botones_tabla">
-                                    <button class="boton_editar" onclick="redirectToEditar(${persona.id})">Editar</button>
+                                    <button class="boton_editar" onclick="redirectToEditar(${persona.id}, ${reparacion.id})">Editar</button>
                                     <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
                                     <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
                                 </div>
@@ -57,7 +57,7 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                         <td>-</td>
                         <td>
                             <div class="container_botones_tabla">
-                                <button class="boton_editar" onclick="redirectToEditar(${persona.id})">Editar</button>
+                                <button class="boton_editar" onclick="redirectToEditar(${persona.id}, 'undefined')">Editar</button>
                                 <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
                                 <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
                             </div>

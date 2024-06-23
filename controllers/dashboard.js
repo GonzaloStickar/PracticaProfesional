@@ -6,7 +6,6 @@
 //podremos ver más información sobre otras reparaciones, lo que no cuesta mucho ya que estamos en sí consultando a la base de datos
 //por ambas tablas, lo cual sí o sí tendrán que traer más información. Por ahí se puede explicar mejor :)
 
-const fs = require('fs');
 const path = require('path');
 
 //dataLocal

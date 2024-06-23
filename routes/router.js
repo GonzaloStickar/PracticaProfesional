@@ -7,6 +7,7 @@ const login = require('../controllers/login')
 const { dashboardPage, mostrarPersonasReparaciones } = require('../controllers/dashboard')
 const { dashboardAgregar, verificarDisponibilidadDNI } = require('../controllers/crud/dashboard_agregar')
 const { dashboardBuscar } = require('../controllers/crud/dashboard_buscar')
+const { dashboardEditar } = require('../controllers/crud/dashboard_editar')
 const { dashboardInforme } = require('../controllers/crud/dashboard_informe')
 
 const { sessionSecret } = require('../controllers/config.js');
@@ -63,7 +64,9 @@ router.post("/dashboard/buscar/reparacion", isAuth, dashboardBuscar.buscarRepara
 router.post("/dashboard/buscar/ambos", isAuth, dashboardBuscar.buscarAmbosPOST);
 
 //GET de editar
-//router.get("/dashboard/editar", isAuth, dashboardEditar.editarGET);
+router.get("/dashboard/editar", isAuth, dashboardEditar.editarGET);
+router.get("/editar/persona", isAuth, dashboardEditar.editarPersonaGET);
+router.get("/editar/reparacion", isAuth, dashboardEditar.editarReparacionGET);
 
 //GET de informe
 router.get("/dashboard/informe", isAuth, dashboardInforme.informe);
