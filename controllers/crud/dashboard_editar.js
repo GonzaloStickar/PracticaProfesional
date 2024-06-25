@@ -39,7 +39,7 @@ const dashboardEditar = {
         const personaBuscada = dataLocalSearchPorPersonaId(personaId);
 
         if (personaBuscada.encontrada==false) {
-            res.send(htmlFormEnviado("Buscar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
+            res.send(htmlFormEnviado("Actualizar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
         } else {
             res.send(htmlEditarPersona(personaBuscada.personaEncontrada[0]))
         }
@@ -52,12 +52,12 @@ const dashboardEditar = {
         const personaBuscada = dataLocalSearchPorPersonaId(personaId);
 
         if (personaBuscada.encontrada==false) {
-            res.send(htmlFormEnviado("Buscar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
+            res.send(htmlFormEnviado("Actualizar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
         } else {
             const reparacionEncontrada = dataLocalSearchPorPersonaIdYReparacionId(personaId, reparacionId);
 
             if (reparacionEncontrada.encontrada==false) {
-                res.send(htmlFormEnviado("Buscar Persona",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
+                res.send(htmlFormEnviado("Actualizar Reparación",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
             } else {
                 res.send(htmlEditarReparacion(personaBuscada.personaEncontrada[0], reparacionEncontrada.reparacionEncontrada[0]))
             }
@@ -75,7 +75,7 @@ const dashboardEditar = {
             personaBuscada.personaEncontrada[0].telefono===telefono &&
             personaBuscada.personaEncontrada[0].email===email
         ) {
-            res.send(htmlFormEnviado("Buscar Persona",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
+            res.send(htmlFormEnviado("Actualizar Persona",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
         } else {
             
             updateDataOriginalDatosPersona(
@@ -88,7 +88,7 @@ const dashboardEditar = {
                 nombre, direccion, telefono, email
             )
 
-            res.send(htmlFormEnviado("Buscar Persona",`Se ha actualizado la persona.`, "redirectToDashboard()"));
+            res.send(htmlFormEnviado("Actualizar Persona",`Se ha actualizado la persona.`, "redirectToDashboard()"));
         }
     },
     editarReparacionPOST: (req, res) => {
@@ -104,7 +104,7 @@ const dashboardEditar = {
             reparacionEncontrada.reparacionEncontrada[0].fecha===fecha &&
             reparacionEncontrada.reparacionEncontrada[0].estado===estado
         ) {
-            res.send(htmlFormEnviado("Buscar Persona",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
+            res.send(htmlFormEnviado("Actualizar Reparacion",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
         } else {
 
             updateDataOriginalDatosReparacionDePersona(
@@ -119,7 +119,7 @@ const dashboardEditar = {
                 descripcion, tipo, fecha, estado
             )
 
-            res.send(htmlFormEnviado("Buscar Persona",`Se ha actualizado la reparación.`, "redirectToDashboard()"));
+            res.send(htmlFormEnviado("Actualizar Reparación",`Se ha actualizado la reparación.`, "redirectToDashboard()"));
         }
     }
 }

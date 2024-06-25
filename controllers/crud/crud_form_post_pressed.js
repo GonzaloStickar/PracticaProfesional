@@ -1,7 +1,7 @@
 const htmlFormEnviado = (titulo, mensaje, botonFuncion) => {
     return `
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="es">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,7 @@ const htmlFormEnviado = (titulo, mensaje, botonFuncion) => {
 const editarAgregarReparacion = (nombre) => {
     return `
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="es">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,7 +81,7 @@ const editarAgregarReparacion = (nombre) => {
 const htmlEditarForm = (url_mod, persona_id, reparacion_id, mensaje) => {
     return `
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="es">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -108,7 +108,7 @@ const htmlEditarForm = (url_mod, persona_id, reparacion_id, mensaje) => {
 const htmlEditarPersona = (persona) => {
     return `
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="es">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -142,7 +142,7 @@ const htmlEditarPersona = (persona) => {
 const htmlEditarReparacion = (persona, reparacion) => {
     return `
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="es">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -180,10 +180,102 @@ const htmlEditarReparacion = (persona, reparacion) => {
     `;
 }
 
+const htmlEliminarFormPersona = (persona) => {
+    return `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Eliminar</title>
+            <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
+        </head>
+        <body>
+            <div>
+                <form id="eliminarForm" action="/dashboard/eliminar?persona_id=${persona.id}&reparacion_id=undefined" method="post">
+                    <div class="informacion_persona">
+                        <p>Información de la persona:</p>
+                        <p>ID: ${persona.id}</p>
+                        <p>Nombre: ${persona.nombre}</p>
+                        <p>Dirección: ${persona.direccion}</p>
+                        <p>Teléfono: ${persona.telefono}</p>
+                        <p>Email: ${persona.email}</p>
+                    </div>
+
+                    <h2>¿Estás seguro que deseas eliminar esta reparación?</h2>
+
+                    <input type="submit" class="btn" value="Sí, eliminar">
+                    <input type="button" class="btn" value="No, cancelar" onclick="goBack()">
+                </form>
+            </div>
+
+            <script>
+                function goBack() {
+                    history.back();
+                }
+            </script>
+        </body>
+        </html>
+    `;
+}
+
+const htmlEliminarFormPersonaReparacion = (persona, reparacion) => {
+    return `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Eliminar</title>
+            <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
+        </head>
+        <body>
+            <div>
+                <form id="eliminarForm" action="/dashboard/eliminar?persona_id=${persona.id}&reparacion_id=${reparacion.id}" method="post">
+                    <div class="informacion_persona">    
+                        <p>Información de la persona:</p>
+                        <p>ID: ${persona.id}</p>
+                        <p>Nombre: ${persona.nombre}</p>
+                        <p>Edad: ${persona.edad}</p>
+                        <p>Dirección: ${persona.direccion}</p>
+                        <p>Teléfono: ${persona.telefono}</p>
+                        <p>Email: ${persona.email}</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="informacion_reparacion">
+                        <p>Información de la reparación:</p>
+                        <p>ID: ${reparacion.id}</p>
+                        <p>Descripción: ${reparacion.descripcion}</p>
+                        <p>Tipo: ${reparacion.tipo}</p>
+                        <p>Fecha: ${reparacion.fecha}</p>
+                        <p>Estado: ${reparacion.estado}</p>
+                    </div>
+
+                    <h2>¿Estás seguro que deseas eliminar esta reparación?</h2>
+
+                    <input type="submit" class="btn" value="Sí, eliminar">
+                    <input type="button" class="btn" value="No, cancelar" onclick="goBack()">
+                </form>
+            </div>
+
+            <script>
+                function goBack() {
+                    history.back();
+                }
+            </script>
+        </body>
+        </html>
+    `;
+}
+
 module.exports = {
     htmlFormEnviado,
     editarAgregarReparacion,
     htmlEditarForm,
     htmlEditarPersona,
-    htmlEditarReparacion
+    htmlEditarReparacion,
+    htmlEliminarFormPersona,
+    htmlEliminarFormPersonaReparacion
 }

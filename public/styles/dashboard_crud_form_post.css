@@ -37,8 +37,7 @@ input[type="text"], input[type="email"], input[type="number"], input[type="date"
     color: #333;
 }
 
-input[type="submit"] {
-    background-color: #4CAF50;
+input[type="submit"], input[type="button"] {
     color: white;
     padding: 12px 24px;
     border: none;
@@ -49,14 +48,27 @@ input[type="submit"] {
     box-sizing: border-box;
 }
 
+input[type="submit"]:active, input[type="button"]:active {
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+}
+
 input[type="submit"]:hover {
     background-color: #45a049;
 }
 
-input[type="submit"]:active {
-    background-color: #3e8d42;
-    transition: background-color 0.3s ease;
+input[type="button"] {
+    margin-top:10px;
+    background-color: #d5261a;
 }
+
+input[type="button"]:hover {
+    background: #a81107;
+}
+
 
 .section-heading {
     margin-top: 20px;

@@ -4,10 +4,11 @@ const router = express.Router()
 const main = require('../controllers/main')
 const login = require('../controllers/login')
 
-const { dashboardPage, mostrarPersonasReparaciones } = require('../controllers/dashboard')
+const { dashboardPage, mostrarPersonasReparaciones, getNumReparacionesQueryMaxOld } = require('../controllers/dashboard')
 const { dashboardAgregar, verificarDisponibilidadNombreApellido } = require('../controllers/crud/dashboard_agregar')
 const { dashboardBuscar } = require('../controllers/crud/dashboard_buscar')
 const { dashboardEditar } = require('../controllers/crud/dashboard_editar')
+const { dashboardEliminar } = require('../controllers/crud/dashboard_eliminar')
 const { dashboardInforme } = require('../controllers/crud/dashboard_informe')
 
 const { sessionSecret } = require('../controllers/config.js');
@@ -35,6 +36,8 @@ router.get("/logout", isAuth, login.logout)
 router.get("/dashboard", isAuth, dashboardPage)
 
 router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparaciones);
+
+router.get('/dashboard/numReparacionesQueryMaxOld', isAuth, getNumReparacionesQueryMaxOld);
 
 //Formulario de que agregar, persona, reparacion o ambos (chequea si existe o no el nombre y apellido que ingresamos)
 router.get("/dashboard/verificar/nombre_apellido", isAuth, verificarDisponibilidadNombreApellido);
@@ -72,6 +75,12 @@ router.get("/editar/reparacion", isAuth, dashboardEditar.editarReparacionGET);
 //PUT de editar
 router.post("/editar/persona", isAuth, dashboardEditar.editarPersonaPOST);
 router.post("/editar/reparacion", isAuth, dashboardEditar.editarReparacionPOST);
+
+//GET de eliminar
+router.get("/dashboard/eliminar", isAuth, dashboardEliminar.eliminarFormGET);
+
+//POST de eliminar
+router.post("/dashboard/eliminar", isAuth, dashboardEliminar.eliminarFormPOST);
 
 //GET de informe
 router.get("/dashboard/informe", isAuth, dashboardInforme.informe);

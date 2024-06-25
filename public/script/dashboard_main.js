@@ -3,8 +3,27 @@ const reparacionesIncrement = 2; // Por ejemplo, cambiar según la cantidad dese
 let loadedPages = []; // Array para almacenar las páginas cargadas
 
 document.addEventListener('DOMContentLoaded', function() {
-    reparacionesCount += reparacionesIncrement;
-    loadReparaciones(reparacionesCount);
+
+    if (reparacionesCount===0) {
+        loadReparaciones(reparacionesIncrement);
+    } else {
+        fetch('/dashboard/numReparacionesQueryMaxOld')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Datos recibidos:', data);
+            reparacionesCount = data.numReparacionesQueryMaxOld;
+            loadReparaciones(reparacionesCount);
+        })
+        .catch(error => {
+            console.error('Error fetching numReparacionesQueryMaxOld:', error);
+            // Manejar el error según sea necesario
+        });
+    }
 });
 
 document.getElementById('loadMoreBtn').addEventListener('click', function() {
@@ -14,8 +33,17 @@ document.getElementById('loadMoreBtn').addEventListener('click', function() {
 
 function loadReparaciones(count) {
     fetch(`/dashboard/reparaciones?reparaciones=${count}`)
-        .then(response => response.json())
-        .then(data => {
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al cargar los datos');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Datos de reparaciones recibidos:', data);
+        // Aquí deberías verificar la estructura de 'data' para asegurarte de que 'personas' y 'reparaciones' estén definidos correctamente.
+        if (data.personas && data.reparaciones) {
+            // Procesar los datos recibidos
             const tableBody = document.getElementById('dynamicTableBody');
             tableBody.innerHTML = ''; // Limpiar el contenido actual del tableBody
 
@@ -36,14 +64,13 @@ function loadReparaciones(count) {
                             <td>${reparacion.estado}</td>
                             <td>
                                 <button class="boton_editar" onclick="redirectToEditar(${persona.id}, ${reparacion.id})">Editar</button>
-                                <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
+                                <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, ${reparacion.id})">Eliminar</button>
                                 <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
                             </td>
                         `;
                         currentPageRows.push(row); // Agregar fila a la página actual
                     });
-                } 
-                else {
+                } else {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${persona.nombre}</td>
@@ -52,7 +79,7 @@ function loadReparaciones(count) {
                         <td>-</td>
                         <td>
                             <button class="boton_editar" onclick="redirectToEditar(${persona.id}, 'undefined')">Editar</button>
-                            <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
+                            <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, 'undefined')">Eliminar</button>
                             <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
                         </td>
                     `;
@@ -67,9 +94,14 @@ function loadReparaciones(count) {
 
             // Actualizar la paginación
             updatePagination(loadedPages.length);
-
-        })
-        .catch(error => console.error('Error fetching reparaciones:', error));
+        } else {
+            console.error('La estructura de datos recibida es incorrecta:', data);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching reparaciones:', error);
+        // Manejar el error según sea necesario
+    });
 }
 
 function updatePagination(numPages) {

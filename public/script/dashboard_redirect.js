@@ -10,8 +10,9 @@ function redirectToEditar(personaId, reparacionId) {
     window.location.href = `/dashboard/editar?persona_id=${personaId}&reparacion_id=${reparacionId}`;
 }
 
-//El de eliminar, seguramente sea un cartel de advertencia / alert
-//que diga si realmente quiere eliminar la persona tal, con reparaciones tal, datos tal...
+function redirectToEliminar(personaId, reparacionId) {
+    window.location.href = `/dashboard/eliminar?persona_id=${personaId}&reparacion_id=${reparacionId}`;
+}
 
 function redirectToInforme(personaId) {
     window.location.href = `/dashboard/informe?persona_id=${personaId}`;

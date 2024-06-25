@@ -159,6 +159,19 @@ function updateDataLocalDatosReparacionDePersona (personaId, reparacionId, descr
     }
 }
 
+function dataLocalEliminarPersonaId(personaId) {
+    dataLocal.personas = dataLocal.personas.filter(persona => persona.id !== personaId);
+}
+
+function dataLocalEliminarPersonaIdReparacionId(personaId, reparacionId) {
+    dataLocal.personas = dataLocal.personas.filter(persona => persona.id !== personaId);
+
+    // Filtrar las reparaciones diferentes a la reparación con los IDs especificados
+    dataLocal.reparaciones = dataLocal.reparaciones.filter(reparacion => {
+        return !(reparacion.persona_id === personaId && reparacion.id === reparacionId);
+    });
+}
+
 module.exports = {
     dataLocalGET,
     dataLocalPostPersonas,
@@ -166,5 +179,6 @@ module.exports = {
     dataLocalSearchPorPersonaId,
     dataLocalSearchPorPersonaIdYReparacionId,
     dataLocalAgregar,
-    updateDataLocalDatosPersona, updateDataLocalDatosReparacionDePersona
+    updateDataLocalDatosPersona, updateDataLocalDatosReparacionDePersona,
+    dataLocalEliminarPersonaId, dataLocalEliminarPersonaIdReparacionId
 };

@@ -37,19 +37,19 @@ let dataObtenidaOriginalDB = null;
 
 const mostrarPersonasReparaciones = (req, res) => {
 
-    //console.log(`1 numReparacionesQueryMaxOld: ${numReparacionesQueryMaxOld}`)
+    console.log(`1 numReparacionesQueryMaxOld: ${numReparacionesQueryMaxOld}`)
 
     const numReparacionesQueryMaxNew = parseInt(req.query.reparaciones);
 
-    //console.log(`2 numReparacionesQueryMaxNew: ${numReparacionesQueryMaxNew}`)
+    console.log(`2 numReparacionesQueryMaxNew: ${numReparacionesQueryMaxNew}`)
 
     if (dataLocalGET().personas.length==0) {
 
-        //console.log(`3 dataLocalGET().personas.length==0: true`)
+        console.log(`3 dataLocalGET().personas.length==0: true`)
         
         numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
 
-        //console.log(`4: numReparacionesQueryMaxOld = ${numReparacionesQueryMaxOld}`)
+        console.log(`4: numReparacionesQueryMaxOld = ${numReparacionesQueryMaxOld}`)
 
         dataObtenidaOriginalDB = dataOriginalGET(0, numReparacionesQueryMaxOld);
 
@@ -60,7 +60,7 @@ const mostrarPersonasReparaciones = (req, res) => {
     }
     else {
 
-        //console.log(`5 dataLocalGET().personas.length==0: false`)
+        console.log(`5 dataLocalGET().personas.length==0: false`)
 
         //Test con 0 y 2 de numReparacionesQuery
         if (numReparacionesQueryMaxNew > numReparacionesQueryMaxOld) {
@@ -75,7 +75,7 @@ const mostrarPersonasReparaciones = (req, res) => {
             return res.json(dataLocalGET(0, numReparacionesQueryMaxNew));
         }
         else {
-            return res.json(dataLocalGET(0, numReparacionesQueryMaxNew));
+            return res.json(dataLocalGET(0, numReparacionesQueryMaxOld));
         }
     }
 }
@@ -84,9 +84,14 @@ const dashboardPage = (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard.htm'));
 }
 
+const getNumReparacionesQueryMaxOld = (req, res) => {
+    res.json({ numReparacionesQueryMaxOld });
+}
+
 module.exports = {
     dashboardPage,
     mostrarPersonasReparaciones,
     dataOriginalPostPersona,
-    dataOriginalPostReparacion
+    dataOriginalPostReparacion,
+    getNumReparacionesQueryMaxOld
 }
