@@ -1,9 +1,23 @@
 const path = require('path');
 
-const { htmlEditarForm } = require('./editar_form_editar_agregar');
+//db "Local"
+const { 
+    dataLocalSearchPorPersonaId,
+    dataLocalSearchPorPersonaIdYReparacionId,
+    updateDataLocalDatosPersona, updateDataLocalDatosReparacionDePersona
+} = require('../../data/data');
+
+//db "Real"
+const { 
+    updateDataOriginalDatosPersona, updateDataOriginalDatosReparacionDePersona
+} = require('../../data/db');
+
+const { htmlFormEnviado, htmlEditarForm, 
+    htmlEditarPersona, htmlEditarReparacion 
+} = require('./crud_form_post_pressed');
 
 const dashboardEditar = {
-    editarGET: (req,res) => {
+    editarFormGET: (req,res) => {
         //Si el reparacion ID es undefined, entonces que mande dos opciones
         //Si quiere modificar a la persona / Si quiere agregar una reparación.
 
@@ -21,12 +35,92 @@ const dashboardEditar = {
     },
     editarPersonaGET: (req,res) => {
         const personaId = req.query.persona_id;
-        res.send(personaId)
+
+        const personaBuscada = dataLocalSearchPorPersonaId(personaId);
+
+        if (personaBuscada.encontrada==false) {
+            res.send(htmlFormEnviado("Buscar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
+        } else {
+            res.send(htmlEditarPersona(personaBuscada.personaEncontrada[0]))
+        }
     },
     editarReparacionGET: (req,res) => {
         const personaId = req.query.persona_id;
+
         const reparacionId = req.query.reparacion_id;
-        res.send(`${personaId} y ${reparacionId}`)
+
+        const personaBuscada = dataLocalSearchPorPersonaId(personaId);
+
+        if (personaBuscada.encontrada==false) {
+            res.send(htmlFormEnviado("Buscar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
+        } else {
+            const reparacionEncontrada = dataLocalSearchPorPersonaIdYReparacionId(personaId, reparacionId);
+
+            if (reparacionEncontrada.encontrada==false) {
+                res.send(htmlFormEnviado("Buscar Persona",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
+            } else {
+                res.send(htmlEditarReparacion(personaBuscada.personaEncontrada[0], reparacionEncontrada.reparacionEncontrada[0]))
+            }
+        }
+    },
+    editarPersonaPOST: (req, res) => {
+        const personaId = req.query.persona_id;
+
+        const personaBuscada = dataLocalSearchPorPersonaId(personaId);
+
+        const { nombre, direccion, telefono, email } = req.body;
+
+        if (personaBuscada.personaEncontrada[0].nombre===nombre &&
+            personaBuscada.personaEncontrada[0].direccion===direccion &&
+            personaBuscada.personaEncontrada[0].telefono===telefono &&
+            personaBuscada.personaEncontrada[0].email===email
+        ) {
+            res.send(htmlFormEnviado("Buscar Persona",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
+        } else {
+            
+            updateDataOriginalDatosPersona(
+                personaBuscada.personaEncontrada[0].id, 
+                nombre, direccion, telefono, email
+            )
+
+            updateDataLocalDatosPersona(
+                personaBuscada.personaEncontrada[0].id,
+                nombre, direccion, telefono, email
+            )
+
+            res.send(htmlFormEnviado("Buscar Persona",`Se ha actualizado la persona.`, "redirectToDashboard()"));
+        }
+    },
+    editarReparacionPOST: (req, res) => {
+        const personaId = req.query.persona_id;
+        const reparacionId = req.query.reparacion_id;
+
+        const reparacionEncontrada = dataLocalSearchPorPersonaIdYReparacionId(personaId, reparacionId);
+
+        const { descripcion, tipo, fecha, estado } = req.body;
+
+        if (reparacionEncontrada.reparacionEncontrada[0].descripcion===descripcion &&
+            reparacionEncontrada.reparacionEncontrada[0].tipo===tipo &&
+            reparacionEncontrada.reparacionEncontrada[0].fecha===fecha &&
+            reparacionEncontrada.reparacionEncontrada[0].estado===estado
+        ) {
+            res.send(htmlFormEnviado("Buscar Persona",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
+        } else {
+
+            updateDataOriginalDatosReparacionDePersona(
+                reparacionEncontrada.reparacionEncontrada[0].persona_id,
+                reparacionEncontrada.reparacionEncontrada[0].id,
+                descripcion, tipo, fecha, estado
+            )
+
+            updateDataLocalDatosReparacionDePersona(
+                reparacionEncontrada.reparacionEncontrada[0].persona_id,
+                reparacionEncontrada.reparacionEncontrada[0].id,
+                descripcion, tipo, fecha, estado
+            )
+
+            res.send(htmlFormEnviado("Buscar Persona",`Se ha actualizado la reparación.`, "redirectToDashboard()"));
+        }
     }
 }
 

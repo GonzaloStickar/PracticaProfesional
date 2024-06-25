@@ -31,7 +31,6 @@ function loadReparaciones(count) {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${persona.nombre}</td>
-                            <td>${persona.dni}</td>
                             <td>${reparacion.tipo}</td>
                             <td>${reparacion.fecha}</td>
                             <td>${reparacion.estado}</td>
@@ -48,7 +47,6 @@ function loadReparaciones(count) {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${persona.nombre}</td>
-                        <td>${persona.dni}</td>
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>

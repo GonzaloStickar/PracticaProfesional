@@ -14,7 +14,7 @@ const {
 
 //db "Real"
 const { 
-    verificarPersonaExisteDataBaseOriginal, encontrarPersonaDataBaseOriginalPorDNI
+    verificarPersonaExisteDataBaseOriginal, buscarPersonaDataBaseOriginal
 } = require('../../data/db');
 
 //La función agregar Persona, agregar Reparacion, agregar Ambos
@@ -55,12 +55,12 @@ const dashboardAgregar = {
             res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_reparacion.htm'));
         } else {
             //Busco persona en dataLocal y devuelvo su dni
-            const dniPersonaBuscadaPorIdEnDataLocal = dataLocalSearchPorPersonaId(personaIdEnParams)
+            const nombrePersonaBuscadaPorIdEnDataLocal = dataLocalSearchPorPersonaId(personaIdEnParams)
 
-            if (dniPersonaBuscadaPorIdEnDataLocal.encontrada==false) {
+            if (nombrePersonaBuscadaPorIdEnDataLocal.encontrada==false) {
                 res.send(`No se encontró una persona con ID: ${personaIdEnParams}`);
             } else {
-                res.send(editarAgregarReparacion(dniPersonaBuscadaPorIdEnDataLocal.personaEncontrada[0].dni))
+                res.send(editarAgregarReparacion(nombrePersonaBuscadaPorIdEnDataLocal.personaEncontrada[0].nombre))
             }
         }
     },
@@ -69,34 +69,26 @@ const dashboardAgregar = {
     },
     agregarPersonaPOST: (req, res) => {
         try {
-            const { nombre, direccion, telefono, email, dni } = req.body;
+            const { nombre, direccion, telefono, email } = req.body;
 
             //Primero hay que verificar si la persona no está dentro de la base de datos consultando
-            //si es que su dni ya está incluido
-            if (!verificarPersonaExisteDataBaseOriginal(dni)) {
+            //si es que su nombre y apellido ya está incluido
+            if (!verificarPersonaExisteDataBaseOriginal(nombre)) {
 
                 //Subo a la base de datos Original (base de datos desplegada)
                 const personaCreada = dataOriginalPostPersona(
                     nombre, 
                     direccion, 
                     telefono, 
-                    email, 
-                    dni
+                    email
                 );
 
                 //Subo a la base de datos local
-                dataLocalAgregar.dataLocalPostUnaPersona(
-                    personaCreada.id, 
-                    personaCreada.nombre, 
-                    personaCreada.direccion, 
-                    personaCreada.telefono, 
-                    personaCreada.email, 
-                    personaCreada.dni
-                );
+                dataLocalAgregar.dataLocalPostUnaPersona(personaCreada);
 
                 return res.send(htmlFormEnviado("Añadir Persona", "Se creo la persona correctamente.", "redirectToDashboard"))
             } else {
-                return res.send(htmlFormEnviado("Añadir Persona", `Ya existe una persona con DNI: ${dni}`, "goBack"))
+                return res.send(htmlFormEnviado("Añadir Persona", `Ya existe una persona con Nombre y Apellido ${nombre}`, "goBack"))
             }
 
         } catch (error) {
@@ -105,41 +97,32 @@ const dashboardAgregar = {
     },
     agregarReparacionPOST: (req, res) => {
         try {
-            const { dni, descripcion, tipo, fecha, estado } = req.body;
-
-            //console.log(dni, descripcion, tipo, fecha, estado)
+            const { nombre, descripcion, tipo, fecha, estado } = req.body;
 
             //Primero hay que verificar si la persona no está dentro de la base de datos consultando
             //si es que su dni ya está incluido
-            if (verificarPersonaExisteDataBaseOriginal(dni)) {
 
-                //Primero tengo que buscar la persona por su dni en la base de datos (dataOriginal)
-                //Una vez obtenga esa persona por el dni, ya que se que existe, tendré que obtener su 'id', y asignarlo
-                //a la reparación nueva que realizaré
-                const personaEncontrada = encontrarPersonaDataBaseOriginalPorDNI(dni);
-
-                const reparacionCreada = dataOriginalPostReparacion(
-                    personaEncontrada.id, 
-                    descripcion, 
-                    tipo, 
-                    fecha, 
-                    estado
-                );
-
-                //Subo a la base de datos local
-                dataLocalAgregar.dataLocalPostUnaReparacion(
-                    reparacionCreada.id,
-                    personaEncontrada.id, 
-                    descripcion, 
-                    tipo, 
-                    fecha, 
-                    estado
-                );
-
-                return res.send(htmlFormEnviado("Añadir Reparacion", "Se creo la reparacion correctamente.", "redirectToDashboard"))
-
+            if (verificarPersonaExisteDataBaseOriginal(nombre)) {
+                const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
+            
+                if (personaEncontrada) {
+                    const reparacionCreada = dataOriginalPostReparacion(
+                        personaEncontrada.id,
+                        descripcion,
+                        tipo,
+                        fecha,
+                        estado
+                    );
+            
+                    // Subo a la base de datos local
+                    dataLocalAgregar.dataLocalPostUnaReparacion(reparacionCreada);
+            
+                    return res.send(htmlFormEnviado("Añadir Reparacion", "Se creó la reparación correctamente.", "redirectToDashboard"));
+                } else {
+                    return res.send(htmlFormEnviado("Añadir Reparacion", `No se encontró una persona con Nombre y Apellido: ${nombre}`, "goBack"));
+                }
             } else {
-                return res.send(htmlFormEnviado("Añadir Reparacion", `No existe una persona con DNI: ${dni}`, "goBack"))
+                return res.send(htmlFormEnviado("Añadir Reparacion", `No se encontró una persona con Nombre y Apellido: ${nombre}`, "goBack"));
             }
 
         } catch (error) {
@@ -148,53 +131,35 @@ const dashboardAgregar = {
     },
     agregarAmbosPOST: (req, res) => {
         try {
-            const { dni, descripcion, tipo, fecha, estado, nombre, direccion, telefono, email } = req.body;
+            const { descripcion, tipo, fecha, estado, nombre, direccion, telefono, email } = req.body;
     
             // Verificar si la persona NO existe en la base de datos original
-            if (!verificarPersonaExisteDataBaseOriginal(dni)) {
+            if (!verificarPersonaExisteDataBaseOriginal(nombre)) {
                 // Si la persona NO existe, crearla y obtener el objeto persona creado
+                //Subo a la base de datos Original (base de datos desplegada)
                 const personaCreada = dataOriginalPostPersona(
                     nombre, 
                     direccion, 
                     telefono, 
-                    email, 
-                    dni
-                );
-    
-                // Subir a la base de datos local la persona creada
-                dataLocalAgregar.dataLocalPostUnaPersona(
-                    personaCreada.id,
-                    personaCreada.nombre,
-                    personaCreada.direccion,
-                    personaCreada.telefono,
-                    personaCreada.email,
-                    personaCreada.dni
+                    email
                 );
 
-                if (personaCreada) {
-                    // Crear la reparación utilizando el ID de la persona encontrada
-                    const reparacionCreada = dataOriginalPostReparacion(
-                        personaCreada.id,
-                        descripcion,
-                        tipo,
-                        fecha,
-                        estado
-                    );
-        
-                    // Subir a la base de datos local la reparación creada
-                    dataLocalAgregar.dataLocalPostUnaReparacion(
-                        reparacionCreada.id,
-                        personaCreada.id,
-                        descripcion,
-                        tipo,
-                        fecha,
-                        estado
-                    );
-        
-                    return res.send(htmlFormEnviado("Añadir Ambos", "Se creó la persona y la reparación correctamente.", "redirectToDashboard"));
-                } else {
-                    return res.send(htmlFormEnviado("Añadir Ambos", `No se pudo encontrar ni crear una persona con DNI: ${dni}`, "goBack"));
-                }
+                dataLocalAgregar.dataLocalPostUnaPersona(personaCreada);
+
+                const reparacionCreada = dataOriginalPostReparacion(
+                    personaCreada.id,
+                    descripcion,
+                    tipo,
+                    fecha,
+                    estado
+                );
+
+                dataLocalAgregar.dataLocalPostUnaReparacion(reparacionCreada);
+
+                return res.send(htmlFormEnviado("Añadir Ambos", "Se creó la persona y la reparación correctamente.", "redirectToDashboard"));
+
+            } else {
+                return res.send(htmlFormEnviado("Añadir Ambos", `No se pudo encontrar ni crear una persona con Nombre y Apellido: ${nombre}`, "goBack"));
             }
     
         } catch (error) {
@@ -203,28 +168,23 @@ const dashboardAgregar = {
     }
 }
 
-function verificarPersonaExisteDataBaseOriginalDNI(dni) {
-    return new Promise((resolve, reject) => {
-        const dniExists = verificarPersonaExisteDataBaseOriginal(dni);
-        resolve(dniExists);
-    });
-}
+const verificarDisponibilidadNombreApellido = (req, res) => {
+    const nombreApellido = req.query.nombre;
 
-const verificarDisponibilidadDNI = async (req, res) => {
-    const dni = req.query.dni;
-    if (!dni) {
-        return res.status(400).send({ error: 'DNI es requerido' });
+    if (!nombreApellido) {
+        return res.status(400).send({ error: 'Nombre y Apellido son requeridos' });
     }
 
     try {
-        const exists = await verificarPersonaExisteDataBaseOriginalDNI(dni);
+        const exists = verificarPersonaExisteDataBaseOriginal(nombreApellido);
+        
         res.send({ exists });
     } catch (error) {
-        res.status(500).send({ error: 'Error al verificar el DNI' });
+        res.status(500).send({ error: 'Error al verificar el nombre y apellido' });
     }
 }
 
 module.exports = {
     dashboardAgregar,
-    verificarDisponibilidadDNI
+    verificarDisponibilidadNombreApellido
 }

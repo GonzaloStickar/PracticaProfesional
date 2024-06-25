@@ -1,8 +1,6 @@
 //Toda modificación acá en este archivo data.js
 //Requiere que se modifique también el archivo dashboard.js
 //Y es requerido modificar dashboard.htm si es que agregamos / eliminamos o algo.
-const { persona } = require('../models/persona')
-const { reparacion } = require('../models/reparacion')
 
 //Local
 //Esta base de datos local es la cual va a ser utilizada para reutilizar datos que ya habremos consultado / obtenido.
@@ -31,7 +29,7 @@ let dataLocal = {
 //Todo esto, es para evitar que se consulte de 0 a 20, y que se logre consultar de 10 a 20, lo cual ahorra tiempo y consumo de memoria
 //por parte del servidor / base de datos concluyentemente.
 function dataLocalGET(min, max) {
-    let personasFiltradas = dataLocal.personas.slice(min - 1, max);
+    let personasFiltradas = dataLocal.personas.slice(min, max);
 
     let personas = [];
     let reparaciones = [];
@@ -46,14 +44,14 @@ function dataLocalGET(min, max) {
 }
 
 // Función para verificar si una persona ya existe en dataLocal
-function verificarPersonaExisteDataBaseLocal(dni) {
-    return dataLocal.personas.some(persona => persona.dni === dni);
+function verificarPersonaExisteDataBaseLocalPorId(id) {
+    return dataLocal.personas.some(persona => persona.id === id);
 }
 
 // Función para agregar nuevas personas a dataLocal sin duplicados
 function dataLocalPostPersonas(personas) {
     personas.forEach(persona => {
-        if (!verificarPersonaExisteDataBaseLocal(persona.dni)) {
+        if (!verificarPersonaExisteDataBaseLocalPorId(persona.id)) {
             dataLocal.personas.push(persona);
         }
     });
@@ -62,7 +60,13 @@ function dataLocalPostPersonas(personas) {
 // Función para agregar nuevas reparaciones a dataLocal sin duplicados
 function dataLocalPostReparaciones(reparaciones) {
     reparaciones.forEach(reparacion => {
-        dataLocal.reparaciones.push(reparacion);
+        // Verificar si ya existe una reparación con el mismo ID en dataLocal.reparaciones
+        const existeReparacion = dataLocal.reparaciones.some(rep => rep.id === reparacion.id);
+
+        // Si no existe, agregar la reparación a dataLocal.reparaciones
+        if (!existeReparacion) {
+            dataLocal.reparaciones.push(reparacion);
+        }
     });
 }
 
@@ -83,37 +87,75 @@ function dataLocalSearchPorPersonaId(personaId) {
     return resultado;
 }
 
+function dataLocalSearchPorPersonaIdYReparacionId(personaId, reparacionId) {
+    const personaIdNum = parseInt(personaId, 10); // Convertir número a base 10
+    const reparacionIdNum = parseInt(reparacionId, 10); // Convertir número a base 10
+    
+    // Buscar la persona en dataLocal.personas
+    const persona = dataLocal.personas.find(persona => persona.id === personaIdNum);
+    
+    // Si no se encuentra la persona, retornar resultado vacío
+    if (!persona) {
+        return {
+            encontrada: false,
+            reparacionEncontrada: []
+        };
+    }
+
+    // Buscar la reparación que coincida con persona_id y reparacion_id
+    const reparacion = dataLocal.reparaciones.find(reparacion => {
+        return reparacion.persona_id === personaIdNum && reparacion.id === reparacionIdNum;
+    });
+
+    const resultado = {
+        encontrada: false,
+        reparacionEncontrada: []
+    };
+
+    if (reparacion) {
+        resultado.encontrada = true;
+        resultado.reparacionEncontrada.push(reparacion);
+    }
+
+    return resultado;
+}
+
 const dataLocalAgregar = {
     //Cuando se agrega UNA persona (por el botón agregar persona o ambos), se activa esta función
     //1) Se le asigna a dataOriginal la nueva persona (encargado en db.js)
     //2) Se le asigna a dataLocal la nueva persona (encargado en data.js)
-    dataLocalPostUnaPersona: (idPersonaNueva, nombre, direccion, telefono, email, dni) => {
-        const personaExistente = dataLocal.personas.find(persona => persona.dni === dni);
-
-        if (personaExistente) {
-            console.log(`Ya existe una persona con DNI ${dni}. No se puede agregar.`);
-            return; // Salir de la función si ya existe
-        }
-
-        // Si no existe, crear y agregar la nueva persona
-        let personaNueva = new persona(idPersonaNueva, nombre, direccion, telefono, email, dni);
+    dataLocalPostUnaPersona: (personaNueva) => {
         dataLocal.personas.push(personaNueva);
     },
     //Cuando se agrega UNA reparacion (por el botón agregar reparacion o ambos), se activa esta función
     //1) Se le asigna a dataOriginal la nueva reparacion (encargado en db.js)
     //2) Se le asigna a dataLocal la nueva reparacion (encargado en data.js)
-    dataLocalPostUnaReparacion: (id, persona_id, descripcion, tipo, fecha, estado) => {
-         // Verificar si ya existe una reparación con el mismo ID
-        const reparacionExistente = dataLocal.reparaciones.find(reparacion => reparacion.id === id);
-
-        if (reparacionExistente) {
-            console.log(`Ya existe una reparación con ID ${id}. No se puede agregar.`);
-            return; // Salir de la función si ya existe
-        }
-
-        // Si no existe, crear y agregar la nueva reparación
-        let reparacionNueva = new reparacion(id, persona_id, descripcion, tipo, fecha, estado);
+    dataLocalPostUnaReparacion: (reparacionNueva) => {
         dataLocal.reparaciones.push(reparacionNueva);
+    }
+}
+
+function updateDataLocalDatosPersona (personaId, nombre, direccion, telefono, email) {
+    const personaExistente = dataLocal.personas.find(persona => persona.id === personaId);
+
+    personaExistente.nombre = nombre;
+    personaExistente.direccion = direccion;
+    personaExistente.telefono = telefono;
+    personaExistente.email = email;
+}
+
+function updateDataLocalDatosReparacionDePersona (personaId, reparacionId, descripcion, tipo, fecha, estado) {
+    const personaExistente = dataLocal.personas.find(persona => persona.id === personaId);
+
+    if (personaExistente) {
+        const reparacionEncontrada = dataLocal.reparaciones.find(reparacion => {
+            return reparacion.persona_id === personaId && reparacion.id === reparacionId;
+        });
+
+        reparacionEncontrada.descripcion = descripcion;
+        reparacionEncontrada.tipo = tipo;
+        reparacionEncontrada.fecha = fecha;
+        reparacionEncontrada.estado = estado;
     }
 }
 
@@ -122,5 +164,7 @@ module.exports = {
     dataLocalPostPersonas,
     dataLocalPostReparaciones,
     dataLocalSearchPorPersonaId,
-    dataLocalAgregar
+    dataLocalSearchPorPersonaIdYReparacionId,
+    dataLocalAgregar,
+    updateDataLocalDatosPersona, updateDataLocalDatosReparacionDePersona
 };

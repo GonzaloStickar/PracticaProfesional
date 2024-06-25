@@ -5,7 +5,6 @@
 //dataOriginalPostReparacion,
 //dataOriginalGET (Esta consulta va a estar entre rangos min y max),
 
-
 const { persona } = require('../models/persona')
 const { reparacion } = require('../models/reparacion')
 
@@ -23,10 +22,19 @@ let idReparacionNueva = 0; //De la tabla reparaciones, cada persona tiene un id
 
 //Esta función va a estar encargada de consultar a la base de datos, si es que se encuentra una persona con el mismo DNI
 //Hay que implementar la consulta de sql
-function verificarPersonaExisteDataBaseOriginal(dni) {
+function verificarPersonaExisteDataBaseOriginal(nombreApellido) {
+    return dataBaseOriginal.personas.some(persona => {
+        // Acá asumimos que 'nombreApellido' es un string que contiene el nombre completo
+        return persona.nombre.toLowerCase() === nombreApellido.toLowerCase();
+    });
+}
 
-
-    return dataBaseOriginal.personas.some(persona => persona.dni === dni);
+function buscarPersonaDataBaseOriginal(nombreApellido) {
+    // Busca la primera persona que coincida con el nombre y apellido
+    return dataBaseOriginal.personas.find(persona => {
+        // Acá asumimos que 'nombreApellido' es un string que contiene el nombre completo
+        return persona.nombre.toLowerCase() === nombreApellido.toLowerCase();
+    });
 }
 
 //Utilizada para crear una reparación y poder asignarle el persona_id el id de la persona que existe.
@@ -36,8 +44,6 @@ function verificarPersonaExisteDataBaseOriginal(dni) {
 //ya que el DNI es único... Podré obtener el id de la persona y así asignarle a la reparación (persona_id), el id de la persona
 //que recién encontré en esta función 'encontrarPersonaDataBaseOriginalPorDNI'.
 function encontrarPersonaDataBaseOriginalPorDNI(dni) {
-
-
     return dataBaseOriginal.personas.find(persona => persona.dni === dni);
 }
 
@@ -48,10 +54,10 @@ function encontrarPersonaDataBaseOriginalPorID(persona_id) {
 //Esta función va a ser la encargada de un INSERT INTO persona VALUES(...)
 //Va a estar conectada con la base de datos, y de personaNueva vamos a tener los 'get'
 //para poder obtener los datos de forma segura y poder asignarlos al INSERT de nuestra petición a la DB.
-function dataOriginalPostPersona(nombre, direccion, telefono, email, dni) {
+function dataOriginalPostPersona(nombre, direccion, telefono, email) {
 
     //Creo una nueva persona para después añadirla a la base de datos.
-    let personaNueva = new persona(idPersonaNueva, nombre, direccion, telefono, email, dni);
+    let personaNueva = new persona(idPersonaNueva, nombre, direccion, telefono, email);
 
     idPersonaNueva++;
 
@@ -86,7 +92,7 @@ function dataOriginalGET(min, max) {
     //Se van a utilizar las 10 que ya fueron asignadas a dataLocal (explicado en data.js), y se consultará por las otras 10
     //(Se consultará de 11 a 20 ó de 10 a 19 (Hay que analizar)).
 
-    let personasFiltradas = dataBaseOriginal.personas.slice(min - 1, max);
+    let personasFiltradas = dataBaseOriginal.personas.slice(min, max);
 
     let personas = [];
     let reparaciones = [];
@@ -133,9 +139,6 @@ const dataOriginalGETbusqueda = {
             if (dataEnviadaBuscar.email !== 'undefined' && !persona.email.toLowerCase().includes(dataEnviadaBuscar.email.toLowerCase())) {
                 match = false;
             }
-            if (dataEnviadaBuscar.dni !== 'undefined' && !persona.dni.includes(dataEnviadaBuscar.dni)) {
-                match = false;
-            }
 
             if (match) {
                 resultados.personas.push(persona);
@@ -157,9 +160,6 @@ const dataOriginalGETbusqueda = {
         }
         if (dataEnviadaBuscar.email !== 'undefined') {
             condiciones.push(`LOWER(email) LIKE '%${dataEnviadaBuscar.email}%'`);
-        }
-        if (dataEnviadaBuscar.dni !== 'undefined') {
-            condiciones.push(`dni LIKE '%${dataEnviadaBuscar.dni}%'`);
         }
 
         // Construir la consulta final añadiendo las condiciones
@@ -196,9 +196,6 @@ const dataOriginalGETbusqueda = {
             if (dataEnviadaBuscar.fecha !== 'undefined' && !reparacion.fecha.includes(dataEnviadaBuscar.fecha)) {
                 match = false;
             }
-            if (dataEnviadaBuscar.dni !== 'undefined' && !reparacion.dni.includes(dataEnviadaBuscar.dni)) {
-                match = false;
-            }
 
             if (match) {
                 resultados.reparaciones.push(reparacion);
@@ -225,9 +222,6 @@ const dataOriginalGETbusqueda = {
         }
         if (dataEnviadaBuscar.fecha !== 'undefined') {
             condiciones.push(`LOWER(fecha) LIKE '%${dataEnviadaBuscar.fecha}%'`);
-        }
-        if (dataEnviadaBuscar.dni !== 'undefined') {
-            condiciones.push(`dni LIKE '%${dataEnviadaBuscar.dni}%'`);
         }
 
         // Construir la consulta final añadiendo las condiciones
@@ -263,10 +257,35 @@ const dataOriginalGETbusqueda = {
     }
 }
 
+function updateDataOriginalDatosPersona (personaId, nombre, direccion, telefono, email) {
+    const personaExistente = dataBaseOriginal.personas.find(persona => persona.id === personaId);
+
+    personaExistente.nombre = nombre;
+    personaExistente.direccion = direccion;
+    personaExistente.telefono = telefono;
+    personaExistente.email = email;
+}
+
+function updateDataOriginalDatosReparacionDePersona (personaId, reparacionId, descripcion, tipo, fecha, estado) {
+    const personaExistente = dataBaseOriginal.personas.find(persona => persona.id === personaId);
+
+    if (personaExistente) {
+        const reparacionEncontrada = dataBaseOriginal.reparaciones.find(reparacion => {
+            return reparacion.persona_id === personaId && reparacion.id === reparacionId;
+        });
+
+        reparacionEncontrada.descripcion = descripcion;
+        reparacionEncontrada.tipo = tipo;
+        reparacionEncontrada.fecha = fecha;
+        reparacionEncontrada.estado = estado;
+    }
+}
+
 module.exports = {
     dataOriginalPostPersona,
     dataOriginalPostReparacion,
     dataOriginalGET,
     dataOriginalGETbusqueda,
-    verificarPersonaExisteDataBaseOriginal, encontrarPersonaDataBaseOriginalPorDNI
+    verificarPersonaExisteDataBaseOriginal, buscarPersonaDataBaseOriginal,
+    updateDataOriginalDatosPersona, updateDataOriginalDatosReparacionDePersona
 }

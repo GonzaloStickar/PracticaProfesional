@@ -6,7 +6,7 @@ const {
     dataOriginalGETbusqueda
 } = require('../../data/db');
 
-const { html } = require('./crud_form_post_pressed');
+const { htmlFormEnviado } = require('./crud_form_post_pressed');
 
 function armarTablaInformacion(req, res, dataTrabajar)  {
 
@@ -24,7 +24,6 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                     const fila = `
                         <tr>
                             <td>${persona.nombre}</td>
-                            <td>${persona.dni}</td>
                             <!--<td>${persona.direccion}</td>
                             <td>${persona.telefono}</td>
                             <td>${persona.email}</td>
@@ -47,7 +46,6 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                 const fila = `
                     <tr>
                         <td>${persona.nombre}</td>
-                        <td>${persona.dni}</td>
                         
                         <!--<td>${persona.direccion}</td>
                         <td>${persona.telefono}</td>
@@ -76,17 +74,13 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
             return res.send(htmlWithData);
         });
     } else {
-        return res.send(html("Sin Resultados", "No se encontraron resultados", "goBack"))
+        return res.send(htmlFormEnviado("Sin Resultados", "No se encontraron resultados", "goBack"))
     }    
 }
 
 const dashboardBuscar = {
     buscarFormGET: (req,res) => {
-        try {
-            res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_form.htm'));
-        } catch (error) {
-            res.json({msg: error.msg})
-        }
+        res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_form.htm'));
     },
     buscarPersonaGET: (req, res) => {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_persona.htm'));
@@ -99,14 +93,17 @@ const dashboardBuscar = {
     },
     buscarPersonaPOST: (req, res) => {
         try {
-            const { nombre, direccion, telefono, email, dni } = req.body;
+            const { nombre, direccion, telefono, email } = req.body;
+
+            if (nombre === '' && direccion === '' && telefono === '' && email === '') {
+                return res.send(htmlFormEnviado("Buscar Ambos", "Ingrese datos para realizar una busqueda", "goBack"))
+            }
 
             const dataRecibida = {
                 nombre: nombre === '' ? 'undefined' : nombre,
                 direccion: direccion === '' ? 'undefined' : direccion,
                 telefono: telefono === '' ? 'undefined' : telefono,
-                email: email === '' ? 'undefined' : email,
-                dni: dni === '' ? 'undefined' : dni
+                email: email === '' ? 'undefined' : email
             };
 
             armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarPersona(dataRecibida))
@@ -117,14 +114,17 @@ const dashboardBuscar = {
     },
     buscarReparacionPOST: (req, res) => {
         try {
-            const { estado, descripcion, tipo, fecha, dni } = req.body;
+            const { estado, descripcion, tipo, fecha } = req.body;
+
+            if (estado === '' && descripcion === '' && tipo === '' && fecha === '') {
+                return res.send(htmlFormEnviado("Buscar Ambos", "Ingrese datos para realizar una busqueda", "goBack"))
+            }
 
             const dataRecibida = {
                 estado: estado === '' ? 'undefined' : estado,
                 descripcion: descripcion === '' ? 'undefined' : descripcion,
                 tipo: tipo === '' ? 'undefined' : tipo,
-                fecha: fecha === '' ? 'undefined' : fecha,
-                dni: dni === '' ? 'undefined' : dni
+                fecha: fecha === '' ? 'undefined' : fecha
             };
 
             armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarReparacion(dataRecibida))
@@ -137,6 +137,10 @@ const dashboardBuscar = {
         try {
             const { nombre, direccion, telefono, email, estado, descripcion, tipo, fecha, dni } = req.body;
 
+            if (nombre === '' && direccion === '' && telefono === '' && email === '' && nombre === '' && direccion === '' && telefono === '' && email === '') {
+                return res.send(htmlFormEnviado("Buscar Ambos", "Ingrese datos para realizar una busqueda", "goBack"))
+            }
+            
             const dataRecibidaPersona = {
                 nombre: nombre === '' ? 'undefined' : nombre,
                 direccion: direccion === '' ? 'undefined' : direccion,

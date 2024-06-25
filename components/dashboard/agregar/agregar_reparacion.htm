@@ -8,9 +8,10 @@
 </head>
 <body>
     <form action="/agregar/reparacion" method="POST">
-        <div class="caja_dni">
-            <label for="dni">DNI del cliente:</label>
-            <input type="number" id="dni" name="dni" pattern="[0-9]+" required>
+
+        <div class="caja_nombre">
+            <label for="nombre">Nombre y Apellido:</label>
+            <input type="text" id="nombre" name="nombre" required>
             <button type="button" id="verificar-btn">Verificar</button>
         </div>
 
@@ -38,6 +39,6 @@
         <input type="submit" value="Crear Reparación">
     </form>
 
-    <script src="/script/check_DNI_reparacion.js"></script>
+    <script src="/script/check_nomb_apell_reparacion.js"></script>
 </body>
 </html>

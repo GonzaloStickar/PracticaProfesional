@@ -82,11 +82,11 @@ body {
 }
 
 .texto_centrado h2 {
-    font-size: 64;
+    font-size: 64px;
 }
 
 .texto_centrado p {
-    font-size: 32;
+    font-size: 32px;
 }
 
 /*main*/
@@ -185,11 +185,11 @@ body {
 
 @media (max-width: 1000px) {
     .texto_centrado h2 {
-        font-size:48;
+        font-size:48px;
     }
     
     .texto_centrado p {
-        font-size: 24;
+        font-size: 24px;
     }
 
     .galeria_figure_figcaption article {
@@ -222,17 +222,17 @@ body {
     }
     
     .texto_centrado h2 {
-        font-size: 32;
+        font-size: 32px;
     }
     
     .texto_centrado p {
-        font-size: 16;
+        font-size: 16px;
     }
 }
 
 @media (max-width: 650px) {
     .texto_header {
-        font-size: 16;
+        font-size: 16px;
     }
 
     .texto_centrado {
@@ -240,11 +240,11 @@ body {
     }
     
     .texto_centrado h2 {
-        font-size:16;
+        font-size:16px;
     }
     
     .texto_centrado p {
-        font-size: 8;
+        font-size: 8px;
     }
 }
 
@@ -268,7 +268,7 @@ body {
 
 @media (max-width: 550px) {
     .texto_header {
-        font-size: 12;
+        font-size: 12px;
         top:-7px;
     }
 }
@@ -289,7 +289,7 @@ body {
 
 @media (max-width: 470px) {
     .texto_header {
-        font-size: 8;
+        font-size: 8px;
     }
 
     .navbar {
@@ -311,11 +311,11 @@ body {
     }
 
     .texto_centrado h2 {
-        font-size:12;
+        font-size:12px;
     }
     
     .texto_centrado p {
-        font-size: 6;
+        font-size: 6px;
     }
 }
 
@@ -342,11 +342,11 @@ body {
     }
 
     .texto_centrado h2 {
-        font-size:8;
+        font-size:8px;
     }
     
     .texto_centrado p {
-        font-size: 4;
+        font-size: 4px;
     }
 
     .navbar {
@@ -358,11 +358,11 @@ body {
     }
 
     .texto_header {
-        font-size: 5;
+        font-size: 5px;
     }
 
     .material-symbols-outlined {
-        font-size: 22;
+        font-size: 22px;
     }
 }
 

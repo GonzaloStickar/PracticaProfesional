@@ -65,18 +65,18 @@ input[type="submit"]:active {
     color: #333;
 }
 
-.caja_dni {
+.caja_nombre {
     display: flex;
     align-items: center;
 }
 
-.caja_dni input {
+.caja_nombre input {
     flex-grow: 1;
     margin-right: 10px;
     margin-left: -20px;
 }
 
-.caja_dni button {
+.caja_nombre button {
     padding: 10px;
     margin-bottom: 15px;
     border: none;
@@ -86,11 +86,11 @@ input[type="submit"]:active {
     cursor: pointer;
 }
 
-.caja_dni button:hover {
+.caja_nombre button:hover {
     background-color: #0056b3;
 }
 
-.caja_dni button:active {
+.caja_nombre button:active {
     background-color: #004ea1;
     transition: background-color 0.3s ease;
 }

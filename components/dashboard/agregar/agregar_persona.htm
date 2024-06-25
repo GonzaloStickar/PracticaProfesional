@@ -9,22 +9,19 @@
 <body>
     <form action="/agregar/persona" method="POST">
         
-        <div class="caja_dni">
-            <label for="dni">DNI del cliente:</label>
-            <input type="number" id="dni" name="dni" pattern="[0-9]+" required>
+        <div class="caja_nombre">
+            <label for="nombre">Nombre y Apellido:</label>
+            <input type="text" id="nombre" name="nombre" required>
             <button type="button" id="verificar-btn">Verificar</button>
         </div>
 
         <div id="mensaje-disponibilidad" class="mensaje-disponibilidad"></div>
 
-        <label for="nombre">Nombre y Apellido:</label>
-        <input type="text" id="nombre" name="nombre" required>
-
         <label for="direccion">Dirección:</label>
         <input type="text" id="direccion" name="direccion" required>
 
         <label for="telefono">Teléfono:</label>
-        <input type="number" id="telefono" name="telefono" pattern="[0-9]+" required>
+        <input type="number" id="telefono" name="telefono" required>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
@@ -32,6 +29,6 @@
         <input type="submit" value="Crear Persona">
     </form>
 
-    <script src="/script/check_DNI_persona.js"></script>
+    <script src="/script/check_nomb_apell_persona.js"></script>
 </body>
 </html>

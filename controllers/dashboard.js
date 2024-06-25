@@ -27,45 +27,55 @@ dataOriginalPostPersona("María Gómez", "Avenida Siempreviva 456", "0987654321"
 dataOriginalPostPersona("Juan Díaz", "Boulevard del Sol 789", "1112223333", "carlos.diaz@example.com", "13222333");
 dataOriginalPostPersona("Carlos Falso", "Calle Falsa 123", "11111111", "juan.falso@example.com", "12122122");
 
-dataOriginalPostReparacion(0, "Cambio de pantalla", "Televisor", "2024-06-13T10:00:00Z", "Finalizado");
-dataOriginalPostReparacion(0, "Reparación de plaqueta", "Televisor", "2024-06-14T12:30:00Z", "Finalizado");
-dataOriginalPostReparacion(1, "Instalación de software", "Televisor", "2024-06-15T15:45:00Z", "Finalizado");
-dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14T12:30:00Z", "Finalizado");
+dataOriginalPostReparacion(0, "Cambio de pantalla", "Televisor", "2024-06-13", "Finalizado");
+dataOriginalPostReparacion(0, "Reparación de plaqueta", "Televisor", "2024-06-14", "Finalizado");
+dataOriginalPostReparacion(1, "Instalación de software", "Televisor", "2024-06-15", "Finalizado");
+dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14", "Finalizado");
 
 let numReparacionesQueryMaxOld = 0;
 let dataObtenidaOriginalDB = null;
 
 const mostrarPersonasReparaciones = (req, res) => {
 
+    //console.log(`1 numReparacionesQueryMaxOld: ${numReparacionesQueryMaxOld}`)
+
     const numReparacionesQueryMaxNew = parseInt(req.query.reparaciones);
 
+    //console.log(`2 numReparacionesQueryMaxNew: ${numReparacionesQueryMaxNew}`)
+
     if (dataLocalGET().personas.length==0) {
+
+        //console.log(`3 dataLocalGET().personas.length==0: true`)
         
         numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
 
-        dataObtenidaOriginalDB = dataOriginalGET(1, numReparacionesQueryMaxOld);
+        //console.log(`4: numReparacionesQueryMaxOld = ${numReparacionesQueryMaxOld}`)
+
+        dataObtenidaOriginalDB = dataOriginalGET(0, numReparacionesQueryMaxOld);
 
         dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
         dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
 
-        return res.json(dataLocalGET(1, numReparacionesQueryMaxOld));
+        return res.json(dataLocalGET(0, numReparacionesQueryMaxOld));
     }
     else {
 
-        //Test con 1 y 3 de numReparacionesQuery
+        //console.log(`5 dataLocalGET().personas.length==0: false`)
+
+        //Test con 0 y 2 de numReparacionesQuery
         if (numReparacionesQueryMaxNew > numReparacionesQueryMaxOld) {
 
-            dataObtenidaOriginalDB = dataOriginalGET(numReparacionesQueryMaxOld + 1, numReparacionesQueryMaxNew);
+            dataObtenidaOriginalDB = dataOriginalGET(0, numReparacionesQueryMaxNew);
             
             dataLocalPostPersonas(dataObtenidaOriginalDB.personas);
             dataLocalPostReparaciones(dataObtenidaOriginalDB.reparaciones);
             
             numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
 
-            return res.json(dataLocalGET(1, numReparacionesQueryMaxOld));
+            return res.json(dataLocalGET(0, numReparacionesQueryMaxNew));
         }
         else {
-            return res.json(dataLocalGET(1, numReparacionesQueryMaxNew));
+            return res.json(dataLocalGET(0, numReparacionesQueryMaxNew));
         }
     }
 }

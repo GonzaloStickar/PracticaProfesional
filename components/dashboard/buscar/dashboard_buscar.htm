@@ -10,16 +10,19 @@
     <div class="main_container">
         <div class="side_izquierda">
             <h1 class="titulo_side_izquierda">Cuenta</h1>
+            <div class="botones_side_izquierda">
+                <button class="boton_clientes" onclick="redirectToClientes()">Clientes</button>
 
-            <div class="botones_side_izquirda">
-                <form action="/logout" method="get">
+                <button id="loadMoreBtn" class="boton_cargar_mas">Cargar más</button>
+
+                <button class="boton_utlima_busqueda" onclick="redirectToUltimaBusqueda()">Ultima Busqueda</button>
+
+                <form action="/logout" method="get" class="logout_form">
                     <button id="logout" type="submit" class="boton_cerrar_sesion">Cerrar sesión</button>
-                </form>
-                <form action="/dashboard/clientes" method="get">
-                    <button id="clientes" type="submit" class="boton_mostrar_clientes">Clientes</button>
                 </form>
             </div>
         </div>
+        
         <div class="side_derecha">
             <div class="container">
                 <h1 class="container_titulo">Tabla de Personas y Reparaciones</h1>
@@ -32,7 +35,6 @@
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>DNI</th>
                                 <th>Tipo</th>
                                 <th>Fecha</th>
                                 <th>Estado</th>
