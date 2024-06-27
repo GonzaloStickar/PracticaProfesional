@@ -4,7 +4,7 @@ const router = express.Router()
 const main = require('../controllers/main')
 const login = require('../controllers/login')
 
-const { dashboardPage, mostrarPersonasReparaciones, getNumReparacionesQueryMaxOld } = require('../controllers/dashboard')
+const { dashboardPage, mostrarPersonasReparacionesConCache, getNumReparacionesQueryMaxOld } = require('../controllers/dashboard')
 const { dashboardAgregar, verificarDisponibilidadNombreApellido } = require('../controllers/crud/dashboard_agregar')
 const { dashboardBuscar } = require('../controllers/crud/dashboard_buscar')
 const { dashboardEditar } = require('../controllers/crud/dashboard_editar')
@@ -35,7 +35,7 @@ router.get("/logout", isAuth, login.logout)
 
 router.get("/dashboard", isAuth, dashboardPage)
 
-router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparaciones);
+router.get("/dashboard/reparaciones", isAuth, mostrarPersonasReparacionesConCache);
 
 router.get('/dashboard/numReparacionesQueryMaxOld', isAuth, getNumReparacionesQueryMaxOld);
 

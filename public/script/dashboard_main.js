@@ -4,10 +4,7 @@ let loadedPages = []; // Array para almacenar las páginas cargadas
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    if (reparacionesCount===0) {
-        loadReparaciones(reparacionesIncrement);
-    } else {
-        fetch('/dashboard/numReparacionesQueryMaxOld')
+    fetch('/dashboard/numReparacionesQueryMaxOld')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -16,14 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Datos recibidos:', data);
-            reparacionesCount = data.numReparacionesQueryMaxOld;
+            reparacionesCount = data.numReparacionesQueryMaxOld || reparacionesIncrement;
             loadReparaciones(reparacionesCount);
         })
-        .catch(error => {
-            console.error('Error fetching numReparacionesQueryMaxOld:', error);
-            // Manejar el error según sea necesario
-        });
-    }
+    .catch(error => {
+        console.error('Error fetching numReparacionesQueryMaxOld:', error);
+        // Manejar el error según sea necesario
+    });
 });
 
 document.getElementById('loadMoreBtn').addEventListener('click', function() {
