@@ -1,20 +1,14 @@
-const path = require('path');
-
-//db "Local"
-const { 
-    dataLocalSearchPorPersonaId,
-    dataLocalSearchPorPersonaIdYReparacionId,
-    updateDataLocalDatosPersona, updateDataLocalDatosReparacionDePersona
-} = require('../../data/data');
-
 //db "Real"
 const { 
-    updateDataOriginalDatosPersona, updateDataOriginalDatosReparacionDePersona
+    updateDataOriginalDatosPersona, updateDataOriginalDatosReparacionDePersona,
+    buscarPersonaDataBaseOriginal
 } = require('../../data/db');
 
 const { htmlFormEnviado, htmlEditarForm, 
     htmlEditarPersona, htmlEditarReparacion 
 } = require('./crud_form_post_pressed');
+
+const { myCache } = require('../../middlewares/cache');
 
 const dashboardEditar = {
     editarFormGET: (req,res) => {
@@ -36,91 +30,161 @@ const dashboardEditar = {
     editarPersonaGET: (req,res) => {
         const personaId = req.query.persona_id;
 
-        const personaBuscada = dataLocalSearchPorPersonaId(personaId);
+        const cachedData = myCache.get('dataReparaciones');
 
-        if (personaBuscada.encontrada==false) {
-            res.send(htmlFormEnviado("Actualizar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
+        console.log(cachedData.personas)
+
+        if (cachedData && cachedData.personas) {
+            // Buscar persona en caché por personaId
+            const personaEncontrada = cachedData.personas.find(persona => persona.id === parseInt(personaId, 10));
+        
+            if (personaEncontrada) {
+                res.send(htmlEditarPersona(personaEncontrada))
+            } else {
+                res.send(htmlFormEnviado("Actualizar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
+            }
         } else {
-            res.send(htmlEditarPersona(personaBuscada.personaEncontrada[0]))
+            //Se podría implementar que busque a la persona por ID en una consulta a encontrarPersonaDataBaseOriginalPorID(personaId)
+            //Se consulta por buscar la persona en la DB original por su ID.
+            res.send(htmlFormEnviado("Actualizar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
         }
     },
     editarReparacionGET: (req,res) => {
         const personaId = req.query.persona_id;
-
         const reparacionId = req.query.reparacion_id;
 
-        const personaBuscada = dataLocalSearchPorPersonaId(personaId);
+        const cachedData = myCache.get('dataReparaciones');
 
-        if (personaBuscada.encontrada==false) {
-            res.send(htmlFormEnviado("Actualizar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
-        } else {
-            const reparacionEncontrada = dataLocalSearchPorPersonaIdYReparacionId(personaId, reparacionId);
+        if (cachedData && cachedData.reparaciones) {
+            // Buscar persona en caché por personaId
+            const personaEncontrada = cachedData.personas.find(persona => persona.id === parseInt(personaId,10));
 
-            if (reparacionEncontrada.encontrada==false) {
-                res.send(htmlFormEnviado("Actualizar Reparación",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
+            // Buscar reparación en caché por persona_id
+            const reparacionEncontrada = cachedData.reparaciones.find(reparacion => reparacion.id === parseInt(reparacionId,10));
+
+            if (personaEncontrada && reparacionEncontrada) {
+                res.send(htmlEditarReparacion(personaEncontrada, reparacionEncontrada))
+            } else if (!personaEncontrada) {
+                res.send(htmlFormEnviado("Actualizar Reparación",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
             } else {
-                res.send(htmlEditarReparacion(personaBuscada.personaEncontrada[0], reparacionEncontrada.reparacionEncontrada[0]))
+                res.send(htmlFormEnviado("Actualizar Reparación",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
             }
+        } else {
+            //Se consulta por buscar la reparación en la DB original por su ID, que además... Coincida con el persona_id de la reparación.
+            res.send(htmlFormEnviado("Actualizar Reparación",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
         }
     },
     editarPersonaPOST: (req, res) => {
         const personaId = req.query.persona_id;
-
-        const personaBuscada = dataLocalSearchPorPersonaId(personaId);
-
         const { nombre, direccion, telefono, email } = req.body;
 
-        if (personaBuscada.personaEncontrada[0].nombre===nombre &&
-            personaBuscada.personaEncontrada[0].direccion===direccion &&
-            personaBuscada.personaEncontrada[0].telefono===telefono &&
-            personaBuscada.personaEncontrada[0].email===email
-        ) {
-            res.send(htmlFormEnviado("Actualizar Persona",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
+        const cachedData = myCache.get('dataReparaciones');
+
+        if (cachedData && cachedData.personas) {
+            // Buscar persona en caché por personaId
+            const personaEncontrada = cachedData.personas.find(persona => persona.id === parseInt(personaId, 10));
+
+            if (personaEncontrada) {
+                if (
+                    personaEncontrada.nombre === nombre &&
+                    personaEncontrada.direccion === direccion &&
+                    personaEncontrada.telefono === telefono &&
+                    personaEncontrada.email === email
+                ) {
+                    return res.send(htmlFormEnviado("Actualizar Persona", `No se han ingresado nuevos valores.`, "redirectToDashboard()"));
+                } else {
+
+                    //Si no hay ninguna persona con el mismo nombre, que se actualize, sino, que muestre mensaje
+                    //Que ya hay una persona con ese nombre
+                    //Que busque por cacheData y dataBase si no encuentra en cacheData
+                    if (!verificarDisponibilidadNombreApellido(nombre)) {
+                        // Actualizar en la base de datos original
+                        updateDataOriginalDatosPersona(parseInt(personaId, 10), nombre, direccion, telefono, email);
+
+                        // Actualizar en la caché local
+                        personaEncontrada.nombre = nombre;
+                        personaEncontrada.direccion = direccion;
+                        personaEncontrada.telefono = telefono;
+                        personaEncontrada.email = email;
+                        myCache.set('dataReparaciones', cachedData);
+
+                        return res.send(htmlFormEnviado("Actualizar Persona", `Se ha actualizado la persona.`, "redirectToDashboard()"));
+                    } else {
+                        return res.send(htmlFormEnviado("Actualizar Persona", `Ya existe una persona con Nombre y Apellido: ${nombre}`, "redirectToDashboard()"));
+                    }
+                }
+            } else {
+                return res.send(htmlFormEnviado("Actualizar Persona", `No se encontró la persona con ID: ${personaId}`, "goBack()"));
+            }
         } else {
-            
-            updateDataOriginalDatosPersona(
-                personaBuscada.personaEncontrada[0].id, 
-                nombre, direccion, telefono, email
-            )
-
-            updateDataLocalDatosPersona(
-                personaBuscada.personaEncontrada[0].id,
-                nombre, direccion, telefono, email
-            )
-
-            res.send(htmlFormEnviado("Actualizar Persona",`Se ha actualizado la persona.`, "redirectToDashboard()"));
+            return res.send(htmlFormEnviado("Actualizar Persona", `No se encontró dataReparaciones en el caché o no hay personas en cachedData.`, "goBack()"));
         }
     },
     editarReparacionPOST: (req, res) => {
         const personaId = req.query.persona_id;
         const reparacionId = req.query.reparacion_id;
-
-        const reparacionEncontrada = dataLocalSearchPorPersonaIdYReparacionId(personaId, reparacionId);
-
         const { descripcion, tipo, fecha, estado } = req.body;
 
-        if (reparacionEncontrada.reparacionEncontrada[0].descripcion===descripcion &&
-            reparacionEncontrada.reparacionEncontrada[0].tipo===tipo &&
-            reparacionEncontrada.reparacionEncontrada[0].fecha===fecha &&
-            reparacionEncontrada.reparacionEncontrada[0].estado===estado
-        ) {
-            res.send(htmlFormEnviado("Actualizar Reparacion",`No se han ingresados nuevos valores.`, "redirectToDashboard()"));
+        const cachedData = myCache.get('dataReparaciones');
+
+        if (cachedData && cachedData.reparaciones) {
+            // Buscar reparación en caché por reparacionId y personaId
+            const reparacionEncontrada = cachedData.reparaciones.find(
+                reparacion => reparacion.id === parseInt(personaId,10) && 
+                reparacion.id === parseInt(reparacionId,10)
+            );
+
+            if (reparacionEncontrada) {
+                if (
+                    reparacionEncontrada.descripcion === descripcion &&
+                    reparacionEncontrada.tipo === tipo &&
+                    reparacionEncontrada.fecha === fecha &&
+                    reparacionEncontrada.estado === estado
+                ) {
+                    return res.send(htmlFormEnviado("Actualizar Reparacion", `No se han ingresado nuevos valores.`, "redirectToDashboard()"));
+                } else {
+                    // Actualizar en la base de datos original
+                    updateDataOriginalDatosReparacionDePersona(parseInt(personaId, 10), parseInt(reparacionId, 10), descripcion, tipo, fecha, estado);
+
+                    // Actualizar en la caché local
+                    reparacionEncontrada.descripcion = descripcion;
+                    reparacionEncontrada.tipo = tipo;
+                    reparacionEncontrada.fecha = fecha;
+                    reparacionEncontrada.estado = estado;
+                    myCache.set('dataReparaciones', cachedData);
+
+                    return res.send(htmlFormEnviado("Actualizar Reparacion", `Se ha actualizado la reparación.`, "redirectToDashboard()"));
+                }
+            } else {
+                return res.send(htmlFormEnviado("Actualizar Reparacion", `No se encontró la reparación con ID: ${reparacionId} asociada a la persona con ID: ${personaId}`, "goBack()"));
+            }
         } else {
-
-            updateDataOriginalDatosReparacionDePersona(
-                reparacionEncontrada.reparacionEncontrada[0].persona_id,
-                reparacionEncontrada.reparacionEncontrada[0].id,
-                descripcion, tipo, fecha, estado
-            )
-
-            updateDataLocalDatosReparacionDePersona(
-                reparacionEncontrada.reparacionEncontrada[0].persona_id,
-                reparacionEncontrada.reparacionEncontrada[0].id,
-                descripcion, tipo, fecha, estado
-            )
-
-            res.send(htmlFormEnviado("Actualizar Reparación",`Se ha actualizado la reparación.`, "redirectToDashboard()"));
+            return res.send(htmlFormEnviado("Actualizar Reparacion", `No se encontró dataReparaciones en el caché o no hay reparaciones en cachedData.`, "goBack()"));
         }
+    }
+}
+
+const verificarDisponibilidadNombreApellido = (nombre) => {
+
+    const cachedData = myCache.get('dataReparaciones');
+    
+    if (cachedData && cachedData.personas) {
+        // Buscar persona en caché por nombre
+        const personaEnCache = cachedData.personas.find(persona => persona.nombre.toLowerCase() === nombre.toLowerCase());
+
+        if (personaEnCache) {
+            // Persona encontrada en caché
+            return true;
+        }
+    }
+
+    // Si no se encontró en caché, buscar en la base de datos original
+    const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
+
+    if (personaEncontrada) {
+        return true;
+    } else {
+        return false;
     }
 }
 

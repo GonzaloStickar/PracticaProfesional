@@ -72,7 +72,7 @@ const editarAgregarReparacion = (nombre) => {
                     <input type="submit" value="Crear Reparación">
                 </form>
 
-                <script src="/script/check_DNI_reparacion.js"></script>
+                <script src="/script/check_nomb_apell_reparacion.js"></script>
             </body>
         </html>
     `;
@@ -118,9 +118,14 @@ const htmlEditarPersona = (persona) => {
         <body>
             <div>
                 <form action="/editar/persona?persona_id=${persona.id}" method="post">
-                    
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" value="${persona.nombre}" placeholder="${persona.nombre}" required>
+
+                    <div class="caja_nombre">
+                        <label for="nombre">Nombre y Apellido:</label>
+                        <input type="text" id="nombre" name="nombre" value="${persona.nombre}" placeholder="${persona.nombre}" required>
+                        <button type="button" id="verificar-btn">Verificar</button>
+                    </div>
+
+                    <div id="mensaje-disponibilidad" class="mensaje-disponibilidad"></div>
 
                     <label for="direccion">Dirección:</label>
                     <input type="text" id="direccion" name="direccion" value="${persona.direccion}" placeholder="${persona.direccion}" required>
@@ -134,6 +139,8 @@ const htmlEditarPersona = (persona) => {
                     <input type="submit" value="Guardar cambios">
                 </form>
             </div>
+
+            <script src="/script/check_nomb_apell_persona.js"></script>
         </body>
         </html>
     `;
@@ -202,7 +209,7 @@ const htmlEliminarFormPersona = (persona) => {
                         <p>Email: ${persona.email}</p>
                     </div>
 
-                    <h2>¿Estás seguro que deseas eliminar esta reparación?</h2>
+                    <h2>¿Estás seguro que deseas eliminar esta Persona?</h2>
 
                     <input type="submit" class="btn" value="Sí, eliminar">
                     <input type="button" class="btn" value="No, cancelar" onclick="goBack()">
@@ -253,7 +260,7 @@ const htmlEliminarFormPersonaReparacion = (persona, reparacion) => {
                         <p>Estado: ${reparacion.estado}</p>
                     </div>
 
-                    <h2>¿Estás seguro que deseas eliminar esta reparación?</h2>
+                    <h2>¿Estás seguro que deseas eliminar esta Reparación?</h2>
 
                     <input type="submit" class="btn" value="Sí, eliminar">
                     <input type="button" class="btn" value="No, cancelar" onclick="goBack()">

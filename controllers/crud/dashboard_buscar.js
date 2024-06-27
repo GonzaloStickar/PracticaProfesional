@@ -6,6 +6,8 @@ const {
     dataOriginalGETbusqueda
 } = require('../../data/db');
 
+const { myCache } = require('../../middlewares/cache');
+
 const { htmlFormEnviado } = require('./crud_form_post_pressed');
 
 function armarTablaInformacion(req, res, dataTrabajar)  {
@@ -106,7 +108,11 @@ const dashboardBuscar = {
                 email: email === '' ? 'undefined' : email
             };
 
-            armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarPersona(dataRecibida))
+            const dataOriginalPersonaRecibidaBusqueda = dataOriginalGETbusqueda.buscarPersona(dataRecibida)
+
+            myCache.set('ultimaBusqueda', dataOriginalPersonaRecibidaBusqueda);
+
+            armarTablaInformacion(req, res, dataOriginalPersonaRecibidaBusqueda)
 
         } catch (error) {
             res.json({msg: error.msg})
@@ -127,7 +133,11 @@ const dashboardBuscar = {
                 fecha: fecha === '' ? 'undefined' : fecha
             };
 
-            armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarReparacion(dataRecibida))
+            const dataOriginalReparacionRecibidaBusqueda = dataOriginalGETbusqueda.buscarReparacion(dataRecibida)
+
+            myCache.set('ultimaBusqueda', dataOriginalReparacionRecibidaBusqueda);
+
+            armarTablaInformacion(req, res, dataOriginalReparacionRecibidaBusqueda)
 
         } catch (error) {
             res.json({msg: error.msg})
@@ -157,7 +167,11 @@ const dashboardBuscar = {
                 dni: dni === '' ? 'undefined' : dni
             };
 
-            armarTablaInformacion(req, res, dataOriginalGETbusqueda.buscarAmbos(dataRecibidaPersona, dataRecibidaReparacion))
+            const dataOriginalPersonaReparacionRecibidaBusqueda = dataOriginalGETbusqueda.buscarAmbos(dataRecibidaPersona, dataRecibidaReparacion)
+
+            myCache.set('ultimaBusqueda', dataOriginalPersonaReparacionRecibidaBusqueda);
+
+            armarTablaInformacion(req, res, dataOriginalPersonaReparacionRecibidaBusqueda)
 
         } catch (error) {
             res.json({msg: error.msg})
@@ -165,6 +179,16 @@ const dashboardBuscar = {
     },
 }
 
+const obtenerUltimaBusquedaDesdeCache = (req, res) => {
+    const ultimaBusqueda = myCache.get('ultimaBusqueda');
+    if (ultimaBusqueda === undefined) {
+        // No se encontró el valor en la caché
+        return res.send(htmlFormEnviado("Ultima Busqueda", "No se han realizado búsquedas recientes.", "goBack"))
+    }
+    return armarTablaInformacion(req, res, ultimaBusqueda);
+};
+
 module.exports = {
-    dashboardBuscar
+    dashboardBuscar,
+    obtenerUltimaBusquedaDesdeCache
 }

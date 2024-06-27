@@ -6,7 +6,7 @@ const login = require('../controllers/login')
 
 const { dashboardPage, mostrarPersonasReparacionesConCache, getNumReparacionesQueryMaxOld } = require('../controllers/dashboard')
 const { dashboardAgregar, verificarDisponibilidadNombreApellido } = require('../controllers/crud/dashboard_agregar')
-const { dashboardBuscar } = require('../controllers/crud/dashboard_buscar')
+const { dashboardBuscar, obtenerUltimaBusquedaDesdeCache } = require('../controllers/crud/dashboard_buscar')
 const { dashboardEditar } = require('../controllers/crud/dashboard_editar')
 const { dashboardEliminar } = require('../controllers/crud/dashboard_eliminar')
 const { dashboardInforme } = require('../controllers/crud/dashboard_informe')
@@ -60,6 +60,8 @@ router.get("/dashboard/buscar", isAuth, dashboardBuscar.buscarFormGET);
 router.get("/dashboard/buscar/persona", isAuth, dashboardBuscar.buscarPersonaGET);
 router.get("/dashboard/buscar/reparacion", isAuth, dashboardBuscar.buscarReparacionGET);
 router.get("/dashboard/buscar/ambos", isAuth, dashboardBuscar.buscarAmbosGET);
+
+router.get("/dashboard/ultima/busqueda", isAuth, obtenerUltimaBusquedaDesdeCache);
 
 //POST de buscar
 router.post("/dashboard/buscar/persona", isAuth, dashboardBuscar.buscarPersonaPOST);

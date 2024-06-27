@@ -22,19 +22,11 @@ let idReparacionNueva = 0; //De la tabla reparaciones, cada persona tiene un id
 
 //Esta función va a estar encargada de consultar a la base de datos, si es que se encuentra una persona con el mismo DNI
 //Hay que implementar la consulta de sql
-function verificarPersonaExisteDataBaseOriginal(nombreApellido) {
-    return dataBaseOriginal.personas.some(persona => {
-        // Acá asumimos que 'nombreApellido' es un string que contiene el nombre completo
-        return persona.nombre.toLowerCase() === nombreApellido.toLowerCase();
-    });
-}
+
+//Utilizado por dashboard_agregar.js
 
 function buscarPersonaDataBaseOriginal(nombreApellido) {
-    // Busca la primera persona que coincida con el nombre y apellido
-    return dataBaseOriginal.personas.find(persona => {
-        // Acá asumimos que 'nombreApellido' es un string que contiene el nombre completo
-        return persona.nombre.toLowerCase() === nombreApellido.toLowerCase();
-    });
+    return dataBaseOriginal.personas.find(persona => persona.nombre.toLowerCase() === nombreApellido.toLowerCase());
 }
 
 //Utilizada para crear una reparación y poder asignarle el persona_id el id de la persona que existe.
@@ -85,7 +77,7 @@ function dataOriginalPostReparacion(persona_id, descripcion, tipo, fecha, estado
 //Esta función devuelve tanto personas, como reparaciones.
 function dataOriginalGET(min, max) {
 
-    //console.log("Se está consultando dataOriginalGet, min: ", min, " , max: ",max);
+    console.log("Se está consultando dataOriginalGet, min: ", min, " , max: ",max);
     
     //Debería consultarse por las últimas reparaciones, osea por fechas
     //Traer las más recientes, si en la primera consulta se traen 10 reparaciones, y después se consulta por 20
@@ -237,22 +229,114 @@ const dataOriginalGETbusqueda = {
     },
     buscarAmbos: (dataEnviadaBuscarPersona, dataEnviadaBuscarReparacion) => {
 
-        //Consulta SQL por cada función independientemente
-        const resultadosPersonas = dataOriginalGETbusqueda.buscarPersona(dataEnviadaBuscarPersona);
-        const resultadosReparaciones = dataOriginalGETbusqueda.buscarReparacion(dataEnviadaBuscarReparacion);
-
-        //Filtrar las reparaciones para incluir solo las que corresponden a personas buscadas
-        // Ejemplo: Si yo busco 'juan' con estado de reparacion 'Finalizado', deberían aparecerme todos los 'juan'
-        // que tengan reparaciones con estado 'Finalizado', por eso es que le asigno un filtro dentro del servidor
-        // para no tener que crear un filtro en una consulta SQL.
-        const personasIds = new Set(resultadosPersonas.personas.map(persona => persona.id));
-        const reparacionesFiltradas = resultadosReparaciones.reparaciones.filter(reparacion => personasIds.has(reparacion.persona_id));
-
-        const resultados = {
-            personas: resultadosPersonas.personas,
-            reparaciones: reparacionesFiltradas
+        let resultados = {
+            personas: [],
+            reparaciones: []
         };
-
+    
+        // Búsqueda en personas
+        dataBaseOriginal.personas.forEach(persona => {
+            let match = true;
+    
+            // Aplicar filtros de búsqueda para personas
+            if (dataEnviadaBuscarPersona.nombre !== 'undefined' && !persona.nombre.toLowerCase().includes(dataEnviadaBuscarPersona.nombre.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscarPersona.direccion !== 'undefined' && !persona.direccion.toLowerCase().includes(dataEnviadaBuscarPersona.direccion.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscarPersona.telefono !== 'undefined' && !persona.telefono.includes(dataEnviadaBuscarPersona.telefono)) {
+                match = false;
+            }
+            if (dataEnviadaBuscarPersona.email !== 'undefined' && !persona.email.toLowerCase().includes(dataEnviadaBuscarPersona.email.toLowerCase())) {
+                match = false;
+            }
+    
+            if (match) {
+                resultados.personas.push(persona);
+            }
+        });
+    
+        // Búsqueda en reparaciones
+        dataBaseOriginal.reparaciones.forEach(reparacion => {
+            let match = true;
+    
+            // Aplicar filtros de búsqueda para reparaciones
+            if (dataEnviadaBuscarReparacion.estado !== 'undefined' && !reparacion.estado.toLowerCase().includes(dataEnviadaBuscarReparacion.estado.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscarReparacion.descripcion !== 'undefined' && !reparacion.descripcion.toLowerCase().includes(dataEnviadaBuscarReparacion.descripcion.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscarReparacion.tipo !== 'undefined' && !reparacion.tipo.toLowerCase().includes(dataEnviadaBuscarReparacion.tipo.toLowerCase())) {
+                match = false;
+            }
+            if (dataEnviadaBuscarReparacion.fecha !== 'undefined' && !reparacion.fecha.includes(dataEnviadaBuscarReparacion.fecha)) {
+                match = false;
+            }
+    
+            if (match) {
+                resultados.reparaciones.push(reparacion);
+    
+                // Buscar y agregar la persona asociada a la reparación si no está ya en la lista
+                const persona = encontrarPersonaDataBaseOriginalPorID(reparacion.persona_id);
+                if (persona && !resultados.personas.some(p => p.id === persona.id)) {
+                    resultados.personas.push(persona);
+                }
+            }
+        });
+    
+        // Construcción de la consulta SQL combinada
+        // Funcionaría como un FULL OUTER JOIN, para traer a todos.
+        let baseConsultaBusqueda = `
+            SELECT personas.*, reparaciones.*
+            FROM personas
+            LEFT JOIN reparaciones ON personas.id = reparaciones.persona_id
+            UNION
+            SELECT personas.*, reparaciones.*
+            FROM personas
+            RIGHT JOIN reparaciones ON personas.id = reparaciones.persona_id
+            WHERE personas.id IS NULL OR reparaciones.persona_id IS NULL;
+        `;
+        let condiciones = [];
+    
+        // Aplicar condiciones de búsqueda para tabla personas
+        if (dataEnviadaBuscarPersona.nombre !== 'undefined') {
+            condiciones.push(`LOWER(personas.nombre) LIKE '%${dataEnviadaBuscarPersona.nombre}%'`);
+        }
+        if (dataEnviadaBuscarPersona.direccion !== 'undefined') {
+            condiciones.push(`LOWER(personas.direccion) LIKE '%${dataEnviadaBuscarPersona.direccion}%'`);
+        }
+        if (dataEnviadaBuscarPersona.telefono !== 'undefined') {
+            condiciones.push(`personas.telefono LIKE '%${dataEnviadaBuscarPersona.telefono}%'`);
+        }
+        if (dataEnviadaBuscarPersona.email !== 'undefined') {
+            condiciones.push(`LOWER(personas.email) LIKE '%${dataEnviadaBuscarPersona.email}%'`);
+        }
+    
+        // Aplicar condiciones de búsqueda para tabla reparaciones
+        if (dataEnviadaBuscarReparacion.estado !== 'undefined') {
+            condiciones.push(`LOWER(reparaciones.estado) LIKE '%${dataEnviadaBuscarReparacion.estado}%'`);
+        }
+        if (dataEnviadaBuscarReparacion.descripcion !== 'undefined') {
+            condiciones.push(`LOWER(reparaciones.descripcion) LIKE '%${dataEnviadaBuscarReparacion.descripcion}%'`);
+        }
+        if (dataEnviadaBuscarReparacion.tipo !== 'undefined') {
+            condiciones.push(`reparaciones.tipo LIKE '%${dataEnviadaBuscarReparacion.tipo}%'`);
+        }
+        if (dataEnviadaBuscarReparacion.fecha !== 'undefined') {
+            condiciones.push(`LOWER(reparaciones.fecha) LIKE '%${dataEnviadaBuscarReparacion.fecha}%'`);
+        }
+    
+        // Construir la consulta final añadiendo las condiciones
+        if (condiciones.length > 0) {
+            baseConsultaBusqueda += " AND " + condiciones.join(" AND ");
+        }
+    
+        baseConsultaBusqueda += ";";
+    
+        //console.log(baseConsultaBusqueda);
+    
         return resultados;
     }
 }
@@ -281,11 +365,24 @@ function updateDataOriginalDatosReparacionDePersona (personaId, reparacionId, de
     }
 }
 
+function dataOriginalEliminarPersonaId(personaId) {
+    const tieneOtrasReparaciones = dataBaseOriginal.reparaciones.some(reparacion => reparacion.persona_id === personaId);
+
+    if (!tieneOtrasReparaciones) {
+        dataBaseOriginal.personas = dataBaseOriginal.personas.filter(persona => persona.id !== personaId);
+    }
+}
+
+function dataOriginalEliminarReparacionId(reparacionId) {
+    dataBaseOriginal.reparaciones = dataBaseOriginal.reparaciones.filter(reparacion => reparacion.id !== reparacionId);
+}
+
 module.exports = {
     dataOriginalPostPersona,
     dataOriginalPostReparacion,
     dataOriginalGET,
     dataOriginalGETbusqueda,
-    verificarPersonaExisteDataBaseOriginal, buscarPersonaDataBaseOriginal,
-    updateDataOriginalDatosPersona, updateDataOriginalDatosReparacionDePersona
+    buscarPersonaDataBaseOriginal,
+    updateDataOriginalDatosPersona, updateDataOriginalDatosReparacionDePersona,
+    dataOriginalEliminarPersonaId, dataOriginalEliminarReparacionId 
 }
