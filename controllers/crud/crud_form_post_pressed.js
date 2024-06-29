@@ -44,21 +44,21 @@ const editarAgregarReparacion = (nombre) => {
 
                     <div class="caja_nombre">
                         <label for="nombre">Nombre y Apellido:</label>
-                        <input type="text" id="nombre" name="nombre" value="${nombre}" required>
+                        <input type="text" id="nombre" name="nombre" value="${nombre}" required placeholder="${nombre}">
                         <button type="button" id="verificar-btn">Verificar</button>
                     </div>
 
                     <div id="mensaje-disponibilidad" class="mensaje-disponibilidad"></div>
-
+                    
                     <label for="descripcion">Descripción de la reparación:</label>
-                    <input type="text" id="descripcion" name="descripcion" required>
-
+                    <input type="text" id="descripcion" name="descripcion" required placeholder="Ingrese descripción de la reparación">
+                    
                     <label for="tipo">Tipo de reparación:</label>
-                    <input type="text" id="tipo" name="tipo" required>
-
+                    <input type="text" id="tipo" name="tipo" required placeholder="Ingrese tipo de reparación">
+                    
                     <label for="fecha">Fecha de ingreso:</label>
                     <input type="date" id="fecha" name="fecha" required>
-
+                    
                     <label for="estado">Estado de la reparación:</label>
                     <select id="estado" name="estado" required>
                         <option value="">Seleccionar estado...</option>
@@ -201,12 +201,12 @@ const htmlEliminarFormPersona = (persona) => {
             <div>
                 <form id="eliminarForm" action="/dashboard/eliminar?persona_id=${persona.id}&reparacion_id=undefined" method="post">
                     <div class="informacion_persona">
-                        <p>Información de la persona:</p>
-                        <p>ID: ${persona.id}</p>
-                        <p>Nombre: ${persona.nombre}</p>
-                        <p>Dirección: ${persona.direccion}</p>
-                        <p>Teléfono: ${persona.telefono}</p>
-                        <p>Email: ${persona.email}</p>
+                        <p><strong>Información de la persona:</strong></p>
+                        <p><strong>ID:</strong> ${persona.id}</p>
+                        <p><strong>Nombre:</strong> ${persona.nombre}</p>
+                        <p><strong>Dirección:</strong> ${persona.direccion}</p>
+                        <p><strong>Teléfono:</strong> ${persona.telefono}</p>
+                        <p><strong>Email:</strong> ${persona.email}</p>
                     </div>
 
                     <h2>¿Estás seguro que deseas eliminar esta Persona?</h2>
@@ -240,24 +240,23 @@ const htmlEliminarFormPersonaReparacion = (persona, reparacion) => {
             <div>
                 <form id="eliminarForm" action="/dashboard/eliminar?persona_id=${persona.id}&reparacion_id=${reparacion.id}" method="post">
                     <div class="informacion_persona">    
-                        <p>Información de la persona:</p>
-                        <p>ID: ${persona.id}</p>
-                        <p>Nombre: ${persona.nombre}</p>
-                        <p>Edad: ${persona.edad}</p>
-                        <p>Dirección: ${persona.direccion}</p>
-                        <p>Teléfono: ${persona.telefono}</p>
-                        <p>Email: ${persona.email}</p>
+                        <p><strong>Información de la persona:</strong></p>
+                        <p><strong>ID:</strong> ${persona.id}</p>
+                        <p><strong>Nombre:</strong> ${persona.nombre}</p>
+                        <p><strong>Dirección:</strong> ${persona.direccion}</p>
+                        <p><strong>Teléfono:</strong> ${persona.telefono}</p>
+                        <p><strong>Email:</strong> ${persona.email}</p>
                     </div>
 
                     <hr>
 
                     <div class="informacion_reparacion">
-                        <p>Información de la reparación:</p>
-                        <p>ID: ${reparacion.id}</p>
-                        <p>Descripción: ${reparacion.descripcion}</p>
-                        <p>Tipo: ${reparacion.tipo}</p>
-                        <p>Fecha: ${reparacion.fecha}</p>
-                        <p>Estado: ${reparacion.estado}</p>
+                        <p><strong>Información de la reparación:</strong></p>
+                        <p><strong>ID:</strong> ${reparacion.id}</p>
+                        <p><strong>Descripción:</strong> ${reparacion.descripcion}</p>
+                        <p><strong>Tipo:</strong> ${reparacion.tipo}</p>
+                        <p><strong>Fecha:</strong> ${reparacion.fecha}</p>
+                        <p><strong>Estado:</strong> ${reparacion.estado}</p>
                     </div>
 
                     <h2>¿Estás seguro que deseas eliminar esta Reparación?</h2>

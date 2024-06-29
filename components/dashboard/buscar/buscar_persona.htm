@@ -10,16 +10,16 @@
     <form action="/dashboard/buscar/persona" method="POST">
 
         <label for="nombre">Nombre / Apellido:</label>
-        <input type="text" id="nombre" name="nombre" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+">
+        <input type="text" id="nombre" name="nombre" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+" placeholder="Ingrese nombre o apellido">
 
         <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" name="direccion">
+        <input type="text" id="direccion" name="direccion" placeholder="Ingrese dirección">
 
         <label for="telefono">Teléfono:</label>
-        <input type="number" id="telefono" name="telefono">
+        <input type="number" id="telefono" name="telefono" placeholder="Ingrese número de teléfono">
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
+        <input type="email" id="email" name="email" placeholder="Ingrese correo electrónico">
 
         <input type="submit" value="Buscar Persona">
     </form>

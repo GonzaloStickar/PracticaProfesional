@@ -11,21 +11,21 @@
 
         <div class="caja_nombre">
             <label for="nombre">Nombre y Apellido:</label>
-            <input type="text" id="nombre" name="nombre" required pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+">
+            <input type="text" id="nombre" name="nombre" required pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+" placeholder="Ingrese nombre y apellido">
             <button type="button" id="verificar-btn">Verificar</button>
         </div>
-
+        
         <div id="mensaje-disponibilidad" class="mensaje-disponibilidad"></div>
-
+        
         <label for="descripcion">Descripción de la reparación:</label>
-        <input type="text" id="descripcion" name="descripcion" required>
-
+        <input type="text" id="descripcion" name="descripcion" required placeholder="Ingrese descripción de la reparación">
+        
         <label for="tipo">Tipo de reparación:</label>
-        <input type="text" id="tipo" name="tipo" required>
-
+        <input type="text" id="tipo" name="tipo" required placeholder="Ingrese tipo de reparación">
+        
         <label for="fecha">Fecha de ingreso:</label>
         <input type="date" id="fecha" name="fecha" required>
-
+        
         <label for="estado">Estado de la reparación:</label>
         <select id="estado" name="estado" required>
             <option value="">Seleccionar estado...</option>
