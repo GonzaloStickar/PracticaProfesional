@@ -10,10 +10,10 @@ const cacheMiddleware = (req, res, next) => {
     const cachedResponse = myCache.get(key);
 
     if (cachedResponse) {
-        console.log(`Cache hit for key: ${key}`);
+        //console.log(`Cache hit for key: ${key}`);
         return res.json(JSON.parse(cachedResponse));
     } else {
-        console.log(`Cache miss for key: ${key}`);
+        //console.log(`Cache miss for key: ${key}`);
         res.originalSend = res.send;
         res.send = (body) => {
         if (res.get('Content-Type').includes('application/json')) {

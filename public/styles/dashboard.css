@@ -300,6 +300,7 @@ th {
 
     .container_tabla {
         padding:0;
+        border-radius: 0px;
     }
 }
 

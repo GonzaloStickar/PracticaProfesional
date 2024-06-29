@@ -13,7 +13,7 @@
             <div class="botones_side_izquierda">
                 <button class="boton_clientes" onclick="redirectToClientes()">Clientes</button>
 
-                <button id="loadMoreBtn" class="boton_cargar_mas">Cargar más</button>
+                <button onclick="redirectToDashboard()" class="boton_cargar_mas">Volver</button>
 
                 <button class="boton_utlima_busqueda" onclick="redirectToUltimaBusqueda()">Ultima Busqueda</button>
 
@@ -25,13 +25,12 @@
         
         <div class="side_derecha">
             <div class="container">
-                <h1 class="container_titulo">Tabla de Personas y Reparaciones</h1>
                 <div class="caja_botones_agregar_buscar">
                     <button class="boton_agregar" onclick="redirectToAgregar()">Agregar</button>
                     <button class="boton_buscar" onclick="redirectToBuscar()">Buscar</button>
                 </div>
                 <div class="container_tabla">
-                    <table class="table table-striped">
+                    <table>
                         <thead>
                             <tr>
                                 <th>Nombre</th>

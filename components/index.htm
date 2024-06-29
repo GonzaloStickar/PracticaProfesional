@@ -108,9 +108,9 @@
           <p>
             Ingresa tu nombre y apellido para consultar
           </p>
-
-          <form id="consulta_reparacion_form" action="/url"> <!--method="get"-->
-            <input type="number" id="input_consulta_reparacion_form" name="nombre_apellido_consulta" placeholder="Ej: 'Juan Perez'" required>
+          
+          <form id="consulta_reparacion_form" action="/consulta" method="POST">
+            <input type="text" id="input_consulta_reparacion_form" name="nombre_apellido_consulta" placeholder="Ej: 'Juan Perez'" required pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+">
             <button type="submit">Consultar</button>
           </form>
         </article>

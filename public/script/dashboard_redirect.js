@@ -14,14 +14,18 @@ function redirectToEliminar(personaId, reparacionId) {
     window.location.href = `/dashboard/eliminar?persona_id=${personaId}&reparacion_id=${reparacionId}`;
 }
 
-function redirectToInforme(personaId) {
-    window.location.href = `/dashboard/informe?persona_id=${personaId}`;
+function redirectToInforme(personaId, reparacionId) {
+    window.location.href = `/dashboard/informe?persona_id=${personaId}&reparacion_id=${reparacionId}`;
 }
 
 function redirectToClientes() {
     window.location.href = `/dashboard/clientes`;
 }
 
+function redirectToDashboard() {
+    window.location.href = `/dashboard`;
+}
+
 function redirectToUltimaBusqueda() {
-    window.location.href = `/dashboard/ultima_busqueda`;
+    window.location.href = `/dashboard/buscar/ultima_busqueda`;
 }

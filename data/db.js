@@ -1,9 +1,5 @@
 //IMPLEMENTAR CONSULTAS SQL:
-//verificarPersonaExisteDataBaseOriginal, 
-//encontrarPersonaDataBaseOriginalPorDNI,
-//dataOriginalPostPersona, 
-//dataOriginalPostReparacion,
-//dataOriginalGET (Esta consulta va a estar entre rangos min y max),
+
 
 const { persona } = require('../models/persona')
 const { reparacion } = require('../models/reparacion')
@@ -20,23 +16,9 @@ let dataBaseOriginal = {
 let idPersonaNueva = 0; //De la tabla personas, cada persona tiene un id
 let idReparacionNueva = 0; //De la tabla reparaciones, cada persona tiene un id
 
-//Esta función va a estar encargada de consultar a la base de datos, si es que se encuentra una persona con el mismo DNI
-//Hay que implementar la consulta de sql
-
 //Utilizado por dashboard_agregar.js
-
 function buscarPersonaDataBaseOriginal(nombreApellido) {
     return dataBaseOriginal.personas.find(persona => persona.nombre.toLowerCase() === nombreApellido.toLowerCase());
-}
-
-//Utilizada para crear una reparación y poder asignarle el persona_id el id de la persona que existe.
-//Ejemplo, si yo creo una reparación, le asigno un DNI, una vez verificado que existe la persona
-//por la función 'verificarPersonaExisteDataBaseOriginal', entonces podré buscar la persona, a partir de 
-//'encontrarPersonaDataBaseOriginalPorDNI' y poder traer a esa persona, con la persona que me devuelva (1 sola)
-//ya que el DNI es único... Podré obtener el id de la persona y así asignarle a la reparación (persona_id), el id de la persona
-//que recién encontré en esta función 'encontrarPersonaDataBaseOriginalPorDNI'.
-function encontrarPersonaDataBaseOriginalPorDNI(dni) {
-    return dataBaseOriginal.personas.find(persona => persona.dni === dni);
 }
 
 function encontrarPersonaDataBaseOriginalPorID(persona_id) {
@@ -366,15 +348,45 @@ function updateDataOriginalDatosReparacionDePersona (personaId, reparacionId, de
 }
 
 function dataOriginalEliminarPersonaId(personaId) {
+    console.log(`Se está eliminando Persona ID: ${personaId} (No se eliminó todavía)`)
     const tieneOtrasReparaciones = dataBaseOriginal.reparaciones.some(reparacion => reparacion.persona_id === personaId);
 
+    console.log(`Tiene otras reparaciones Persona ID: ${personaId} - ${tieneOtrasReparaciones}`)
+
     if (!tieneOtrasReparaciones) {
+        console.log(`NO tiene otras reparaciones Persona ID: ${personaId} - ${tieneOtrasReparaciones} - Eliminar Persona`)
         dataBaseOriginal.personas = dataBaseOriginal.personas.filter(persona => persona.id !== personaId);
+    }
+    else {
+        console.log("Tiene otras reparaciones, no se elimina la reparación.")
     }
 }
 
 function dataOriginalEliminarReparacionId(reparacionId) {
+    console.log(`Se está eliminando Reparacion ID: ${reparacionId}`)
     dataBaseOriginal.reparaciones = dataBaseOriginal.reparaciones.filter(reparacion => reparacion.id !== reparacionId);
+}
+
+function realizarConsultaReparacionCliente(nombreBusqueda) {
+    let resultados = {
+        personas: [],
+        reparaciones: []
+    };
+
+    // Filtrar personas cuyo nombre coincida con el nombre de búsqueda
+    const personasFiltradas = dataBaseOriginal.personas.filter(persona => 
+        persona.nombre.toLowerCase().includes(nombreBusqueda.toLowerCase())
+    );
+
+    // Agregar las personas filtradas a los resultados
+    resultados.personas = personasFiltradas;
+
+    // Buscar y agregar las reparaciones asociadas con las personas filtradas
+    resultados.reparaciones = dataBaseOriginal.reparaciones.filter(reparacion => 
+        personasFiltradas.some(persona => persona.id === reparacion.persona_id)
+    );
+
+    return resultados;
 }
 
 module.exports = {
@@ -384,5 +396,6 @@ module.exports = {
     dataOriginalGETbusqueda,
     buscarPersonaDataBaseOriginal,
     updateDataOriginalDatosPersona, updateDataOriginalDatosReparacionDePersona,
-    dataOriginalEliminarPersonaId, dataOriginalEliminarReparacionId 
+    dataOriginalEliminarPersonaId, dataOriginalEliminarReparacionId,
+    realizarConsultaReparacionCliente
 }

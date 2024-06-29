@@ -2,7 +2,6 @@ const express = require("express")
 const mainRouter = express.Router()
 
 const main = require('../controllers/main')
-
 const login = require('../controllers/login')
 const { isAuth } = require('../middlewares/isAuth');
 

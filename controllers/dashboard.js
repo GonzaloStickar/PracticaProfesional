@@ -35,14 +35,14 @@ const mostrarPersonasReparacionesConCache = (req, res) => {
     const cacheKey = `dataReparaciones`;
     const cacheOldKey = 'numReparacionesQueryMaxOld';
 
-    console.log(`numReparacionesQueryMaxOld: ${myCache.get(cacheOldKey)}`)
+    //console.log(`numReparacionesQueryMaxOld: ${myCache.get(cacheOldKey)}`)
 
     numReparacionesQueryMaxOld = myCache.get(cacheOldKey) || 0;
     let cachedData = myCache.get(cacheKey) || { personas: [], reparaciones: [] };
 
     // Verifica si la consulta solicitada ya está completamente en el caché
     if (numReparacionesQueryMaxNew <= numReparacionesQueryMaxOld && cachedData.personas.length > 0) {
-        console.log(`Cache encontrado para la clave: ${cacheKey}`);
+        //console.log(`Cache encontrado para la clave: ${cacheKey}`);
         // Devuelve directamente las propiedades personas y reparaciones
         return res.json(cachedData);
     }
@@ -72,9 +72,18 @@ const dashboardPage = (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard.htm'));
 }
 
+function devolverNumReparacionesQueryMaxOld(req, res) {
+    if (numReparacionesQueryMaxOld==0 || numReparacionesQueryMaxOld==null) {
+        return res.json({"numReparacionesQueryMaxOld": 2});
+    } else {
+        return res.json({"numReparacionesQueryMaxOld": numReparacionesQueryMaxOld});
+    }
+}
+
 module.exports = {
     dashboardPage,
     mostrarPersonasReparacionesConCache,
     dataOriginalPostPersona,
-    dataOriginalPostReparacion
+    dataOriginalPostReparacion,
+    devolverNumReparacionesQueryMaxOld
 }

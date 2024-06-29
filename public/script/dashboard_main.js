@@ -3,9 +3,25 @@ const reparacionesIncrement = 2; // Por ejemplo, cambiar según la cantidad dese
 let loadedPages = []; // Array para almacenar las páginas cargadas
 
 document.addEventListener('DOMContentLoaded', function() {
-    reparacionesCount += reparacionesIncrement;
-    loadReparaciones(reparacionesCount);
+    loadCantidadPersonasReparaciones();
 });
+
+function loadCantidadPersonasReparaciones() {
+    fetch('/dashboard/numReparacionesQueryMaxOld')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        reparacionesCount = data.numReparacionesQueryMaxOld;
+        loadReparaciones(reparacionesCount);
+    })
+    .catch(error => {
+        console.error('Error al hacer fetch:', error);
+    });
+}
 
 document.getElementById('loadMoreBtn').addEventListener('click', function() {
     reparacionesCount += reparacionesIncrement;
@@ -46,7 +62,7 @@ function loadReparaciones(count) {
                             <td>
                                 <button class="boton_editar" onclick="redirectToEditar(${persona.id}, ${reparacion.id})">Editar</button>
                                 <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, ${reparacion.id})">Eliminar</button>
-                                <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
+                                <button class="boton_informe" onclick="redirectToInforme(${persona.id}, ${reparacion.id})">Informe</button>
                             </td>
                         `;
                         currentPageRows.push(row); // Agregar fila a la página actual
@@ -61,7 +77,7 @@ function loadReparaciones(count) {
                         <td>
                             <button class="boton_editar" onclick="redirectToEditar(${persona.id}, 'undefined')">Editar</button>
                             <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, 'undefined')">Eliminar</button>
-                            <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
+                            <button class="boton_informe" onclick="redirectToInforme(${persona.id}, 'undefined')">Informe</button>
                         </td>
                     `;
                     currentPageRows.push(row); // Agregar fila a la página actual

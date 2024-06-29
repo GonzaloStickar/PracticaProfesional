@@ -10,7 +10,7 @@
     <form action="/dashboard/buscar/persona" method="POST">
 
         <label for="nombre">Nombre / Apellido:</label>
-        <input type="text" id="nombre" name="nombre">
+        <input type="text" id="nombre" name="nombre" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+">
 
         <label for="direccion">Dirección:</label>
         <input type="text" id="direccion" name="direccion">
