@@ -3,23 +3,8 @@ const reparacionesIncrement = 2; // Por ejemplo, cambiar según la cantidad dese
 let loadedPages = []; // Array para almacenar las páginas cargadas
 
 document.addEventListener('DOMContentLoaded', function() {
-
-    fetch('/dashboard/numReparacionesQueryMaxOld')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Datos recibidos:', data);
-            reparacionesCount = data.numReparacionesQueryMaxOld || reparacionesIncrement;
-            loadReparaciones(reparacionesCount);
-        })
-    .catch(error => {
-        console.error('Error fetching numReparacionesQueryMaxOld:', error);
-        // Manejar el error según sea necesario
-    });
+    reparacionesCount += reparacionesIncrement;
+    loadReparaciones(reparacionesCount);
 });
 
 document.getElementById('loadMoreBtn').addEventListener('click', function() {

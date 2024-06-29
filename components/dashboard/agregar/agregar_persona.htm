@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
 </head>
 <body>
-    <form action="/agregar/persona" method="POST">
+    <form action="/dashboard/agregar/persona" method="POST">
         
         <div class="caja_nombre">
             <label for="nombre">Nombre y Apellido:</label>
-            <input type="text" id="nombre" name="nombre" required>
+            <input type="text" id="nombre" name="nombre" required pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+">
             <button type="button" id="verificar-btn">Verificar</button>
         </div>
 

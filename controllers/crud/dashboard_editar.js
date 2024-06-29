@@ -22,17 +22,15 @@ const dashboardEditar = {
         const reparacionId = req.query.reparacion_id;
 
         if (reparacionId==='undefined') {
-            return res.send(htmlEditarForm("/agregar/reparacion", personaId, 'undefined', "Agregar"));
+            return res.send(htmlEditarForm("/dashboard/agregar/reparacion", personaId, 'undefined', "Agregar"));
         } else {
-            return res.send(htmlEditarForm("/editar/reparacion", personaId, reparacionId, "Editar"));
+            return res.send(htmlEditarForm("/dashboard/editar/reparacion", personaId, reparacionId, "Editar"));
         }
     },
     editarPersonaGET: (req,res) => {
         const personaId = req.query.persona_id;
 
         const cachedData = myCache.get('dataReparaciones');
-
-        console.log(cachedData.personas)
 
         if (cachedData && cachedData.personas) {
             // Buscar persona en caché por personaId

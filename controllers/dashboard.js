@@ -35,7 +35,9 @@ const mostrarPersonasReparacionesConCache = (req, res) => {
     const cacheKey = `dataReparaciones`;
     const cacheOldKey = 'numReparacionesQueryMaxOld';
 
-    let numReparacionesQueryMaxOld = myCache.get(cacheOldKey) || 0;
+    console.log(`numReparacionesQueryMaxOld: ${myCache.get(cacheOldKey)}`)
+
+    numReparacionesQueryMaxOld = myCache.get(cacheOldKey) || 0;
     let cachedData = myCache.get(cacheKey) || { personas: [], reparaciones: [] };
 
     // Verifica si la consulta solicitada ya está completamente en el caché
@@ -59,8 +61,8 @@ const mostrarPersonasReparacionesConCache = (req, res) => {
     myCache.set(cacheKey, cachedData);
     myCache.set(cacheOldKey, numReparacionesQueryMaxOld);
 
-    console.log(`Datos almacenados en cache para la clave: ${cacheKey}`);
-    console.log(`Valor almacenado en cache para la clave: ${cacheOldKey}`);
+    //console.log(`Datos almacenados en cache para la clave: ${cacheKey}`);
+    //console.log(`Valor almacenado en cache para la clave: ${cacheOldKey}`);
 
     // Devuelve directamente las propiedades personas y reparaciones
     return res.json(cachedData);
@@ -70,24 +72,9 @@ const dashboardPage = (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'components', 'dashboard', 'dashboard.htm'));
 }
 
-const getNumReparacionesQueryMaxOld = (req, res) => {
-    const cacheKey = 'numReparacionesQueryMaxOld';
-    const cachedValue = myCache.get(cacheKey);
-
-    if (cachedValue !== undefined) {
-        console.log(`Cache encontrado para la clave: ${cacheKey}`);
-        return res.json({ numReparacionesQueryMaxOld: cachedValue });
-    } else {
-        console.log(`Cache no encontrado para la clave: ${cacheKey}`);
-        myCache.set(cacheKey, numReparacionesQueryMaxOld);
-        return res.json({ numReparacionesQueryMaxOld });
-    }
-};
-
 module.exports = {
     dashboardPage,
     mostrarPersonasReparacionesConCache,
     dataOriginalPostPersona,
-    dataOriginalPostReparacion,
-    getNumReparacionesQueryMaxOld
+    dataOriginalPostReparacion
 }

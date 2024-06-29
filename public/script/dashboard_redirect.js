@@ -23,5 +23,5 @@ function redirectToClientes() {
 }
 
 function redirectToUltimaBusqueda() {
-    window.location.href = `/dashboard/ultima/busqueda`;
+    window.location.href = `/dashboard/ultima_busqueda`;
 }

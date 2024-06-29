@@ -40,7 +40,7 @@ const editarAgregarReparacion = (nombre) => {
             <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
         </head>
             <body>
-                <form action="/agregar/reparacion" method="POST">
+                <form action="/dashboard/agregar/reparacion" method="POST">
 
                     <div class="caja_nombre">
                         <label for="nombre">Nombre y Apellido:</label>
@@ -90,7 +90,7 @@ const htmlEditarForm = (url_mod, persona_id, reparacion_id, mensaje) => {
         </head>
         <body>
             <div>
-                <form action="/editar/persona" method="get">
+                <form action="/dashboard/editar/persona" method="get">
                     <input type="hidden" name="persona_id" value="${persona_id}">
                     <button type="submit">Editar Persona</button>
                 </form>
@@ -117,7 +117,7 @@ const htmlEditarPersona = (persona) => {
         </head>
         <body>
             <div>
-                <form action="/editar/persona?persona_id=${persona.id}" method="post">
+                <form action="/dashboard/editar/persona?persona_id=${persona.id}" method="post">
 
                     <div class="caja_nombre">
                         <label for="nombre">Nombre y Apellido:</label>
@@ -158,7 +158,7 @@ const htmlEditarReparacion = (persona, reparacion) => {
         </head>
         <body>
             <div>
-                <form action="/editar/reparacion?persona_id=${persona.id}&reparacion_id=${reparacion.id}" method="post">
+                <form action="/dashboard/editar/reparacion?persona_id=${persona.id}&reparacion_id=${reparacion.id}" method="post">
 
                     <label for="descripcion">Descripción:</label>
                     <input type="text" id="descripcion" name="descripcion" value="${reparacion.descripcion}" placeholder="${reparacion.descripcion}" required>
