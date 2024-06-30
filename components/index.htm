@@ -10,12 +10,10 @@
     <header>
       <div class="texto_sobre_img">
 
-        <nav class="navbar" id="inicio">
+        <nav class="navbar active" id="inicio">
           <ul>
             <li>
               <a href="#inicio" title="Ir al inicio">
-                <!--Para cambiar el estilo de home, info y demás, puede agregar
-                ' style="color:red; font-size: 25;" ' al lado de ' class="material-symbols-outlined" '-->
                 <span class="material-symbols-outlined">home</span>
                 <span class="texto_header">Inicio</span>
               </a>
@@ -41,7 +39,13 @@
           </ul>
         </nav>
 
-        <div>
+        <button class="hamburger" id="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+
+        <div class="container_img_texto">
           <img src="/img/index_header.jpg" class="img_header" alt="index_header">
           <div class="overlay"></div>
           <div class="texto_centrado">
@@ -143,4 +147,20 @@
       <p>Contacto: aaa@gmail.com</p>
     </footer>
   </body>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navbar = document.querySelector('.navbar');
+
+    hamburger.addEventListener('click', function() {
+      navbar.classList.toggle('active');
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var hamburger = document.getElementById('hamburger');
+      hamburger.addEventListener('click', function() {
+        this.classList.toggle('open');
+      });
+    });
+  </script>
 </html>
