@@ -73,18 +73,17 @@ function dataOriginalPostReparacion(persona_id, descripcion, tipo, fecha, estado
     return reparacionNueva;
 }
 
-//Traer con un límite de personas (0 mínimo (lo cual sería 1 persona), a 9 máximo (lo que sería 10 en la consulta)).
 //Esta función devuelve tanto personas, como reparaciones.
 function dataOriginalGET(min, max) {
 
+    //Debería consultar a la base de datos
+    //por min + 1, y max queda como está
+    //(Se está consultando dataOriginalGet, min + 1, max)
     console.log("Se está consultando dataOriginalGet, min: ", min, " , max: ",max);
-    
-    //Debería consultarse por las últimas reparaciones, osea por fechas
-    //Traer las más recientes, si en la primera consulta se traen 10 reparaciones, y después se consulta por 20
-    //Se van a utilizar las 10 que ya fueron asignadas a dataLocal (explicado en data.js), y se consultará por las otras 10
-    //(Se consultará de 11 a 20 ó de 10 a 19 (Hay que analizar)).
 
     let personasFiltradas = dataBaseOriginal.personas.slice(min, max);
+
+    //console.log(dataBaseOriginal.personas.slice(4, 6))
 
     let personas = [];
     let reparaciones = [];

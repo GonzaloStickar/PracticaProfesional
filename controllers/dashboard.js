@@ -29,6 +29,7 @@ dataOriginalPostReparacion(1, "Instalación de software", "Televisor", "2024-06-
 dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14", "Finalizado");
 
 let numReparacionesQueryMaxOld = 0;
+let puedeSeguirConsultandoPorMas = true;
 
 const mostrarPersonasReparacionesConCache = (req, res) => {
     const numReparacionesQueryMaxNew = parseInt(req.query.reparaciones);
@@ -47,25 +48,39 @@ const mostrarPersonasReparacionesConCache = (req, res) => {
         return res.json(cachedData);
     }
 
+    let newData = null;
+
     // Realiza la consulta a la base de datos solo para los datos faltantes desde numReparacionesQueryMaxOld hasta numReparacionesQueryMaxNew
-    let newData = dataOriginalGET(numReparacionesQueryMaxOld, numReparacionesQueryMaxNew);
+    if (puedeSeguirConsultandoPorMas) {
+        newData = dataOriginalGET(numReparacionesQueryMaxOld, numReparacionesQueryMaxNew);
 
-    // Concatena las personas y reparaciones nuevas con las existentes en el caché
-    cachedData.personas = [...cachedData.personas, ...newData.personas];
-    cachedData.reparaciones = [...cachedData.reparaciones, ...newData.reparaciones];
+        if (newData.personas.length===0) {
+            puedeSeguirConsultandoPorMas=false;
 
-    // Actualiza numReparacionesQueryMaxOld con el nuevo valor máximo consultado
-    numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
+            //console.log(`llegaste al tope de consultas, no hay más datos para obtener, consultas max: ${cachedData.personas.length}`)
 
-    // Almacena los nuevos datos en el caché junto con el nuevo valor de numReparacionesQueryMaxOld
-    myCache.set(cacheKey, cachedData);
-    myCache.set(cacheOldKey, numReparacionesQueryMaxOld);
+            return res.json(cachedData);
+        } else {
+            // Concatena las personas y reparaciones nuevas con las existentes en el caché
+            cachedData.personas = [...cachedData.personas, ...newData.personas];
+            cachedData.reparaciones = [...cachedData.reparaciones, ...newData.reparaciones];
 
-    //console.log(`Datos almacenados en cache para la clave: ${cacheKey}`);
-    //console.log(`Valor almacenado en cache para la clave: ${cacheOldKey}`);
+            // Actualiza numReparacionesQueryMaxOld con el nuevo valor máximo consultado
+            numReparacionesQueryMaxOld = numReparacionesQueryMaxNew;
 
-    // Devuelve directamente las propiedades personas y reparaciones
-    return res.json(cachedData);
+            // Almacena los nuevos datos en el caché junto con el nuevo valor de numReparacionesQueryMaxOld
+            myCache.set(cacheKey, cachedData);
+            myCache.set(cacheOldKey, numReparacionesQueryMaxOld);
+
+            //console.log(`Datos almacenados en cache para la clave: ${cacheKey}`);
+            //console.log(`Valor almacenado en cache para la clave: ${cacheOldKey}`);
+
+            // Devuelve directamente las propiedades personas y reparaciones
+            return res.json(cachedData);
+        }
+    } else {
+        return res.json(cachedData);
+    }
 };
 
 const dashboardPage = (req, res) => {
