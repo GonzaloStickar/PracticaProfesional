@@ -1,12 +1,10 @@
 const express = require("express") 
 const dashboardRouter = express.Router()
 
-const { cacheMiddleware } = require('../middlewares/cache');
-
 const { dashboardPage, mostrarPersonasReparacionesConCache, devolverNumReparacionesQueryMaxOld } = require('../controllers/dashboard')
 const { verificarDisponibilidadNombreApellido } = require('../controllers/crud/dashboard_agregar')
 
-dashboardRouter.get("/", cacheMiddleware, dashboardPage)
+dashboardRouter.get("/", dashboardPage)
 
 dashboardRouter.get("/reparaciones", mostrarPersonasReparacionesConCache);
 

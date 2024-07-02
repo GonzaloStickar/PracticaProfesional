@@ -48,7 +48,7 @@ const dashboardEliminar = {
                 if (reparacionEncontrada) {
                     res.send(htmlEliminarFormPersonaReparacion(personaEncontrada, reparacionEncontrada));
                 } else {
-                    res.send(htmlFormEnviado("Actualizar Reparación",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
+                    res.send(htmlFormEnviado("Eliminar Reparación",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
                 }
 
             //Si su reparación es undefined (significa que no tiene reparación o no se le asignó, solo muestro form con persona)

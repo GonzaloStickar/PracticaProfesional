@@ -1,7 +1,7 @@
 const path = require('path');
 const { sessionSecret } = require('../controllers/config.js');
 
-const isAuth = (req, res) => {
+const isAuthV2 = (req, res) => {
 	const { cookies } = req;
 	if (cookies.session_id) {
 		if (cookies.session_id===sessionSecret) {
@@ -17,7 +17,7 @@ const isAuth = (req, res) => {
 const main = {
     getInicio: (req, res) => {
         try {
-            return isAuth(req, res);
+            return isAuthV2(req, res);
         }
         catch (e) {
             res.send({msg:e});

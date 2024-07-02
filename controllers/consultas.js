@@ -12,7 +12,7 @@ function armarTablaInformacionConsultaCliente(req, res, dataTrabajar)  {
 
     let dataAniadir = '';
 
-    if (dataTrabajar.personas.length > 0) {
+    if (dataTrabajar.personas.length > 0 && dataTrabajar.reparaciones.length > 0) {
         dataTrabajar.personas.forEach(persona => {
 
             // Buscar las reparaciones de esta persona

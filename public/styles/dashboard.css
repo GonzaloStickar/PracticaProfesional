@@ -13,6 +13,10 @@ body {
     height: 100vh;
 }
 
+.caja_botones_agregar_buscar button {
+    margin: 2px;
+}
+
 .side_izquierda {
     background-color: #00172e;
     color: white;
@@ -32,6 +36,7 @@ body {
 .botones_side_izquierda button, .botones_side_izquierda button:hover, 
 .boton_agregar, .boton_agregar:hover
 .boton_buscar, .boton_buscar:hover,
+.boton_inicio, .boton_inicio:hover,
 td button, td button:hover,
 tr, tr:hover {
     transition: background-color 0.2s;
@@ -74,7 +79,8 @@ tr, tr:hover {
 .boton_utlima_busqueda,
 .boton_cerrar_sesion,
 .boton_agregar,
-.boton_buscar {
+.boton_buscar,
+.boton_inicio {
     border: none;
     padding: 14px 28px;
     cursor: pointer;
@@ -125,6 +131,7 @@ tr, tr:hover {
 
 .boton_agregar,
 .boton_buscar, 
+.boton_inicio, 
 .boton_editar,
 .boton_eliminar,
 .boton_informe {
@@ -142,11 +149,11 @@ tr, tr:hover {
     background: #e68a00;
 }
 
-.boton_informe {
+.boton_informe, .boton_inicio {
     background-color: #007bff;
 }
 
-.boton_informe:hover {
+.boton_informe:hover, .boton_inicio:hover {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
     background: #0a69b7;
 }
@@ -222,7 +229,8 @@ th {
 .boton_utlima_busqueda,
 .boton_cerrar_sesion,
 .boton_agregar,
-.boton_buscar {
+.boton_buscar, 
+.boton_inicio {
     font-size: 12.5px;
     box-sizing: border-box;
 }
@@ -280,11 +288,11 @@ th {
 
     .botones_side_izquierda button {
         font-size: 25px;
-        width: 150px !important;
+        width: 250px !important;
     }
 
     .botones_side_izquierda {
-        background-color: rgba(0, 0, 0, 0.33);
+        background-color: rgba(0, 0, 0, 0.66);
         padding: 0;
         transition: transform 0.3s ease;
         position: fixed;
@@ -318,7 +326,6 @@ th {
         border: none;
         background-color: transparent;
         color: white;
-        font-size: 16px;
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
@@ -373,15 +380,13 @@ th {
     }
 }
 
-@media (max-width: 500px) {
-
-    .boton_clientes,
-    .boton_cargar_mas,
-    .boton_utlima_busqueda,
-    .boton_cerrar_sesion {
-        font-size: 5.5px;
+@media (max-width: 600px) {
+    .botones_side_izquierda button {
+        font-size: 16px;
     }
+}
 
+@media (max-width: 500px) {
     .botones_side_izquierda {
         display: flex;
         flex-direction: column;
@@ -403,7 +408,6 @@ th {
 
     .botones_side_izquierda button {
         padding:0;
-        font-size: small;
         margin:5px 0;
     }
 
@@ -416,21 +420,10 @@ th {
     .side_izquierda h1 {
         font-size: small;
     }
-
-    .boton_clientes,
-    .boton_cargar_mas,
-    .boton_utlima_busqueda,
-    .boton_cerrar_sesion {
-        font-size: 5px;
-    }
 }
 
 @media (max-width: 300px) {
     table {
-        font-size: x-small;
-    }
-
-    .botones_side_izquierda button {
         font-size: x-small;
     }
 }
@@ -440,18 +433,7 @@ th {
         font-size: x-small;
     }
 
-    .boton_clientes,
-    .boton_cargar_mas,
-    .boton_utlima_busqueda,
-    .boton_cerrar_sesion {
-        font-size: 2.5px;
-    }
-
     table {
-        font-size: xx-small;
-    }
-
-    .botones_side_izquierda button {
         font-size: xx-small;
     }
 }
@@ -459,12 +441,5 @@ th {
 @media (max-width: 150px) {
     .side_izquierda h1 {
         font-size: xx-small;
-    }
-
-    .boton_clientes,
-    .boton_cargar_mas,
-    .boton_utlima_busqueda,
-    .boton_cerrar_sesion {
-        font-size: 1.5px;
     }
 }

@@ -31,9 +31,9 @@
               </a>
             </li>
             <li class="iniciar_sesion">
-              <a href="/login" title="Iniciar sesión">
+              <a href="/dashboard" title="Dashboard">
                 <span class="material-symbols-outlined">account_circle</span>
-                <span class="texto_header">Iniciar Sesión</span>
+                <span class="texto_header">Panel de Control</span>
               </a>
             </li>
           </ul>
@@ -49,8 +49,8 @@
           <img src="/img/index_header.jpg" class="img_header" alt="index_header">
           <div class="overlay"></div>
           <div class="texto_centrado">
-            <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos, eum!</h2>
-            <p>Lorem ipsum dolor sit amet.</p>
+            <h2>Reparación Profesional de Televisores y Electrodomésticos</h2>
+            <p>Servicio confiable y rápido para tu hogar.</p>
           </div>
         </div>
       </div>
@@ -68,9 +68,9 @@
             <figure>
               <img src="/img/index_main_contenedor_fotos.jpg" alt="index_main_contenedor_fotos">
               <figcaption>
-                <h4>Lorem, ipsum.</h4>
+                <h4>Televisores</h4>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias asperiores nostrum sit dolore sunt ipsum adipisci debitis ea quia molestiae.
+                  Reparamos todo tipo de televisores, desde LCD hasta OLED, con soluciones rápidas y efectivas para problemas comunes como pantallas rotas o problemas de sonido.
                 </p>
               </figcaption>
             </figure>
@@ -79,9 +79,9 @@
             <figure>
               <img src="/img/index_main_contenedor_fotos.jpg" alt="index_main_contenedor_fotos">
               <figcaption>
-                <h4>Lorem, ipsum.</h4>
+                <h4>Microondas</h4>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias asperiores nostrum sit dolore sunt ipsum adipisci debitis ea quia molestiae.
+                  Especialistas en reparación de microondas de todas las marcas. Solucionamos problemas de calentamiento, problemas electrónicos y más, garantizando un funcionamiento óptimo.
                 </p>
               </figcaption>
             </figure>
@@ -90,9 +90,9 @@
             <figure>
               <img src="/img/index_main_contenedor_fotos.jpg" alt="index_main_contenedor_fotos">
               <figcaption>
-                <h4>Lorem, ipsum.</h4>
+                <h4>Control Remoto</h4>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias asperiores nostrum sit dolore sunt ipsum adipisci debitis ea quia molestiae.
+                  Brindamos servicios especializados en la reparación y reemplazo de controles remotos para televisores y otros dispositivos relacionados. Nos especializamos en resolver problemas de botones, conectividad y otras fallas comunes.
                 </p>
               </figcaption>
             </figure>
@@ -112,7 +112,7 @@
           <p>
             Ingresa tu nombre y apellido para consultar
           </p>
-
+          
           <form id="consulta_reparacion_form" action="/consulta" method="POST">
             <input type="text" id="input_consulta_reparacion_form" name="nombre_apellido_consulta" placeholder="Ej: 'Juan Perez'" required pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+">
             <button type="submit">Consultar</button>
@@ -123,12 +123,12 @@
       <div class="contenedor_info_contacto"  id="sobre_nosotros">
         <article>
           <h2>Sobre nosotros</h2>
-          <h3>Lorem</h3>
-          <p>Lorem ipsum dolor sit.</p>
-          <p>Lorem ipsum dolor sit.</p>
-          <p>Lorem ipsum dolor sit.</p>
-          <h3>Lorem</h3>
-          <p>Lorem ipsum dolor sit.</p>
+          <h3>Garantía de 3 Meses en Todas las Reparaciones</h3>
+          <p>Somos especialistas en reparación de televisores y electrodomésticos.</p>
+          <p>Garantía completa de <u>3</u> meses en todas nuestras reparaciones.</p>
+          <p>Equipo comprometido con brindar un servicio confiable y eficiente, utilizando la mejor tecnología avanzada.</p>
+          <h3>¿Dudas? No dudes en contactarnos!</h3>
+          <p>Número: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
         </article>
 
         <aside>
@@ -151,9 +151,11 @@
   <script>
     const hamburger = document.getElementById('hamburger');
     const navbar = document.querySelector('.navbar');
+    const textoCentrado = document.querySelector('.texto_centrado');
 
     hamburger.addEventListener('click', function() {
       navbar.classList.toggle('active');
+      textoCentrado.classList.toggle('active');
     });
 
     document.addEventListener('DOMContentLoaded', function() {

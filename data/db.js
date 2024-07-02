@@ -1,5 +1,23 @@
 //IMPLEMENTAR CONSULTAS SQL:
 
+//GET
+//buscarPersonaDataBaseOriginal,
+//encontrarPersonaDataBaseOriginalPorID,
+//dataOriginalGET,
+//dataOriginalGETbusqueda,
+//realizarConsultaReparacionCliente
+
+//POST
+//dataOriginalPostPersona,
+//dataOriginalPostReparacion
+
+//UPDATE
+//updateDataOriginalDatosPersona,
+//updateDataOriginalDatosReparacionDePersona
+
+//DELETE
+//dataOriginalEliminarPersonaId,
+//dataOriginalEliminarReparacionId
 
 const { persona } = require('../models/persona')
 const { reparacion } = require('../models/reparacion')

@@ -276,6 +276,85 @@ const htmlEliminarFormPersonaReparacion = (persona, reparacion) => {
     `;
 }
 
+const htmlInformeFormPersona = (persona) => {
+    return `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Eliminar</title>
+            <link rel="stylesheet" href="/styles/crud_form_post_pressed.css">
+        </head>
+        <body>
+            <div class="mensaje-box">
+                <div class="informacion_persona">
+                    <p><strong>Información de la persona:</strong></p>
+                    <p><strong>ID:</strong> ${persona.id}</p>
+                    <p><strong>Nombre:</strong> ${persona.nombre}</p>
+                    <p><strong>Dirección:</strong> ${persona.direccion}</p>
+                    <p><strong>Teléfono:</strong> ${persona.telefono}</p>
+                    <p><strong>Email:</strong> ${persona.email}</p>
+                </div>
+
+                <button class="boton" onclick="goBack()">Volver</button>
+            </div>
+
+            <script>
+                function goBack() {
+                    history.back();
+                }
+            </script>
+        </body>
+        </html>
+    `;
+}
+
+const htmlInformeFormPersonaReparacion = (persona, reparacion) => {
+    return `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Eliminar</title>
+            <link rel="stylesheet" href="/styles/crud_form_post_pressed.css">
+        </head>
+        <body>
+            <div class="mensaje-box">
+                <div class="informacion_persona">    
+                    <p><strong>Información de la persona:</strong></p>
+                    <p><strong>ID:</strong> ${persona.id}</p>
+                    <p><strong>Nombre:</strong> ${persona.nombre}</p>
+                    <p><strong>Dirección:</strong> ${persona.direccion}</p>
+                    <p><strong>Teléfono:</strong> ${persona.telefono}</p>
+                    <p><strong>Email:</strong> ${persona.email}</p>
+                </div>
+
+                <hr>
+
+                <div class="informacion_reparacion">
+                    <p><strong>Información de la reparación:</strong></p>
+                    <p><strong>ID:</strong> ${reparacion.id}</p>
+                    <p><strong>Descripción:</strong> ${reparacion.descripcion}</p>
+                    <p><strong>Tipo:</strong> ${reparacion.tipo}</p>
+                    <p><strong>Fecha:</strong> ${reparacion.fecha}</p>
+                    <p><strong>Estado:</strong> ${reparacion.estado}</p>
+                </div>
+
+                <button class="boton" onclick="goBack()">Volver</button>
+            </div>
+
+            <script>
+                function goBack() {
+                    history.back();
+                }
+            </script>
+        </body>
+        </html>
+    `;
+}
+
 module.exports = {
     htmlFormEnviado,
     editarAgregarReparacion,
@@ -283,5 +362,7 @@ module.exports = {
     htmlEditarPersona,
     htmlEditarReparacion,
     htmlEliminarFormPersona,
-    htmlEliminarFormPersonaReparacion
+    htmlEliminarFormPersonaReparacion,
+    htmlInformeFormPersona,
+    htmlInformeFormPersonaReparacion
 }

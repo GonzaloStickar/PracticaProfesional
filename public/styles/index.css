@@ -87,6 +87,7 @@ body {
     transform: translate(-50%, -50%);
     color: white;
     z-index: 1;
+    width:60%;
 }
 
 .texto_centrado h2 {
@@ -95,6 +96,10 @@ body {
 
 .texto_centrado p {
     font-size: 32px;
+}
+
+.texto_centrado h2, .texto_centrado p {
+    transition: color 0.3s ease;
 }
 
 /*main*/
@@ -149,12 +154,9 @@ body {
     color: #555;
 }
 
-@media (max-width: 600px) {
-    .contenedor_consulta_reparacion aside img, 
-    .contenedor_info_contacto aside img {
-        width:100% !important;
-        height:500px;
-        border-radius: 15px;
+@media (min-width: 2500px) {
+    .texto_centrado {
+        width: 30%;
     }
 }
 
@@ -207,7 +209,7 @@ body {
 
 @media (max-width: 850px) {
     .navbar {
-        background-color: rgba(0, 0, 0, 0.33);
+        background-color: rgba(0, 0, 0, 0.66);
         padding: 0;
         transition: transform 0.3s ease;
         position: fixed; /* Añade posición fija para cubrir toda la pantalla */
@@ -225,6 +227,11 @@ body {
 
     .navbar.active .hamburger {
         margin-top: 40%;
+    }
+
+    .texto_centrado.active h2,
+    .texto_centrado.active p {
+        color: #cccccc82;
     }
 
     .navbar ul {
@@ -279,10 +286,6 @@ body {
     .hamburger.open .bar:last-child {
         transform: translateY(-8px) rotate(-45deg);
     }
-
-    .texto_centrado {
-        transform: translate(-50%, -25%);
-    }
     
     .texto_centrado h2 {
         font-size: 32px;
@@ -296,10 +299,6 @@ body {
 @media (max-width: 650px) {
     .texto_header {
         font-size: 16px;
-    }
-
-    .texto_centrado {
-        transform: translate(-50%, -10%);
     }
     
     .texto_centrado h2 {
@@ -327,11 +326,17 @@ body {
     .contenedor_consulta_reparacion article p {
         width: 100%;
     }
+
+    .contenedor_consulta_reparacion aside img, 
+    .contenedor_info_contacto aside img {
+        width:100% !important;
+        height:500px;
+        border-radius: 15px;
+    }
 }
 
 @media (max-width: 550px) {
     .texto_header {
-        font-size: 12px;
         top:-7px;
     }
 }
@@ -339,10 +344,6 @@ body {
 @media (max-width: 520px) {
     .material-symbols-outlined {
         font-size: 22px;
-    }
-
-    .texto_centrado {
-        transform: translate(-50%, 20%);
     }
 
     .contenedor_consulta_reparacion aside {
@@ -355,10 +356,6 @@ body {
 }
 
 @media (max-width: 470px) {
-    .texto_header {
-        font-size: 8px;
-    }
-
     .navbar {
         padding-top: 5px;
     }
@@ -375,10 +372,6 @@ body {
         margin-bottom: 2.5px !important;
     }
 
-    .texto_centrado {
-        transform: translate(-50%, 30%);
-    }
-
     .texto_centrado h2 {
         font-size:12px;
     }
@@ -389,10 +382,6 @@ body {
 }
 
 @media (max-width: 300px) {
-    .texto_centrado {
-        transform: translate(-50%, 40%);
-    }
-
     form {
         display:flex;
         flex-direction: column;
@@ -406,10 +395,6 @@ body {
 }
 
 @media (max-width: 280px) {
-    .texto_centrado {
-        transform: translate(-50%, 80%);
-    }
-
     .texto_centrado h2 {
         font-size:8px;
     }
@@ -425,10 +410,6 @@ body {
     .navbar li {
         margin-top: 0.5px !important;
         margin-bottom: 0.5px !important;
-    }
-
-    .texto_header {
-        font-size: 5px;
     }
 
     .material-symbols-outlined {
