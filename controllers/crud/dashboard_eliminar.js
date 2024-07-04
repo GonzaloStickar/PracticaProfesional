@@ -118,7 +118,7 @@ const dashboardEliminar = {
                         cachedData.personas = cachedData.personas.filter(persona => persona.id !== parseInt(personaId, 10));
                         myCache.set('dataReparaciones', cachedData);
 
-                        res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Persona y su Reparación.`, "redirectToDashboard()"));
+                        res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Persona ya que no estaba asociada a otra reparación.`, "redirectToDashboard()"));
                     } else {
                         res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Reparación.`, "redirectToDashboard()"));
                     }
@@ -136,7 +136,7 @@ const dashboardEliminar = {
                     cachedData.personas = cachedData.personas.filter(persona => persona.id !== parseInt(personaId, 10));
                     myCache.set('dataReparaciones', cachedData);
 
-                    res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Persona.`, "redirectToDashboard()"));
+                    res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Persona ya que no estaba asociada a otra reparación.`, "redirectToDashboard()"));
                 } else {
                     res.send(htmlFormEnviado("Eliminar", `La persona tiene otras reparaciones asociadas. No se puede eliminar.`, "goBack()"));
                 }

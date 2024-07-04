@@ -26,10 +26,6 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                     const fila = `
                         <tr>
                             <td>${persona.nombre}</td>
-                            <!--<td>${persona.direccion}</td>
-                            <td>${persona.telefono}</td>
-                            <td>${persona.email}</td>
-                            <td>${reparacion.descripcion}</td>-->
                             <td>${reparacion.tipo}</td>
                             <td>${reparacion.fecha}</td>
                             <td>${reparacion.estado}</td>
@@ -48,10 +44,6 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                 const fila = `
                     <tr>
                         <td>${persona.nombre}</td>
-                        
-                        <!--<td>${persona.direccion}</td>
-                        <td>${persona.telefono}</td>
-                        <td>${persona.email}</td>-->
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>
@@ -75,9 +67,33 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
             const htmlWithData = html.replace('<tbody id="dynamicTableBody"></tbody>', `<tbody id="dynamicTableBody">${dataAniadir}</tbody>`);
             return res.send(htmlWithData);
         });
+    } else if (dataTrabajar.reparaciones.length > 0) {
+        dataTrabajar.reparaciones.forEach(reparacion => {
+            const fila = `
+                <tr>
+                    <td>-</td>
+                    <td>${reparacion.tipo}</td>
+                    <td>${reparacion.fecha}</td>
+                    <td>${reparacion.estado}</td>
+                    <td>
+                        -
+                    </td>
+                </tr>`;
+            dataAniadir += fila;
+        });
+
+        fs.readFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'dashboard_buscar.htm'), 'utf8', (err, html) => {
+            if (err) {
+                console.error('Error al leer el archivo HTML:', err);
+                return res.status(500).send('Error interno del servidor');
+            }
+            
+            const htmlWithData = html.replace('<tbody id="dynamicTableBody"></tbody>', `<tbody id="dynamicTableBody">${dataAniadir}</tbody>`);
+            return res.send(htmlWithData);
+        });
     } else {
         return res.send(htmlFormEnviado("Sin Resultados", "No se encontraron resultados", "goBack"))
-    }    
+    }
 }
 
 const dashboardBuscar = {

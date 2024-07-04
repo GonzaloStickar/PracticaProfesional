@@ -90,6 +90,9 @@ const dashboardAgregar = {
 
             const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
 
+            //Hay que cambiarlo por
+            //if (personaEncontrada.length===0 || !personaEncontrada){}
+            //una vez implementada la DB
             if (!personaEncontrada) {
 
                 //Subo a la base de datos Original (base de datos desplegada)
@@ -137,6 +140,9 @@ const dashboardAgregar = {
                 personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
             }
 
+            //Hay que cambiarlo por
+            //if (personaEncontrada.length > 0 || personaEncontrada){}
+            //una vez implementada la DB
             if (personaEncontrada) {
                 const reparacionCreada = dataOriginalPostReparacion(
                     personaEncontrada.id,
@@ -178,6 +184,9 @@ const dashboardAgregar = {
             
             const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
 
+            //Hay que cambiarlo por
+            //if (personaEncontrada.length===0 || !personaEncontrada){}
+            //una vez implementada la DB
             if (!personaEncontrada) {
                 // Si la persona NO existe, crearla y obtener el objeto persona creado
                 //Subo a la base de datos Original (base de datos desplegada)
@@ -234,6 +243,9 @@ const verificarDisponibilidadNombreApellido = (req, res) => {
         // Si no se encontró en caché, buscar en la base de datos original
         const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
 
+        //Hay que cambiarlo por
+        //if (personaEncontrada.length > 0 || personaEncontrada){}
+        //una vez implementada la DB
         if (personaEncontrada) {
             res.send({ exists: true });
         } else {

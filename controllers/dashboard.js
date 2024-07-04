@@ -16,18 +16,6 @@ const {
     dataOriginalGET
 } = require('../data/db');
 
-//Suponiendo que es toda nuestra DB
-//Para seleccionar y cambiar todos a la vez, apretar Ctrl + D (y selecciona "agregarPersonaLocalDB" los 3 por igual y cambiamos los 3 a la vez).
-dataOriginalPostPersona("Juan Pérez", "Calle Falsa 123", "1234567890", "juan.perez@example.com", "11222333");
-dataOriginalPostPersona("María Gómez", "Avenida Siempreviva 456", "0987654321", "maria.gomez@example.com", "12222333");
-dataOriginalPostPersona("Juan Díaz", "Boulevard del Sol 789", "1112223333", "carlos.diaz@example.com", "13222333");
-dataOriginalPostPersona("Carlos Falso", "Calle Falsa 123", "11111111", "juan.falso@example.com", "12122122");
-
-dataOriginalPostReparacion(0, "Cambio de pantalla", "Televisor", "2024-06-13", "Finalizado");
-dataOriginalPostReparacion(0, "Reparación de plaqueta", "Televisor", "2024-06-14", "Finalizado");
-dataOriginalPostReparacion(1, "Instalación de software", "Televisor", "2024-06-15", "Finalizado");
-dataOriginalPostReparacion(2, "Reparación", "Microondas", "2024-06-14", "Finalizado");
-
 let numReparacionesQueryMaxOld = 0;
 let puedeSeguirConsultandoPorMas = true;
 
@@ -54,13 +42,12 @@ const mostrarPersonasReparacionesConCache = (req, res) => {
     if (puedeSeguirConsultandoPorMas) {
         newData = dataOriginalGET(numReparacionesQueryMaxOld, numReparacionesQueryMaxNew);
 
-        if (newData.personas.length===0) {
-            puedeSeguirConsultandoPorMas=false;
+        if (newData.personas.length > 0) {
 
-            //console.log(`llegaste al tope de consultas, no hay más datos para obtener, consultas max: ${cachedData.personas.length}`)
+            if (newData.personas.length < 50) {
+                puedeSeguirConsultandoPorMas=false;
+            }
 
-            return res.json(cachedData);
-        } else {
             // Concatena las personas y reparaciones nuevas con las existentes en el caché
             cachedData.personas = [...cachedData.personas, ...newData.personas];
             cachedData.reparaciones = [...cachedData.reparaciones, ...newData.reparaciones];
@@ -77,6 +64,17 @@ const mostrarPersonasReparacionesConCache = (req, res) => {
 
             // Devuelve directamente las propiedades personas y reparaciones
             return res.json(cachedData);
+
+        } else if (newData.personas.length === 0) {
+            puedeSeguirConsultandoPorMas=false;
+
+            //console.log(`llegaste al tope de consultas, no hay más datos para obtener, consultas max: ${cachedData.personas.length}`)
+
+            return res.json(cachedData);
+            
+        } else {
+            //Puede que esté vacío.
+            return res.json(cachedData);
         }
     } else {
         return res.json(cachedData);
@@ -89,7 +87,7 @@ const dashboardPage = (req, res) => {
 
 function devolverNumReparacionesQueryMaxOld(req, res) {
     if (numReparacionesQueryMaxOld==0 || numReparacionesQueryMaxOld==null) {
-        return res.json({"numReparacionesQueryMaxOld": 2});
+        return res.json({"numReparacionesQueryMaxOld": 50});
     } else {
         return res.json({"numReparacionesQueryMaxOld": numReparacionesQueryMaxOld});
     }

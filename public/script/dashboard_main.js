@@ -1,6 +1,8 @@
 let reparacionesCount = 0;
-const reparacionesIncrement = 2; // Por ejemplo, cambiar según la cantidad deseada por página
+const reparacionesIncrement = 50; // Por ejemplo, cambiar según la cantidad deseada por página
 let loadedPages = []; // Array para almacenar las páginas cargadas
+
+let loadingReparaciones = false;
 
 document.addEventListener('DOMContentLoaded', function() {
     loadCantidadPersonasReparaciones();
@@ -24,6 +26,12 @@ function loadCantidadPersonasReparaciones() {
 }
 
 document.getElementById('loadMoreBtn').addEventListener('click', function() {
+    if (loadingReparaciones) {
+        return; // Evitar múltiples clics si ya se está cargando
+    }
+    
+    loadingReparaciones = true; // Marcar como cargando
+
     reparacionesCount += reparacionesIncrement;
     loadReparaciones(reparacionesCount);
 });
@@ -98,6 +106,9 @@ function loadReparaciones(count) {
     .catch(error => {
         console.error('Error fetching reparaciones:', error);
         // Manejar el error según sea necesario
+    })
+    .finally(() => {
+        loadingReparaciones = false; // Reiniciar estado de carga
     });
 }
 
