@@ -6,6 +6,10 @@ const {
     realizarConsultaReparacionCliente
 } = require('../data/db');
 
+const { 
+    formatDateString
+} = require('../helpers/dateHelper');
+
 const { htmlFormEnviado } = require('./crud/crud_form_post_pressed');
 
 function armarTablaInformacionConsultaCliente(req, res, dataTrabajar)  {
@@ -25,7 +29,7 @@ function armarTablaInformacionConsultaCliente(req, res, dataTrabajar)  {
                         <tr>
                             <td>${persona.nombre}</td>
                             <td>${reparacion.tipo}</td>
-                            <td>${reparacion.fecha}</td>
+                            <td>${formatDateString(reparacion.fecha)}</td>
                             <td>${reparacion.estado}</td>
                         </tr>`;
     

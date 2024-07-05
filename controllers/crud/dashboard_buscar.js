@@ -10,6 +10,10 @@ const { myCache } = require('../../middlewares/cache');
 
 const { htmlFormEnviado } = require('./crud_form_post_pressed');
 
+const { 
+    formatDateString
+} = require('../../helpers/dateHelper');
+
 function armarTablaInformacion(req, res, dataTrabajar)  {
 
     let dataAniadir = '';
@@ -27,7 +31,7 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                         <tr>
                             <td>${persona.nombre}</td>
                             <td>${reparacion.tipo}</td>
-                            <td>${reparacion.fecha}</td>
+                            <td>${formatDateString(reparacion.fecha)}</td>
                             <td>${reparacion.estado}</td>
                             <td>
                                 <div class="container_botones_tabla">
@@ -73,7 +77,7 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                 <tr>
                     <td>-</td>
                     <td>${reparacion.tipo}</td>
-                    <td>${reparacion.fecha}</td>
+                    <td>${formatDateString(reparacion.fecha)}</td>
                     <td>${reparacion.estado}</td>
                     <td>
                         -

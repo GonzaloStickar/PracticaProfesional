@@ -5,6 +5,8 @@ const { reparacion } = require('../models/reparacion')
 
 async function buscarPersonaDataBaseOriginal(nombreApellido) {
 
+    const client = await pool.connect();
+
     let rowsEncontrados;
 
     try {
@@ -13,7 +15,7 @@ async function buscarPersonaDataBaseOriginal(nombreApellido) {
             FROM personas 
             WHERE LOWER(nombre) = LOWER($1);
         `;
-        const { rows } = await pool.query(query, [nombreApellido]);
+        const { rows } = await client.query(query, [nombreApellido]);
 
         rowsEncontrados = rows;
 
@@ -21,11 +23,14 @@ async function buscarPersonaDataBaseOriginal(nombreApellido) {
         console.error('Error al buscar persona en la base de datos:', error);
         throw error;
     } finally {
+        client.release();
         return rowsEncontrados;
     }
 }
 
 async function dataOriginalPostPersona(nombre, direccion, telefono, email) {
+
+    const client = await pool.connect();
 
     const insertQuery = `
         INSERT INTO personas (nombre, direccion, telefono, email)
@@ -35,16 +40,20 @@ async function dataOriginalPostPersona(nombre, direccion, telefono, email) {
     const insertValues = [nombre, direccion, telefono, email];
     
     try {
-        const result = await pool.query(insertQuery, insertValues);
+        const result = await client.query(insertQuery, insertValues);
         const id = result.rows[0].id; // Accede al ID devuelto por RETURNING
         const personaNueva = new persona(id, nombre, direccion, telefono, email);
         return personaNueva;
     } catch (error) {
         throw new Error(`Error al insertar persona en la base de datos: ${error.message}`);
+    } finally {
+        client.release();
     }
 }
 
 async function dataOriginalPostReparacion(persona_id, descripcion, tipo, fecha, estado) {
+
+    const client = await pool.connect();
 
     const insertQuery = `
         INSERT INTO reparaciones (persona_id, descripcion, tipo, fecha, estado)
@@ -54,16 +63,20 @@ async function dataOriginalPostReparacion(persona_id, descripcion, tipo, fecha, 
     const insertValues = [persona_id, descripcion, tipo, fecha, estado];
 
     try {
-        const result = await pool.query(insertQuery, insertValues);
+        const result = await client.query(insertQuery, insertValues);
         const id = result.rows[0].id; // Accede al ID devuelto por RETURNING
         const reparacionNueva = new reparacion(id, persona_id, descripcion, tipo, fecha, estado);
         return reparacionNueva;
     } catch (error) {
         throw new Error(`Error al insertar reparación en la base de datos: ${error.message}`);
+    } finally {
+        client.release();
     }
 }
 
 async function dataOriginalGET(min, max) {
+
+    const client = await pool.connect();
 
     let personasProcesadas = [];
     let reparacionesProcesadas = [];
@@ -83,7 +96,7 @@ async function dataOriginalGET(min, max) {
 
         const values = [min+1, max];  //Valores para los parámetros $1 y $2
 
-        const result = await pool.query(query, values);
+        const result = await client.query(query, values);
 
         result.rows.forEach(row => {
             // Verificar si la persona ya existe en personasProcesadas
@@ -119,6 +132,7 @@ async function dataOriginalGET(min, max) {
     } catch (error) {
         console.error('Error al ejecutar la consulta:', error);
     } finally {
+        client.release();
         return { personas: personasProcesadas, reparaciones: reparacionesProcesadas };
     }
 }
@@ -164,11 +178,9 @@ const dataOriginalGETbusqueda = {
 
         baseConsultaBusqueda+=";"
 
-        //console.log(baseConsultaBusqueda)
-
         try {
             // Ejecutar la consulta a la base de datos
-            const { rows } = await pool.query(baseConsultaBusqueda);
+            const { rows } = await client.query(baseConsultaBusqueda);
             resultados.personas = rows;
             return resultados;
 
@@ -212,11 +224,9 @@ const dataOriginalGETbusqueda = {
 
         baseConsultaBusqueda+=";"
 
-        //console.log(baseConsultaBusqueda)
-
         try {
             // Ejecutar la consulta a la base de datos
-            const { rows } = await pool.query(baseConsultaBusqueda);
+            const { rows } = await client.query(baseConsultaBusqueda);
             resultados.reparaciones = rows;
             return resultados;
 
@@ -339,7 +349,6 @@ async function updateDataOriginalDatosPersona(personaId, nombre, direccion, tele
     const client = await pool.connect();
 
     try {
-        // Construir la consulta SQL parametrizada
         const query = `
             UPDATE personas
             SET nombre = $2, direccion = $3, telefono = $4, email = $5
@@ -347,12 +356,11 @@ async function updateDataOriginalDatosPersona(personaId, nombre, direccion, tele
         `;
 
         // Ejecutar la consulta con los parámetros
-        await pool.query(query, [personaId, nombre, direccion, telefono, email]);
+        await client.query(query, [personaId, nombre, direccion, telefono, email]);
     } catch (error) {
         console.error('Error al actualizar persona:', error);
         throw error;
     } finally {
-        // Cerrar la conexión del pool cuando hayas terminado
         client.release();
     }
 }
@@ -369,12 +377,11 @@ async function updateDataOriginalDatosReparacionDePersona(personaId, reparacionI
         `;
 
         // Ejecutar la consulta con los parámetros
-        await pool.query(query, [descripcion, tipo, fecha, estado, personaId, reparacionId]);
+        await client.query(query, [descripcion, tipo, fecha, estado, personaId, reparacionId]);
     } catch (error) {
         console.error('Error al actualizar reparación:', error);
         throw error;
     } finally {
-        // Cerrar la conexión del pool cuando hayas terminado
         client.release();
     }
 }
@@ -395,12 +402,11 @@ async function dataOriginalEliminarPersonaId(personaId) {
             );
         `;
         
-        await pool.query(query, [personaId]);
+        await client.query(query, [personaId]);
     } catch (error) {
         console.error('Error al eliminar persona:', error);
         throw error;
     } finally {
-        // Cerrar la conexión del pool cuando hayas terminado
         client.release();
     }
 }
@@ -417,13 +423,11 @@ async function dataOriginalEliminarReparacionId(reparacionId) {
         `;
 
         // Ejecutar la consulta con el parámetro reparacionId
-        await pool.query(query, [reparacionId]);
+        await client.query(query, [reparacionId]);
     } catch (error) {
         console.error('Error al eliminar reparación:', error);
         throw error;
-
     } finally {
-        // Cerrar la conexión del pool cuando hayas terminado
         client.release();
     }
 }
@@ -447,9 +451,7 @@ async function realizarConsultaReparacionCliente(nombreBusqueda) {
 
         // Ejecutar la consulta con los parámetros
         const searchTerm = `%${nombreBusqueda.toLowerCase()}%`;
-        const result = await pool.query(query, [searchTerm]);
-
-        console.log(result)
+        const result = await client.query(query, [searchTerm]);
 
         // Procesar los resultados
         let personasProcesadas = [];

@@ -24,29 +24,6 @@ const dashboardAgregar = {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_persona.htm'));
     },
     agregarReparacionGET: (req, res) => {
-
-        //Caso 1)
-        //Debo buscar la persona por el id
-        //Encontrar su DNI
-        //Asignarle al editarAgregarReparacion(dni de la persona encontrada)
-        //Se busca por la dataLocal ya que es por que apretamos en el botón "Editar" de una persona
-        //que no tenía ninguna reparación.
-
-        //Caso 2)
-        //En caso de que no se encuentre, mostrar mensaje que no se encontró una persona con 'id' especificado
-        //Este caso es muy raro que suceda, ya que no va a ser común que ingrese el 'id' de una persona por la url
-        //Así que no me la complicaré mucho, en caso de que se implemente, se debería conectar a la base de datos
-        //o dataOriginal para poder consultar si es que hay una persona que coincida con el id especificado
-
-        //Ejemplo: Si en dataLocal hay personas y reparaciones, pero de las personas el máximo 'id' disponible es 4
-        //Entonces, si buscamos por el número 500, obviamente no va a estar en la base de datos local (dataLocal)
-        //Pero sí tendremos que consultar a la base de datos original (dataOriginal), y realizar una consulta
-        //respecto a devolver la persona que coincida con el 'id' buscado.
-
-        //Al fin y al cabo, implementaré el Caso 1)
-
-
-
         //Todo lo de acá abajo está utilizado para cuando se edita la persona y no tiene reparación
         //En caso de que no tenga reparación, se le puede agregar una reparación
         //A partir del botón Editar
@@ -64,10 +41,10 @@ const dashboardAgregar = {
                 if (personaEncontrada) {
                     res.send(editarAgregarReparacion(personaEncontrada.nombre));
                 } else {
-                    res.send(`No se encontró una persona con ID: ${personaIdEnParams}`);
+                    res.send(`No se encontró una persona con ID: ${personaIdEnParams} en cache.`);
                 }
             } else {
-                res.send(`No se encontró una persona con ID: ${personaIdEnParams}`);
+                res.send(`No se encontraron personas en cache.`);
             }
         }
     },
@@ -107,12 +84,14 @@ const dashboardAgregar = {
                 if (cachedData) {
                     // Verificar si la persona ya está en el caché
                     const personaExistente = cachedData.personas.some(persona => persona.id === personaCreada.id);
+
                     if (!personaExistente) {
                         cachedData.personas.push(personaCreada);
-                        myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de personas
                     } else {
                         console.log('La persona ya existe en el caché.');
                     }
+
+                    myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de personas
                 }
 
                 return res.send(htmlFormEnviado("Añadir Persona", "Se creo la persona correctamente.", "redirectToDashboard"))
@@ -164,13 +143,16 @@ const dashboardAgregar = {
     
             // Actualizar la reparación en cachedData si existe
             if (cachedData) {
+
                 const reparacionExistente = cachedData.reparaciones.some(rep => rep.id === reparacionCreada.id);
+
                 if (!reparacionExistente) {
                     cachedData.reparaciones.push(reparacionCreada);
-                    myCache.set('dataReparaciones', cachedData); // Actualizar el caché
                 } else {
                     console.log('La reparación ya existe en el caché.');
                 }
+
+                myCache.set('dataReparaciones', cachedData); // Actualizar el caché
             }
     
             return res.send(htmlFormEnviado("Añadir Reparacion", "Se creó la reparación correctamente.", "redirectToDashboard"));
@@ -208,7 +190,7 @@ const dashboardAgregar = {
                 let reparacionCreada = null;
 
                 if (personaCreada) {
-                    console.log("Persona creada:", personaCreada);
+                    //console.log("Persona creada:", personaCreada);
 
                     // Crear la reparación con la persona creada
                     reparacionCreada = await dataOriginalPostReparacion(
@@ -219,31 +201,30 @@ const dashboardAgregar = {
                         estado
                     );
                     
-                    console.log("Reparación creada:", reparacionCreada);
+                    //console.log("Reparación creada:", reparacionCreada);
                 }
 
                 if (cachedData) {
-                    if (personaCreada) {
+
                         // Verificar si la persona ya existe en el caché
                         const personaExistente = cachedData.personas.some(persona => persona.id === personaCreada.id);
                         
                         if (!personaExistente) {
+                            console.log("persona añadida a cache")
                             cachedData.personas.push(personaCreada);
                         } else {
                             console.log('La persona ya existe en el caché.');
                         }
-                    }
 
-                    if (reparacionCreada) {
                         // Verificar si la reparación ya existe en el caché
                         const reparacionExistente = cachedData.reparaciones.some(reparacion => reparacion.id === reparacionCreada.id);
 
                         if (!reparacionExistente) {
+                            console.log("reparación añadida a cache")
                             cachedData.reparaciones.push(reparacionCreada);
                         } else {
                             console.log('La reparación ya existe en el caché.');
                         }
-                    }
 
                     // Actualizar el caché con la nueva información de personas y reparaciones
                     myCache.set('dataReparaciones', cachedData);

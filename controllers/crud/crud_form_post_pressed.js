@@ -112,7 +112,7 @@ const htmlEditarPersona = (persona) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Editar</title>
+            <title>Editar Persona</title>
             <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
         </head>
         <body>
@@ -131,7 +131,7 @@ const htmlEditarPersona = (persona) => {
                     <input type="text" id="direccion" name="direccion" value="${persona.direccion}" placeholder="${persona.direccion}" required>
 
                     <label for="telefono">Teléfono:</label>
-                    <input type="text" id="telefono" name="telefono" value="${persona.telefono}" placeholder="${persona.telefono}" required>
+                    <input type="number" id="telefono" name="telefono" value="${persona.telefono}" placeholder="${persona.telefono}" required>
 
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" value="${persona.email}" placeholder="${persona.email}" required>
@@ -153,7 +153,7 @@ const htmlEditarReparacion = (persona, reparacion) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Editar</title>
+            <title>Editar Reparación</title>
             <link rel="stylesheet" href="/styles/dashboard_crud_form_post.css">
         </head>
         <body>

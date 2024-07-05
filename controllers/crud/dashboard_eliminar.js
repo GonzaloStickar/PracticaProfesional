@@ -118,7 +118,7 @@ const dashboardEliminar = {
                         cachedData.personas = cachedData.personas.filter(persona => persona.id !== parseInt(personaId, 10));
                         myCache.set('dataReparaciones', cachedData);
 
-                        res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Persona ya que no estaba asociada a otra reparación.`, "redirectToDashboard()"));
+                        res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Persona ya que no estaba asociada a una reparación.`, "redirectToDashboard()"));
                     } else {
                         res.send(htmlFormEnviado("Eliminar", `Se ha eliminado correctamente la Reparación.`, "redirectToDashboard()"));
                     }

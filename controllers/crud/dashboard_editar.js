@@ -8,6 +8,10 @@ const { htmlFormEnviado, htmlEditarForm,
     htmlEditarPersona, htmlEditarReparacion 
 } = require('./crud_form_post_pressed');
 
+const { 
+    formatDateString
+} = require('../../helpers/dateHelper');
+
 const { myCache } = require('../../middlewares/cache');
 
 const dashboardEditar = {
@@ -60,6 +64,8 @@ const dashboardEditar = {
             // Buscar reparación en caché por persona_id
             const reparacionEncontrada = cachedData.reparaciones.find(reparacion => reparacion.id === parseInt(reparacionId,10));
 
+            reparacionEncontrada.fecha = formatDateString(reparacionEncontrada.fecha);
+
             if (personaEncontrada && reparacionEncontrada) {
                 res.send(htmlEditarReparacion(personaEncontrada, reparacionEncontrada))
             } else if (!personaEncontrada) {
@@ -95,7 +101,7 @@ const dashboardEditar = {
                     //Si no hay ninguna persona con el mismo nombre, que se actualize, sino, que muestre mensaje
                     //Que ya hay una persona con ese nombre
                     //Que busque por cacheData y dataBase si no encuentra en cacheData
-                    if (!verificarDisponibilidadNombreApellido(nombre)) {
+                    if (verificarDisponibilidadNombreApellido(nombre)) {
                         // Actualizar en la base de datos original
                         await updateDataOriginalDatosPersona(parseInt(personaId, 10), nombre, direccion, telefono, email);
 
@@ -128,15 +134,14 @@ const dashboardEditar = {
         if (cachedData && cachedData.reparaciones) {
             // Buscar reparación en caché por reparacionId y personaId
             const reparacionEncontrada = cachedData.reparaciones.find(
-                reparacion => reparacion.id === parseInt(personaId,10) && 
-                reparacion.id === parseInt(reparacionId,10)
+                reparacion => reparacion.persona_id === parseInt(personaId, 10) && reparacion.id === parseInt(reparacionId, 10)
             );
 
             if (reparacionEncontrada) {
                 if (
                     reparacionEncontrada.descripcion === descripcion &&
                     reparacionEncontrada.tipo === tipo &&
-                    reparacionEncontrada.fecha === fecha &&
+                    formatDateString(reparacionEncontrada.fecha) === fecha &&
                     reparacionEncontrada.estado === estado
                 ) {
                     return res.send(htmlFormEnviado("Actualizar Reparacion", `No se han ingresado nuevos valores.`, "redirectToDashboard()"));
@@ -147,7 +152,7 @@ const dashboardEditar = {
                     // Actualizar en la caché local
                     reparacionEncontrada.descripcion = descripcion;
                     reparacionEncontrada.tipo = tipo;
-                    reparacionEncontrada.fecha = fecha;
+                    reparacionEncontrada.fecha = formatDateString(fecha);
                     reparacionEncontrada.estado = estado;
                     myCache.set('dataReparaciones', cachedData);
 
@@ -157,7 +162,7 @@ const dashboardEditar = {
                 return res.send(htmlFormEnviado("Actualizar Reparacion", `No se encontró la reparación con ID: ${reparacionId} asociada a la persona con ID: ${personaId}`, "goBack()"));
             }
         } else {
-            return res.send(htmlFormEnviado("Actualizar Reparacion", `No se encontró dataReparaciones en el caché o no hay reparaciones en cachedData.`, "goBack()"));
+            return res.send(htmlFormEnviado("Actualizar Reparacion", `No se encontró dataReparaciones en el caché.`, "goBack()"));
         }
     }
 }
@@ -172,6 +177,7 @@ const verificarDisponibilidadNombreApellido = async (nombre) => {
 
         if (personaEnCache) {
             // Persona encontrada en caché
+            console.log("persona encontrada en caché")
             return true;
         }
     }
@@ -179,7 +185,9 @@ const verificarDisponibilidadNombreApellido = async (nombre) => {
     // Si no se encontró en caché, buscar en la base de datos original
     const personaEncontrada = await buscarPersonaDataBaseOriginal(nombre);
 
-    if (personaEncontrada) {
+    //console.log(personaEncontrada)
+
+    if (Array.isArray(personaEncontrada) && personaEncontrada.length > 0) {
         return true;
     } else {
         return false;

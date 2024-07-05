@@ -45,60 +45,63 @@ function loadReparaciones(count) {
         return response.json();
     })
     .then(data => {
-        console.log('Datos de reparaciones recibidos:', data);
+        //console.log('Datos de reparaciones recibidos:', data);
         // Aquí deberías verificar la estructura de 'data' para asegurarte de que 'personas' y 'reparaciones' estén definidos correctamente.
         if (data.personas && data.reparaciones) {
-            // Procesar los datos recibidos
-            const tableBody = document.getElementById('dynamicTableBody');
-            tableBody.innerHTML = ''; // Limpiar el contenido actual del tableBody
+            if (data.personas.length > 0) {
+                // Procesar los datos recibidos
+                const tableBody = document.getElementById('dynamicTableBody');
+                tableBody.innerHTML = ''; // Limpiar el contenido actual del tableBody
 
-            loadedPages = []; // Limpiar las páginas cargadas
+                loadedPages = []; // Limpiar las páginas cargadas
 
-            // Construir las páginas y almacenarlas en loadedPages
-            let currentPageRows = [];
-            data.personas.forEach(persona => {
-                const reparacionesDePersona = data.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
+                // Construir las páginas y almacenarlas en loadedPages
+                let currentPageRows = [];
+                data.personas.forEach(persona => {
+                    const reparacionesDePersona = data.reparaciones.filter(reparacion => reparacion.persona_id === persona.id);
 
-                if (reparacionesDePersona.length > 0) {
-                    reparacionesDePersona.forEach(reparacion => {
+                    if (reparacionesDePersona.length > 0) {
+                        reparacionesDePersona.forEach(reparacion => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${persona.nombre}</td>
+                                <td>${reparacion.tipo}</td>
+                                <td>${formatDateString(reparacion.fecha)}</td>
+                                <td>${reparacion.estado}</td>
+                                <td>
+                                    <button class="boton_editar" onclick="redirectToEditar(${persona.id}, ${reparacion.id})">Editar</button>
+                                    <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, ${reparacion.id})">Eliminar</button>
+                                    <button class="boton_informe" onclick="redirectToInforme(${persona.id}, ${reparacion.id})">Informe</button>
+                                </td>
+                            `;
+                            currentPageRows.push(row); // Agregar fila a la página actual
+                        });
+                    } else {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${persona.nombre}</td>
-                            <td>${reparacion.tipo}</td>
-                            <td>${reparacion.fecha}</td>
-                            <td>${reparacion.estado}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <td>
-                                <button class="boton_editar" onclick="redirectToEditar(${persona.id}, ${reparacion.id})">Editar</button>
-                                <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, ${reparacion.id})">Eliminar</button>
-                                <button class="boton_informe" onclick="redirectToInforme(${persona.id}, ${reparacion.id})">Informe</button>
+                                <button class="boton_editar" onclick="redirectToEditar(${persona.id}, 'undefined')">Editar</button>
+                                <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, 'undefined')">Eliminar</button>
+                                <button class="boton_informe" onclick="redirectToInforme(${persona.id}, 'undefined')">Informe</button>
                             </td>
                         `;
                         currentPageRows.push(row); // Agregar fila a la página actual
-                    });
-                } else {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${persona.nombre}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>
-                            <button class="boton_editar" onclick="redirectToEditar(${persona.id}, 'undefined')">Editar</button>
-                            <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, 'undefined')">Eliminar</button>
-                            <button class="boton_informe" onclick="redirectToInforme(${persona.id}, 'undefined')">Informe</button>
-                        </td>
-                    `;
-                    currentPageRows.push(row); // Agregar fila a la página actual
+                    }
+                });
+
+                // Dividir en páginas según reparacionesIncrement
+                while (currentPageRows.length > 0) {
+                    loadedPages.push(currentPageRows.splice(0, reparacionesIncrement));
                 }
-            });
 
-            // Dividir en páginas según reparacionesIncrement
-            while (currentPageRows.length > 0) {
-                loadedPages.push(currentPageRows.splice(0, reparacionesIncrement));
+                // Actualizar la paginación
+                updatePagination(loadedPages.length);
             }
-
-            // Actualizar la paginación
-            updatePagination(loadedPages.length);
+            
         } else {
             console.error('La estructura de datos recibida es incorrecta:', data);
         }
@@ -163,4 +166,10 @@ function showPage(pageIndex) {
     loadedPages[pageIndex].forEach(row => {
         tableBody.appendChild(row);
     });
+}
+
+function formatDateString(dateString) {
+    const fecha = new Date(dateString);
+    const formattedDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
+    return formattedDate;
 }
