@@ -32,8 +32,8 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                             <td>
                                 <div class="container_botones_tabla">
                                     <button class="boton_editar" onclick="redirectToEditar(${persona.id}, ${reparacion.id})">Editar</button>
-                                    <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
-                                    <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
+                                    <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, ${reparacion.id})">Eliminar</button>
+                                    <button class="boton_informe" onclick="redirectToInforme(${persona.id}, ${reparacion.id})">Informe</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -50,8 +50,8 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
                         <td>
                             <div class="container_botones_tabla">
                                 <button class="boton_editar" onclick="redirectToEditar(${persona.id}, 'undefined')">Editar</button>
-                                <button class="boton_eliminar" onclick="eliminar(${persona.id})">Eliminar</button>
-                                <button class="boton_informe" onclick="redirectToInforme(${persona.id})">Informe</button>
+                                <button class="boton_eliminar" onclick="redirectToEliminar(${persona.id}, 'undefined')">Eliminar</button>
+                                <button class="boton_informe" onclick="redirectToInforme(${persona.id}, 'undefined')">Informe</button>
                             </div>
                         </td>
                     </tr>`;
@@ -67,7 +67,7 @@ function armarTablaInformacion(req, res, dataTrabajar)  {
             const htmlWithData = html.replace('<tbody id="dynamicTableBody"></tbody>', `<tbody id="dynamicTableBody">${dataAniadir}</tbody>`);
             return res.send(htmlWithData);
         });
-    } else if (dataTrabajar.reparaciones.length > 0) {
+    } else if (dataTrabajar.reparaciones.length > 0 && dataTrabajar.personas.length === 0) {
         dataTrabajar.reparaciones.forEach(reparacion => {
             const fila = `
                 <tr>
@@ -109,7 +109,7 @@ const dashboardBuscar = {
     buscarAmbosGET: (req, res) => {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'buscar', 'buscar_ambos.htm'));
     },
-    buscarPersonaPOST: (req, res) => {
+    buscarPersonaPOST: async (req, res) => {
         try {
             const { nombre, direccion, telefono, email } = req.body;
 
@@ -124,9 +124,26 @@ const dashboardBuscar = {
                 email: email === '' ? 'undefined' : email
             };
 
-            const dataOriginalPersonaRecibidaBusqueda = dataOriginalGETbusqueda.buscarPersona(dataRecibida)
+            const dataOriginalPersonaRecibidaBusqueda = await dataOriginalGETbusqueda.buscarPersona(dataRecibida)
 
             myCache.set('ultimaBusqueda', dataOriginalPersonaRecibidaBusqueda);
+
+            const cachedData = myCache.get('dataReparaciones');
+
+            if (cachedData) {
+                // Iterar sobre todas las personas encontradas
+                dataOriginalPersonaRecibidaBusqueda.personas.forEach(persona => {
+                    // Verificar si la persona ya está en el caché
+                    const personaExistente = cachedData.personas.some(p => p.id === persona.id);
+                    if (!personaExistente) {
+                        cachedData.personas.push(persona);
+                    } else {
+                        console.log(`La persona con ID ${persona.id} ya existe en el caché.`);
+                    }
+                });
+            
+                myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de personas
+            }
 
             armarTablaInformacion(req, res, dataOriginalPersonaRecibidaBusqueda)
 
@@ -134,7 +151,7 @@ const dashboardBuscar = {
             res.json({msg: error.msg})
         }
     },
-    buscarReparacionPOST: (req, res) => {
+    buscarReparacionPOST: async (req, res) => {
         try {
             const { estado, descripcion, tipo, fecha } = req.body;
 
@@ -149,9 +166,26 @@ const dashboardBuscar = {
                 fecha: fecha === '' ? 'undefined' : fecha
             };
 
-            const dataOriginalReparacionRecibidaBusqueda = dataOriginalGETbusqueda.buscarReparacion(dataRecibida)
+            const dataOriginalReparacionRecibidaBusqueda = await dataOriginalGETbusqueda.buscarReparacion(dataRecibida)
 
             myCache.set('ultimaBusqueda', dataOriginalReparacionRecibidaBusqueda);
+
+            const cachedData = myCache.get('dataReparaciones');
+
+            if (cachedData) {
+                // Iterar sobre todas las reparaciones encontradas
+                dataOriginalReparacionRecibidaBusqueda.reparaciones.forEach(reparacion => {
+                    // Verificar si la reparación ya está en el caché
+                    const reparacionExistente = cachedData.reparaciones.some(r => r.id === reparacion.id);
+                    if (!reparacionExistente) {
+                        cachedData.reparaciones.push(reparacion);
+                    } else {
+                        console.log(`La reparación con ID ${reparacion.id} ya existe en el caché.`);
+                    }
+                });
+            
+                myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de reparaciones
+            }
 
             armarTablaInformacion(req, res, dataOriginalReparacionRecibidaBusqueda)
 
@@ -159,7 +193,7 @@ const dashboardBuscar = {
             res.json({msg: error.msg})
         }
     },
-    buscarAmbosPOST: (req, res) => {
+    buscarAmbosPOST: async (req, res) => {
         try {
             const { nombre, direccion, telefono, email, estado, descripcion, tipo, fecha, dni } = req.body;
 
@@ -183,9 +217,39 @@ const dashboardBuscar = {
                 dni: dni === '' ? 'undefined' : dni
             };
 
-            const dataOriginalPersonaReparacionRecibidaBusqueda = dataOriginalGETbusqueda.buscarAmbos(dataRecibidaPersona, dataRecibidaReparacion)
+            const dataOriginalPersonaReparacionRecibidaBusqueda = await dataOriginalGETbusqueda.buscarAmbos(dataRecibidaPersona, dataRecibidaReparacion)
 
             myCache.set('ultimaBusqueda', dataOriginalPersonaReparacionRecibidaBusqueda);
+
+            console.log(dataOriginalPersonaReparacionRecibidaBusqueda)
+
+            const cachedData = myCache.get('dataReparaciones');
+
+            if (cachedData) {
+                // Iterar sobre todas las reparaciones encontradas
+                dataOriginalPersonaReparacionRecibidaBusqueda.reparaciones.forEach(reparacion => {
+                    // Verificar si la reparación ya está en el caché
+                    const reparacionExistente = cachedData.reparaciones.some(r => r.id === reparacion.id);
+                    if (!reparacionExistente) {
+                        cachedData.reparaciones.push(reparacion);
+                    } else {
+                        console.log(`La reparación con ID ${reparacion.id} ya existe en el caché.`);
+                    }
+                });
+
+                // Iterar sobre todas las personas encontradas
+                dataOriginalPersonaReparacionRecibidaBusqueda.personas.forEach(persona => {
+                    // Verificar si la persona ya está en el caché
+                    const personaExistente = cachedData.personas.some(p => p.id === persona.id);
+                    if (!personaExistente) {
+                        cachedData.personas.push(persona);
+                    } else {
+                        console.log(`La persona con ID ${persona.id} ya existe en el caché.`);
+                    }
+                });
+
+                myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de reparaciones y personas
+            }
 
             armarTablaInformacion(req, res, dataOriginalPersonaReparacionRecibidaBusqueda)
 

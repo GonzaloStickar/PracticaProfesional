@@ -48,11 +48,11 @@ function armarTablaInformacionConsultaCliente(req, res, dataTrabajar)  {
     }
 }
 
-function consultaReparacion(req, res) {
+async function consultaReparacion(req, res) {
 
     const { nombre_apellido_consulta } = req.body;
 
-    const dataOriginalPersonaReparacionRecibidaBusqueda = realizarConsultaReparacionCliente(nombre_apellido_consulta)
+    const dataOriginalPersonaReparacionRecibidaBusqueda = await realizarConsultaReparacionCliente(nombre_apellido_consulta)
 
     armarTablaInformacionConsultaCliente(req, res, dataOriginalPersonaReparacionRecibidaBusqueda);
 }

@@ -11,15 +11,14 @@ const path = require('path');
 const { myCache } = require('../middlewares/cache');
 
 //db "Real"
-const { 
-    dataOriginalPostPersona, dataOriginalPostReparacion,
+const {
     dataOriginalGET
 } = require('../data/db');
 
 let numReparacionesQueryMaxOld = 0;
 let puedeSeguirConsultandoPorMas = true;
 
-const mostrarPersonasReparacionesConCache = (req, res) => {
+const mostrarPersonasReparacionesConCache = async (req, res) => {
     const numReparacionesQueryMaxNew = parseInt(req.query.reparaciones);
     const cacheKey = `dataReparaciones`;
     const cacheOldKey = 'numReparacionesQueryMaxOld';
@@ -40,7 +39,7 @@ const mostrarPersonasReparacionesConCache = (req, res) => {
 
     // Realiza la consulta a la base de datos solo para los datos faltantes desde numReparacionesQueryMaxOld hasta numReparacionesQueryMaxNew
     if (puedeSeguirConsultandoPorMas) {
-        newData = dataOriginalGET(numReparacionesQueryMaxOld, numReparacionesQueryMaxNew);
+        newData = await dataOriginalGET(numReparacionesQueryMaxOld, numReparacionesQueryMaxNew);
 
         if (newData.personas.length > 0) {
 
@@ -96,7 +95,5 @@ function devolverNumReparacionesQueryMaxOld(req, res) {
 module.exports = {
     dashboardPage,
     mostrarPersonasReparacionesConCache,
-    dataOriginalPostPersona,
-    dataOriginalPostReparacion,
     devolverNumReparacionesQueryMaxOld
 }

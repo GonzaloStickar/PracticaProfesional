@@ -2,6 +2,8 @@ const path = require('path');
 const express = require("express")
 const cookieParser = require('cookie-parser');
 
+require('dotenv').config();
+
 const app = express()
 
 app.use(express.json())
@@ -38,4 +40,4 @@ app.get("*", (req, res) => {
     res.send("Página no encontrada.");
 });
 
-app.listen(3000, () => console.log("Server is running on port 5000"))
+app.listen(process.env.PORT, () => console.log("Server is running on port 5000"))

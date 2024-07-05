@@ -2,7 +2,7 @@ const path = require('path');
 
 const { 
     dataOriginalPostPersona, dataOriginalPostReparacion
-} = require('../dashboard');
+} = require('../../data/db');
 
 const { myCache } = require('../../middlewares/cache');
 
@@ -74,7 +74,7 @@ const dashboardAgregar = {
     agregarAmbosGET: (req, res) => {
         res.sendFile(path.join(__dirname, '..', '..', 'components', 'dashboard', 'agregar', 'agregar_ambos.htm'));
     },
-    agregarPersonaPOST: (req, res) => {
+    agregarPersonaPOST: async (req, res) => {
         try {
             const { nombre, direccion, telefono, email } = req.body;
 
@@ -88,25 +88,31 @@ const dashboardAgregar = {
                 }
             }
 
-            const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
+            const personaEncontrada = await buscarPersonaDataBaseOriginal(nombre);
 
-            //Hay que cambiarlo por
-            //if (personaEncontrada.length===0 || !personaEncontrada){}
-            //una vez implementada la DB
-            if (!personaEncontrada) {
+            //No hay una persona con ese nombre, por lo que devuelve undefined (sin filas)
+            if ((Array.isArray(personaEncontrada) && personaEncontrada.length === 0) || !personaEncontrada) {
 
                 //Subo a la base de datos Original (base de datos desplegada)
-                const personaCreada = dataOriginalPostPersona(
+                const personaCreada = await dataOriginalPostPersona(
                     nombre, 
                     direccion, 
                     telefono, 
                     email
                 );
 
+                //console.log(`id de la nueva persona: ${personaCreada.id}`)
+
                 // Actualizar la reparación en cachedData si existe
                 if (cachedData) {
-                    cachedData.personas.push(personaCreada);
-                    myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de personas
+                    // Verificar si la persona ya está en el caché
+                    const personaExistente = cachedData.personas.some(persona => persona.id === personaCreada.id);
+                    if (!personaExistente) {
+                        cachedData.personas.push(personaCreada);
+                        myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de personas
+                    } else {
+                        console.log('La persona ya existe en el caché.');
+                    }
                 }
 
                 return res.send(htmlFormEnviado("Añadir Persona", "Se creo la persona correctamente.", "redirectToDashboard"))
@@ -118,7 +124,7 @@ const dashboardAgregar = {
             res.json({msg: error.msg})
         }
     },
-    agregarReparacionPOST: (req, res) => {
+    agregarReparacionPOST: async (req, res) => {
         try {
             const { nombre, descripcion, tipo, fecha, estado } = req.body;
 
@@ -137,41 +143,46 @@ const dashboardAgregar = {
 
             if (!personaEncontrada) {
                 // Si no se encontró en caché, buscar en la base de datos original
-                personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
+                const resultadoBusqueda = await buscarPersonaDataBaseOriginal(nombre);
+                personaEncontrada = resultadoBusqueda[0]; // Suponiendo que buscarPersonaDataBaseOriginal devuelve un arreglo con la persona encontrada
+    
+                if (!personaEncontrada) {
+                    return res.send(htmlFormEnviado("Añadir Reparacion", `No se encontró una persona con Nombre y Apellido: ${nombre}`, "goBack"));
+                }
             }
+    
+            // Crear reparación
+            const reparacionCreada = await dataOriginalPostReparacion(
+                personaEncontrada.id,
+                descripcion,
+                tipo,
+                fecha,
+                estado
+            );
 
-            //Hay que cambiarlo por
-            //if (personaEncontrada.length > 0 || personaEncontrada){}
-            //una vez implementada la DB
-            if (personaEncontrada) {
-                const reparacionCreada = dataOriginalPostReparacion(
-                    personaEncontrada.id,
-                    descripcion,
-                    tipo,
-                    fecha,
-                    estado
-                );
-
-                // Actualizar la reparación en cachedData si existe
-                const cachedData = myCache.get('dataReparaciones');
-                if (cachedData) {
+            //console.log(`id de la nueva reparación: ${reparacionCreada.id}`)
+    
+            // Actualizar la reparación en cachedData si existe
+            if (cachedData) {
+                const reparacionExistente = cachedData.reparaciones.some(rep => rep.id === reparacionCreada.id);
+                if (!reparacionExistente) {
                     cachedData.reparaciones.push(reparacionCreada);
                     myCache.set('dataReparaciones', cachedData); // Actualizar el caché
+                } else {
+                    console.log('La reparación ya existe en el caché.');
                 }
-
-                return res.send(htmlFormEnviado("Añadir Reparacion", "Se creó la reparación correctamente.", "redirectToDashboard"));
-            } else {
-                return res.send(htmlFormEnviado("Añadir Reparacion", `No se encontró una persona con Nombre y Apellido: ${nombre}`, "goBack"));
             }
+    
+            return res.send(htmlFormEnviado("Añadir Reparacion", "Se creó la reparación correctamente.", "redirectToDashboard"));
 
         } catch (error) {
             res.json({msg: error.msg})
         }
     },
-    agregarAmbosPOST: (req, res) => {
+    agregarAmbosPOST: async (req, res) => {
         try {
             const { descripcion, tipo, fecha, estado, nombre, direccion, telefono, email } = req.body;
-    
+
             const cachedData = myCache.get('dataReparaciones');
             if (cachedData && cachedData.personas) {
                 const personaEnCache = cachedData.personas.find(persona => persona.nombre.toLowerCase() === nombre.toLowerCase());
@@ -181,40 +192,67 @@ const dashboardAgregar = {
                     return res.send(htmlFormEnviado("Añadir Ambos", `La persona con Nombre y Apellido ${nombre} ya existe.`, "goBack"));
                 }
             }
-            
-            const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
 
-            //Hay que cambiarlo por
-            //if (personaEncontrada.length===0 || !personaEncontrada){}
-            //una vez implementada la DB
-            if (!personaEncontrada) {
-                // Si la persona NO existe, crearla y obtener el objeto persona creado
-                //Subo a la base de datos Original (base de datos desplegada)
-                const personaCreada = dataOriginalPostPersona(
+            const personaEncontrada = await buscarPersonaDataBaseOriginal(nombre);
+
+            // No hay una persona con ese nombre, por lo que devuelve undefined (sin filas)
+            if ((Array.isArray(personaEncontrada) && personaEncontrada.length === 0) || !personaEncontrada) {
+                // Subo a la base de datos Original (base de datos desplegada)
+                const personaCreada = await dataOriginalPostPersona(
                     nombre, 
                     direccion, 
                     telefono, 
                     email
                 );
 
-                const reparacionCreada = dataOriginalPostReparacion(
-                    personaCreada.id,
-                    descripcion,
-                    tipo,
-                    fecha,
-                    estado
-                );
+                let reparacionCreada = null;
 
-                const cachedData = myCache.get('dataReparaciones');
-                if (cachedData) {
-                    cachedData.personas.push(personaCreada);
-                    cachedData.reparaciones.push(reparacionCreada);
-                    myCache.set('dataReparaciones', cachedData); // Actualizar el caché con la nueva información de personas y reparaciones
+                if (personaCreada) {
+                    console.log("Persona creada:", personaCreada);
+
+                    // Crear la reparación con la persona creada
+                    reparacionCreada = await dataOriginalPostReparacion(
+                        personaCreada.id,
+                        descripcion,
+                        tipo,
+                        fecha,
+                        estado
+                    );
+                    
+                    console.log("Reparación creada:", reparacionCreada);
                 }
+
+                if (cachedData) {
+                    if (personaCreada) {
+                        // Verificar si la persona ya existe en el caché
+                        const personaExistente = cachedData.personas.some(persona => persona.id === personaCreada.id);
+                        
+                        if (!personaExistente) {
+                            cachedData.personas.push(personaCreada);
+                        } else {
+                            console.log('La persona ya existe en el caché.');
+                        }
+                    }
+
+                    if (reparacionCreada) {
+                        // Verificar si la reparación ya existe en el caché
+                        const reparacionExistente = cachedData.reparaciones.some(reparacion => reparacion.id === reparacionCreada.id);
+
+                        if (!reparacionExistente) {
+                            cachedData.reparaciones.push(reparacionCreada);
+                        } else {
+                            console.log('La reparación ya existe en el caché.');
+                        }
+                    }
+
+                    // Actualizar el caché con la nueva información de personas y reparaciones
+                    myCache.set('dataReparaciones', cachedData);
+                }
+                
                 return res.send(htmlFormEnviado("Añadir Ambos", "Se creó la persona y la reparación correctamente.", "redirectToDashboard"));
             }
             else {
-                return res.send(htmlFormEnviado("Añadir Reparacion", `No se encontró una persona con Nombre y Apellido: ${nombre}`, "goBack"));
+                return res.send(htmlFormEnviado("Añadir Reparacion", `Ya existe una persona con Nombre y Apellido: ${nombre}`, "goBack"));
             }
         } catch (error) {
             res.json({ msg: error.msg });
@@ -224,7 +262,7 @@ const dashboardAgregar = {
 
 //Esta función es utilizada por check_nomb_apell_persona.js y check_nomb_apell_reparacion.js
 //Cuando se consulta por /verificar, se llama a esta función.
-const verificarDisponibilidadNombreApellido = (req, res) => {
+const verificarDisponibilidadNombreApellido = async (req, res) => {
     try {
         const nombre = req.query.nombre;
 
@@ -241,19 +279,19 @@ const verificarDisponibilidadNombreApellido = (req, res) => {
         }
 
         // Si no se encontró en caché, buscar en la base de datos original
-        const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
+        const personaEncontrada = await buscarPersonaDataBaseOriginal(nombre);
 
-        //Hay que cambiarlo por
-        //if (personaEncontrada.length > 0 || personaEncontrada){}
-        //una vez implementada la DB
-        if (personaEncontrada) {
+        //console.log(personaEncontrada)
+
+        // Verificar que personaEncontrada no sea undefined
+        if (Array.isArray(personaEncontrada) && personaEncontrada.length > 0) {
             res.send({ exists: true });
         } else {
             res.send({ exists: false });
         }
     } catch (error) {
         console.error('Error al buscar persona:', error);
-        res.status(500).send({ error: 'Error al verificar el nombre y apellido' });
+        res.send({ exists: false });
     }
 }
 

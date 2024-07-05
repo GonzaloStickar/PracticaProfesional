@@ -60,7 +60,7 @@ const dashboardEliminar = {
             res.send(htmlFormEnviado("Eliminar Persona",`No se encontró la persona con ID: ${personaId}`, "goBack()"));
         }
     },
-    eliminarFormPOST: (req,res) => {
+    eliminarFormPOST: async (req,res) => {
 
         //yo pongo eliminar
         //y primero que me elimine la reparación
@@ -112,7 +112,7 @@ const dashboardEliminar = {
                     const otrasReparaciones = cachedData.reparaciones.some(reparacion => reparacion.persona_id === personaEncontrada.id);
                     if (!otrasReparaciones) {
                         // No hay más reparaciones asociadas, eliminar también la persona
-                        dataOriginalEliminarPersonaId(personaEncontrada.id);
+                        await dataOriginalEliminarPersonaId(personaEncontrada.id);
 
                         // Eliminar persona del caché
                         cachedData.personas = cachedData.personas.filter(persona => persona.id !== parseInt(personaId, 10));
@@ -130,7 +130,7 @@ const dashboardEliminar = {
                 const otrasReparaciones = cachedData.reparaciones.some(reparacion => reparacion.persona_id === personaEncontrada.id);
                 if (!otrasReparaciones) {
                     // No hay más reparaciones asociadas, eliminar la persona
-                    dataOriginalEliminarPersonaId(personaEncontrada.id);
+                    await dataOriginalEliminarPersonaId(personaEncontrada.id);
 
                     // Eliminar persona del caché
                     cachedData.personas = cachedData.personas.filter(persona => persona.id !== parseInt(personaId, 10));

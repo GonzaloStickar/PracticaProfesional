@@ -72,7 +72,7 @@ const dashboardEditar = {
             res.send(htmlFormEnviado("Actualizar Reparación",`No se encontró la reparación con ID: ${reparacionId}`, "goBack()"));
         }
     },
-    editarPersonaPOST: (req, res) => {
+    editarPersonaPOST: async (req, res) => {
         const personaId = req.query.persona_id;
         const { nombre, direccion, telefono, email } = req.body;
 
@@ -97,7 +97,7 @@ const dashboardEditar = {
                     //Que busque por cacheData y dataBase si no encuentra en cacheData
                     if (!verificarDisponibilidadNombreApellido(nombre)) {
                         // Actualizar en la base de datos original
-                        updateDataOriginalDatosPersona(parseInt(personaId, 10), nombre, direccion, telefono, email);
+                        await updateDataOriginalDatosPersona(parseInt(personaId, 10), nombre, direccion, telefono, email);
 
                         // Actualizar en la caché local
                         personaEncontrada.nombre = nombre;
@@ -118,7 +118,7 @@ const dashboardEditar = {
             return res.send(htmlFormEnviado("Actualizar Persona", `No se encontró dataReparaciones en el caché o no hay personas en cachedData.`, "goBack()"));
         }
     },
-    editarReparacionPOST: (req, res) => {
+    editarReparacionPOST: async (req, res) => {
         const personaId = req.query.persona_id;
         const reparacionId = req.query.reparacion_id;
         const { descripcion, tipo, fecha, estado } = req.body;
@@ -142,7 +142,7 @@ const dashboardEditar = {
                     return res.send(htmlFormEnviado("Actualizar Reparacion", `No se han ingresado nuevos valores.`, "redirectToDashboard()"));
                 } else {
                     // Actualizar en la base de datos original
-                    updateDataOriginalDatosReparacionDePersona(parseInt(personaId, 10), parseInt(reparacionId, 10), descripcion, tipo, fecha, estado);
+                    await updateDataOriginalDatosReparacionDePersona(parseInt(personaId, 10), parseInt(reparacionId, 10), descripcion, tipo, fecha, estado);
 
                     // Actualizar en la caché local
                     reparacionEncontrada.descripcion = descripcion;
@@ -162,7 +162,7 @@ const dashboardEditar = {
     }
 }
 
-const verificarDisponibilidadNombreApellido = (nombre) => {
+const verificarDisponibilidadNombreApellido = async (nombre) => {
 
     const cachedData = myCache.get('dataReparaciones');
     
@@ -177,7 +177,7 @@ const verificarDisponibilidadNombreApellido = (nombre) => {
     }
 
     // Si no se encontró en caché, buscar en la base de datos original
-    const personaEncontrada = buscarPersonaDataBaseOriginal(nombre);
+    const personaEncontrada = await buscarPersonaDataBaseOriginal(nombre);
 
     if (personaEncontrada) {
         return true;

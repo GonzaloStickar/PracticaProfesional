@@ -1,387 +1,73 @@
-//const pool = require('../database')
+const pool = require('../database')
 
 const { persona } = require('../models/persona')
 const { reparacion } = require('../models/reparacion')
 
-//Hago de cuenta que esta es nuestra base de datos desplegada en PostgreeSQL.
-//Test
-let dataBaseOriginal = {
-    personas: [],
-    reparaciones: []
-}
+async function buscarPersonaDataBaseOriginal(nombreApellido) {
 
-//Una vez hecha la base de datos, esto no va a ser necesario, ya que va a ser un autoincrement de cada persona nueva o reparacion
-//por lo que no necesitaremos ver cada id o ir sumando, sino que la base de datos ya lo hará automáticamente por sí misma.
-let idPersonaNueva = 0; //De la tabla personas, cada persona tiene un id
-let idReparacionNueva = 0; //De la tabla reparaciones, cada persona tiene un id
+    let rowsEncontrados;
 
-//IMPLEMENTADO
-function buscarPersonaDataBaseOriginal(nombreApellido) {
-    //Utilizado por dashboard_agregar.js
-    return dataBaseOriginal.personas.find(persona => persona.nombre.toLowerCase() === nombreApellido.toLowerCase());
-}
-
-//IMPLEMENTADO
-function dataOriginalPostPersona(nombre, direccion, telefono, email) {
-
-    //Esta función va a ser la encargada de un INSERT INTO persona VALUES(...)
-    //Va a estar conectada con la base de datos, y de personaNueva vamos a tener los 'get'
-    //para poder obtener los datos de forma segura y poder asignarlos al INSERT de nuestra petición a la DB.
-
-    //Creo una nueva persona para después añadirla a la base de datos.
-    let personaNueva = new persona(idPersonaNueva, nombre, direccion, telefono, email);
-
-    idPersonaNueva++;
-
-    dataBaseOriginal.personas.push(personaNueva);
-
-    return personaNueva;
-}
-
-//IMPLEMENTADO
-function dataOriginalPostReparacion(persona_id, descripcion, tipo, fecha, estado) {
-    //Lo mismo que la función de dataOriginalPostPersona, solo que con una reparacion.
-
-    //Creo una nueva persona para después añadirla a la base de datos.
-    let reparacionNueva = new reparacion(idReparacionNueva, persona_id, descripcion, tipo, fecha, estado);
-
-    idReparacionNueva++;
-
-    dataBaseOriginal.reparaciones.push(reparacionNueva);
-
-    return reparacionNueva;
-}
-
-//IMPLEMENTADO
-function dataOriginalGET(min, max) {
-
-    //Esta función devuelve tanto personas, como reparaciones.
-
-    //Debería consultar a la base de datos
-    //por min + 1, y max queda como está
-    //(Se está consultando dataOriginalGet, min + 1, max)
-    console.log("Se está consultando dataOriginalGet, min: ", min, " , max: ",max);
-
-    //let personasFiltradas = dataBaseOriginal.personas.slice(min, max);
-
-    const resultadoConsultaSQL = [
-        { persona_id: 1, nombre: 'Juan Pérez', direccion: 'Calle Falsa 123', telefono: '1234567890', email: 'juan.perez@example.com', reparacion_id: 1, descripcion: 'Cambio de pantalla', tipo: 'Televisor', fecha: '2024-06-13', estado: 'Completado' },
-        { persona_id: 1, nombre: 'Juan Pérez', direccion: 'Calle Falsa 123', telefono: '1234567890', email: 'juan.perez@example.com', reparacion_id: 2, descripcion: 'Reparación de plaqueta', tipo: 'Televisor', fecha: '2024-06-14', estado: 'En progreso' },
-        { persona_id: 2, nombre: 'María Gómez', direccion: 'Avenida Siempreviva 456', telefono: '0987654321', email: 'maria.gomez@example.com', reparacion_id: 3, descripcion: 'Instalación de software', tipo: 'Televisor', fecha: '2024-06-15', estado: 'Pendiente' },
-        { persona_id: 3, nombre: 'Juan Díaz', direccion: 'Boulevard del Sol 789', telefono: '1112223333', email: 'carlos.diaz@example.com', reparacion_id: 4, descripcion: 'Reparación', tipo: 'Microondas', fecha: '2024-06-14', estado: 'En progreso' },
-        { persona_id: 4, nombre: 'Carlos Falso', direccion: 'Calle Falsa 123', telefono: '11111111', email: 'juan.falso@example.com', reparacion_id: null, descripcion: null, tipo: null, fecha: null, estado: null }
-    ];
-    
-    // Procesar resultado de consulta SQL
-    let personasProcesadas = [];
-    let reparacionesProcesadas = [];
-    
-    resultadoConsultaSQL.forEach(row => {
-        // Verificar si la persona ya está en la lista de personas procesadas
-        if (!personasProcesadas.find(p => p.id === row.persona_id)) {
-            personasProcesadas.push({
-                id: row.persona_id,
-                nombre: row.nombre,
-                direccion: row.direccion,
-                telefono: row.telefono,
-                email: row.email
-            });
-        }
-
-        if (row.reparacion_id !== null && row.descripcion !== null && row.tipo !== null && row.fecha !== null && row.estado !== null) {
-            // Agregar la reparación a la lista de reparaciones procesadas
-            reparacionesProcesadas.push({
-                id: row.reparacion_id,
-                persona_id: row.persona_id,
-                descripcion: row.descripcion,
-                tipo: row.tipo,
-                fecha: row.fecha,
-                estado: row.estado
-            });
-        }
-    });
-
-    //console.log({ personas: personasProcesadas, reparaciones: reparacionesProcesadas })
-
-    return { personas: personasProcesadas, reparaciones: reparacionesProcesadas };
-}
-
-//IMPLEMENTADO
-const dataOriginalGETbusqueda = {
-
-    //Esta función está encargada de realizar la consulta (y primero armar dicha consulta)
-    //Lo que va a ser importante para armar la consulta está dentro de esta función, y se realizará la consulta a la DB
-    //para poder traer aquellas personas, reparaciones, o ambos que hayamos consultado.
-    
-    //Lo que vamos a hacer en esta función es ver si se asignó la busqueda a cada uno
-    //Ejemplo: Si nosotros en dataEnviadaBuscar, recibimos nombre == '', direccion == ''
-    //Entonces, no añadiremos eso a nuestra consulta, pero por lo contrario... si recibimos
-    //telefono == '123', entonces armaremos nuestra consulta para que se busque respecto
-    //a si están incluidos o empiezan con esos términos ('123', o otros que asignemos...)
-
-    buscarPersona: (dataEnviadaBuscar) => {
-
-        let resultados = {
-            personas:[],
-            reparaciones:[]
-        };
-
-        //Consulta SQL
-        let baseConsultaBusqueda = "SELECT * FROM personas WHERE";
-        let condiciones = [];
-
-        if (dataEnviadaBuscar.nombre !== 'undefined') {
-            condiciones.push(`LOWER(nombre) LIKE '%${dataEnviadaBuscar.nombre}%'`);
-        }
-        if (dataEnviadaBuscar.direccion !== 'undefined') {
-            condiciones.push(`LOWER(direccion) LIKE '%${dataEnviadaBuscar.direccion}%'`);
-        }
-        if (dataEnviadaBuscar.telefono !== 'undefined') {
-            condiciones.push(`telefono LIKE '%${dataEnviadaBuscar.telefono}%'`);
-        }
-        if (dataEnviadaBuscar.email !== 'undefined') {
-            condiciones.push(`LOWER(email) LIKE '%${dataEnviadaBuscar.email}%'`);
-        }
-
-        // Construir la consulta final añadiendo las condiciones
-        if (condiciones.length > 0) {
-            baseConsultaBusqueda += " " + condiciones.join(" AND ");
-        }
-
-        baseConsultaBusqueda+=";"
-
-        //console.log(baseConsultaBusqueda)
-
-        return resultados;
-    },
-    buscarReparacion: (dataEnviadaBuscar) => {
-        
-        let resultados = {
-            personas:[],
-            reparaciones:[]
-        };
-
-        //Consulta SQL
-        let baseConsultaBusqueda = "SELECT * FROM reparaciones WHERE";
-        let condiciones = [];
-
-        if (dataEnviadaBuscar.estado !== 'undefined') {
-            condiciones.push(`LOWER(estado) LIKE '%${dataEnviadaBuscar.estado}%'`);
-        }
-        if (dataEnviadaBuscar.descripcion !== 'undefined') {
-            condiciones.push(`LOWER(descripcion) LIKE '%${dataEnviadaBuscar.descripcion}%'`);
-        }
-        if (dataEnviadaBuscar.tipo !== 'undefined') {
-            condiciones.push(`LOWER(tipo) LIKE '%${dataEnviadaBuscar.tipo}%'`);
-        }
-        if (dataEnviadaBuscar.fecha !== 'undefined') {
-            condiciones.push(`TO_CHAR(fecha, 'YYYY-MM-DD') LIKE '%${dataEnviadaBuscar.fecha}%'`);
-        }
-
-        // Construir la consulta final añadiendo las condiciones
-        if (condiciones.length > 0) {
-            baseConsultaBusqueda += " " + condiciones.join(" AND ");
-        }
-
-        baseConsultaBusqueda+=";"
-
-        //console.log(baseConsultaBusqueda)
-
-        return resultados;
-    },
-    buscarAmbos: (dataEnviadaBuscarPersona, dataEnviadaBuscarReparacion) => {
-
-        let resultados = {
-            personas: [],
-            reparaciones: []
-        };
-    
-        // Construcción de la consulta SQL combinada
-        // Funcionaría como un FULL OUTER JOIN, para traer a todos.
-        let baseConsultaBusqueda = `SELECT * FROM personas FULL OUTER JOIN reparaciones ON personas.id = reparaciones.persona_id WHERE`;
-
-        let condiciones = [];
-
-        // Aplicar condiciones de búsqueda para tabla personas
-        if (dataEnviadaBuscarPersona.nombre !== 'undefined') {
-            condiciones.push(`LOWER(personas.nombre) LIKE '%${dataEnviadaBuscarPersona.nombre}%'`);
-        }
-        if (dataEnviadaBuscarPersona.direccion !== 'undefined') {
-            condiciones.push(`LOWER(personas.direccion) LIKE '%${dataEnviadaBuscarPersona.direccion}%'`);
-        }
-        if (dataEnviadaBuscarPersona.telefono !== 'undefined') {
-            condiciones.push(`personas.telefono LIKE '%${dataEnviadaBuscarPersona.telefono}%'`);
-        }
-        if (dataEnviadaBuscarPersona.email !== 'undefined') {
-            condiciones.push(`LOWER(personas.email) LIKE '%${dataEnviadaBuscarPersona.email}%'`);
-        }
-
-        // Aplicar condiciones de búsqueda para tabla reparaciones
-        if (dataEnviadaBuscarReparacion.estado !== 'undefined') {
-            condiciones.push(`LOWER(reparaciones.estado) LIKE '%${dataEnviadaBuscarReparacion.estado}%'`);
-        }
-        if (dataEnviadaBuscarReparacion.descripcion !== 'undefined') {
-            condiciones.push(`LOWER(reparaciones.descripcion) LIKE '%${dataEnviadaBuscarReparacion.descripcion}%'`);
-        }
-        if (dataEnviadaBuscarReparacion.tipo !== 'undefined') {
-            condiciones.push(`LOWER(reparaciones.tipo) LIKE '%${dataEnviadaBuscarReparacion.tipo}%'`);
-        }
-        if (dataEnviadaBuscarReparacion.fecha !== 'undefined') {
-            condiciones.push(`TO_CHAR(reparaciones.fecha, 'YYYY-MM-DD') LIKE '%${dataEnviadaBuscarReparacion.fecha}%'`);
-        }
-
-        // Agregar todas las condiciones a la consulta SQL
-        if (condiciones.length > 0) {
-            baseConsultaBusqueda += " " + condiciones.join(" AND ");
-        }
-
-        baseConsultaBusqueda += ";";
-
-        //console.log(baseConsultaBusqueda);
-    
-        return resultados;
-    }
-}
-
-//IMPLEMENTADO
-function updateDataOriginalDatosPersona (personaId, nombre, direccion, telefono, email) {
-    const personaExistente = dataBaseOriginal.personas.find(persona => persona.id === personaId);
-
-    personaExistente.nombre = nombre;
-    personaExistente.direccion = direccion;
-    personaExistente.telefono = telefono;
-    personaExistente.email = email;
-}
-
-//IMPLEMENTADO
-function updateDataOriginalDatosReparacionDePersona (personaId, reparacionId, descripcion, tipo, fecha, estado) {
-    const personaExistente = dataBaseOriginal.personas.find(persona => persona.id === personaId);
-
-    if (personaExistente) {
-        const reparacionEncontrada = dataBaseOriginal.reparaciones.find(reparacion => {
-            return reparacion.persona_id === personaId && reparacion.id === reparacionId;
-        });
-
-        reparacionEncontrada.descripcion = descripcion;
-        reparacionEncontrada.tipo = tipo;
-        reparacionEncontrada.fecha = fecha;
-        reparacionEncontrada.estado = estado;
-    }
-}
-
-//IMPLEMENTADO
-function dataOriginalEliminarPersonaId(personaId) {
-    console.log(`Se está eliminando Persona ID: ${personaId} (No se eliminó todavía)`)
-    const tieneOtrasReparaciones = dataBaseOriginal.reparaciones.some(reparacion => reparacion.persona_id === personaId);
-
-    console.log(`Tiene otras reparaciones Persona ID: ${personaId} - ${tieneOtrasReparaciones}`)
-
-    if (!tieneOtrasReparaciones) {
-        console.log(`NO tiene otras reparaciones Persona ID: ${personaId} - ${tieneOtrasReparaciones} - Eliminar Persona`)
-        dataBaseOriginal.personas = dataBaseOriginal.personas.filter(persona => persona.id !== personaId);
-    }
-    else {
-        console.log("Tiene otras reparaciones, no se elimina la reparación.")
-    }
-}
-
-//IMPLEMENTADO
-function dataOriginalEliminarReparacionId(reparacionId) {
-    console.log(`Se está eliminando Reparacion ID: ${reparacionId}`)
-    dataBaseOriginal.reparaciones = dataBaseOriginal.reparaciones.filter(reparacion => reparacion.id !== reparacionId);
-}
-
-//IMPLEMENTADO
-function realizarConsultaReparacionCliente(nombreBusqueda) {
-    let resultados = {
-        personas: [],
-        reparaciones: []
-    };
-
-    // Filtrar personas cuyo nombre coincida con el nombre de búsqueda
-    const personasFiltradas = dataBaseOriginal.personas.filter(persona => 
-        persona.nombre.toLowerCase().includes(nombreBusqueda.toLowerCase())
-    );
-
-    // Agregar las personas filtradas a los resultados
-    resultados.personas = personasFiltradas;
-
-    // Buscar y agregar las reparaciones asociadas con las personas filtradas
-    resultados.reparaciones = dataBaseOriginal.reparaciones.filter(reparacion => 
-        personasFiltradas.some(persona => persona.id === reparacion.persona_id)
-    );
-
-    return resultados;
-}
-
-
-
-//CONSULTAS SQL
-
-//Requiere modificación en dashboard_agregar.js en 
-async function buscarPersonaDataBaseOriginalV2(nombreApellido) {
     try {
         const query = `
             SELECT * 
             FROM personas 
-            WHERE LOWER(nombre) LIKE $1;
+            WHERE LOWER(nombre) = LOWER($1);
         `;
-        const searchTerm = `%${nombreApellido.toLowerCase()}%`;
-        const { rows } = await pool.query(query, [searchTerm]);
+        const { rows } = await pool.query(query, [nombreApellido]);
 
-        return rows[0];
+        rowsEncontrados = rows;
 
     } catch (error) {
         console.error('Error al buscar persona en la base de datos:', error);
         throw error;
     } finally {
-        await client.end();
+        return rowsEncontrados;
     }
 }
 
-async function dataOriginalPostPersonaV2(nombre, direccion, telefono, email) {
-    const insertQuery = `INSERT INTO personas (nombre, direccion, telefono, email) VALUES ($1, $2, $3, $4) RETURNING id;`;
+async function dataOriginalPostPersona(nombre, direccion, telefono, email) {
+
+    const insertQuery = `
+        INSERT INTO personas (nombre, direccion, telefono, email)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id;`;
 
     const insertValues = [nombre, direccion, telefono, email];
-
+    
     try {
-    const result = await pool.query(insertQuery, insertValues);
-    const personaId = result.rows[0].id;
-
-        //Crear la persona nueva utilizando el id devuelto por RETURNING
-        let personaNueva = new persona(personaId, nombre, direccion, telefono, email);
-
-    return personaNueva;
-
+        const result = await pool.query(insertQuery, insertValues);
+        const id = result.rows[0].id; // Accede al ID devuelto por RETURNING
+        const personaNueva = new persona(id, nombre, direccion, telefono, email);
+        return personaNueva;
     } catch (error) {
         throw new Error(`Error al insertar persona en la base de datos: ${error.message}`);
-    } finally {
-        await client.end();
     }
 }
 
-async function dataOriginalPostReparacionV2(persona_id, descripcion, tipo, fecha, estado) {
-    const insertQuery = `INSERT INTO reparaciones (persona_id, descripcion, tipo, fecha, estado) VALUES($1, $2, $3, $4) RETURNING id;`;
+async function dataOriginalPostReparacion(persona_id, descripcion, tipo, fecha, estado) {
+
+    const insertQuery = `
+        INSERT INTO reparaciones (persona_id, descripcion, tipo, fecha, estado)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id;`;
 
     const insertValues = [persona_id, descripcion, tipo, fecha, estado];
 
     try {
         const result = await pool.query(insertQuery, insertValues);
-        const reparacion_id = result.rows[0].id;
-
-        //Crear la persona nueva utilizando el id devuelto por RETURNING
-        let reparacionNueva = new persona(reparacion_id, persona_id, descripcion, tipo, fecha, estado);
-
+        const id = result.rows[0].id; // Accede al ID devuelto por RETURNING
+        const reparacionNueva = new reparacion(id, persona_id, descripcion, tipo, fecha, estado);
         return reparacionNueva;
-
     } catch (error) {
         throw new Error(`Error al insertar reparación en la base de datos: ${error.message}`);
-    } finally {
-        await client.end();
     }
 }
 
-async function dataOriginalGETV2(min, max) {
+async function dataOriginalGET(min, max) {
+
+    let personasProcesadas = [];
+    let reparacionesProcesadas = [];
+    
     try {
         //Consulta SQL con parámetros min y max
         const query = `
@@ -397,46 +83,47 @@ async function dataOriginalGETV2(min, max) {
 
         const values = [min+1, max];  //Valores para los parámetros $1 y $2
 
-        const result = await client.query(query, values);
+        const result = await pool.query(query, values);
 
-        let personasProcesadas = [];
-        let reparacionesProcesadas = [];
+        result.rows.forEach(row => {
+            // Verificar si la persona ya existe en personasProcesadas
+            const personaExistente = personasProcesadas.some(persona => persona.id === row.persona_id);
         
-        result.forEach(row => {
-            
-            personasProcesadas.push({
-                id: row.persona_id,
-                nombre: row.nombre,
-                direccion: row.direccion,
-                telefono: row.telefono,
-                email: row.email
-            });
-
-            if (row.reparacion_id !== null && row.descripcion !== null && row.tipo !== null && row.fecha !== null && row.estado !== null) {
-                // Agregar la reparación a la lista de reparaciones procesadas
+            if (!personaExistente) {
+                personasProcesadas.push({
+                    id: row.persona_id,
+                    nombre: row.nombre_persona,
+                    direccion: row.direccion_persona,
+                    telefono: row.telefono_persona,
+                    email: row.email_persona
+                });
+            }
+        
+            // Verificar si la reparación ya existe en reparacionesProcesadas
+            const reparacionExistente = reparacionesProcesadas.some(reparacion => reparacion.id === row.reparacion_id);
+        
+            if (row.reparacion_id !== null && !reparacionExistente &&
+                row.descripcion_reparacion !== null && row.tipo_reparacion !== null &&
+                row.fecha_reparacion !== null && row.estado_reparacion !== null) {
                 reparacionesProcesadas.push({
                     id: row.reparacion_id,
                     persona_id: row.persona_id,
-                    descripcion: row.descripcion,
-                    tipo: row.tipo,
-                    fecha: row.fecha,
-                    estado: row.estado
+                    descripcion: row.descripcion_reparacion,
+                    tipo: row.tipo_reparacion,
+                    fecha: row.fecha_reparacion,
+                    estado: row.estado_reparacion
                 });
             }
         });
-
-        //console.log({ personas: personasProcesadas, reparaciones: reparacionesProcesadas })
-
-        return { personas: personasProcesadas, reparaciones: reparacionesProcesadas };
-
+    
     } catch (error) {
         console.error('Error al ejecutar la consulta:', error);
     } finally {
-        await client.end();
+        return { personas: personasProcesadas, reparaciones: reparacionesProcesadas };
     }
 }
 
-const dataOriginalGETbusquedaV2 = {
+const dataOriginalGETbusqueda = {
     
     //Lo que vamos a hacer en esta función es ver si se asignó la busqueda a cada uno
     //Ejemplo: Si nosotros en dataEnviadaBuscar, recibimos nombre == '', direccion == ''
@@ -445,6 +132,8 @@ const dataOriginalGETbusquedaV2 = {
     //a si están incluidos o empiezan con esos términos ('123', o otros que asignemos...)
 
     buscarPersona: async (dataEnviadaBuscar) => {
+
+        const client = await pool.connect();
 
         let resultados = {
             personas:[],
@@ -487,10 +176,12 @@ const dataOriginalGETbusquedaV2 = {
             console.error('Error al consultar personas:', error);
             throw error;
         } finally {
-            await client.end();
+            client.release();
         }
     },
     buscarReparacion: async (dataEnviadaBuscar) => {
+
+        const client = await pool.connect();
         
         let resultados = {
             personas:[],
@@ -533,79 +224,120 @@ const dataOriginalGETbusquedaV2 = {
             console.error('Error al consultar reparaciones:', error);
             throw error;
         } finally {
-            await client.end();
+            client.release();
         }
     },
     buscarAmbos: async (dataEnviadaBuscarPersona, dataEnviadaBuscarReparacion) => {
+
+        const client = await pool.connect();
 
         let resultados = {
             personas: [],
             reparaciones: []
         };
     
-        // Construcción de la consulta SQL combinada
-        // Funcionaría como un FULL OUTER JOIN, para traer a todos.
-        let baseConsultaBusqueda = `SELECT * FROM personas FULL OUTER JOIN reparaciones ON personas.id = reparaciones.persona_id WHERE`;
-
-        let condiciones = [];
-
-        // Aplicar condiciones de búsqueda para tabla personas
-        if (dataEnviadaBuscarPersona.nombre !== 'undefined') {
-            condiciones.push(`LOWER(personas.nombre) LIKE '%${dataEnviadaBuscarPersona.nombre}%'`);
-        }
-        if (dataEnviadaBuscarPersona.direccion !== 'undefined') {
-            condiciones.push(`LOWER(personas.direccion) LIKE '%${dataEnviadaBuscarPersona.direccion}%'`);
-        }
-        if (dataEnviadaBuscarPersona.telefono !== 'undefined') {
-            condiciones.push(`personas.telefono LIKE '%${dataEnviadaBuscarPersona.telefono}%'`);
-        }
-        if (dataEnviadaBuscarPersona.email !== 'undefined') {
-            condiciones.push(`LOWER(personas.email) LIKE '%${dataEnviadaBuscarPersona.email}%'`);
-        }
-
-        // Aplicar condiciones de búsqueda para tabla reparaciones
-        if (dataEnviadaBuscarReparacion.estado !== 'undefined') {
-            condiciones.push(`LOWER(reparaciones.estado) LIKE '%${dataEnviadaBuscarReparacion.estado}%'`);
-        }
-        if (dataEnviadaBuscarReparacion.descripcion !== 'undefined') {
-            condiciones.push(`LOWER(reparaciones.descripcion) LIKE '%${dataEnviadaBuscarReparacion.descripcion}%'`);
-        }
-        if (dataEnviadaBuscarReparacion.tipo !== 'undefined') {
-            condiciones.push(`LOWER(reparaciones.tipo) LIKE '%${dataEnviadaBuscarReparacion.tipo}%'`);
-        }
-        if (dataEnviadaBuscarReparacion.fecha !== 'undefined') {
-            condiciones.push(`TO_CHAR(reparaciones.fecha, 'YYYY-MM-DD') LIKE '%${dataEnviadaBuscarReparacion.fecha}%'`);
-        }
-
-        // Agregar todas las condiciones a la consulta SQL
-        if (condiciones.length > 0) {
-            baseConsultaBusqueda += " " + condiciones.join(" AND ");
-        }
-
-        baseConsultaBusqueda += ";";
-
-        //console.log(baseConsultaBusqueda);
-    
         try {
+            // Construcción de la consulta SQL combinada
+            let baseConsultaBusqueda = `
+                SELECT 
+                    personas.id AS persona_id,
+                    personas.nombre,
+                    personas.direccion,
+                    personas.telefono,
+                    personas.email,
+                    reparaciones.id AS reparacion_id,
+                    reparaciones.persona_id AS persona_id_reparacion,
+                    reparaciones.descripcion,
+                    reparaciones.tipo,
+                    reparaciones.fecha,
+                    reparaciones.estado
+                FROM personas
+                LEFT JOIN reparaciones ON personas.id = reparaciones.persona_id
+                WHERE`;
+    
+            let condiciones = [];
+    
+            // Aplicar condiciones de búsqueda para tabla personas
+            if (dataEnviadaBuscarPersona.nombre !== 'undefined') {
+                condiciones.push(`LOWER(personas.nombre) LIKE '%${dataEnviadaBuscarPersona.nombre}%'`);
+            }
+            if (dataEnviadaBuscarPersona.direccion !== 'undefined') {
+                condiciones.push(`LOWER(personas.direccion) LIKE '%${dataEnviadaBuscarPersona.direccion}%'`);
+            }
+            if (dataEnviadaBuscarPersona.telefono !== 'undefined') {
+                condiciones.push(`personas.telefono LIKE '%${dataEnviadaBuscarPersona.telefono}%'`);
+            }
+            if (dataEnviadaBuscarPersona.email !== 'undefined') {
+                condiciones.push(`LOWER(personas.email) LIKE '%${dataEnviadaBuscarPersona.email}%'`);
+            }
+    
+            // Aplicar condiciones de búsqueda para tabla reparaciones
+            if (dataEnviadaBuscarReparacion.estado !== 'undefined') {
+                condiciones.push(`LOWER(reparaciones.estado) LIKE '%${dataEnviadaBuscarReparacion.estado}%'`);
+            }
+            if (dataEnviadaBuscarReparacion.descripcion !== 'undefined') {
+                condiciones.push(`LOWER(reparaciones.descripcion) LIKE '%${dataEnviadaBuscarReparacion.descripcion}%'`);
+            }
+            if (dataEnviadaBuscarReparacion.tipo !== 'undefined') {
+                condiciones.push(`LOWER(reparaciones.tipo) LIKE '%${dataEnviadaBuscarReparacion.tipo}%'`);
+            }
+            if (dataEnviadaBuscarReparacion.fecha !== 'undefined') {
+                condiciones.push(`TO_CHAR(reparaciones.fecha, 'YYYY-MM-DD') LIKE '%${dataEnviadaBuscarReparacion.fecha}%'`);
+            }
+    
+            // Agregar todas las condiciones a la consulta SQL
+            if (condiciones.length > 0) {
+                baseConsultaBusqueda += " " + condiciones.join(" AND ");
+            }
+    
+            baseConsultaBusqueda += ";";
+    
             // Ejecutar la consulta a la base de datos
-            const { rows } = await pool.query(baseConsultaBusqueda);
-
-            resultados.personas = rows.filter(row => row.id !== null && row.id !== undefined);
-            resultados.reparaciones = rows.filter(row => row.persona_id !== null && row.persona_id !== undefined);
-
+            const { rows } = await client.query(baseConsultaBusqueda);
+    
+            // Procesar resultados y separar personas y reparaciones
+            rows.forEach(row => {
+                // Agregar persona si no existe previamente
+                if (!resultados.personas.some(persona => persona.id === row.persona_id)) {
+                    let persona = {
+                        id: row.persona_id,
+                        nombre: row.nombre,
+                        direccion: row.direccion,
+                        telefono: row.telefono,
+                        email: row.email
+                    };
+                    resultados.personas.push(persona);
+                }
+    
+                // Agregar reparación si no existe previamente
+                if (row.reparacion_id && !resultados.reparaciones.some(reparacion => reparacion.id === row.reparacion_id)) {
+                    let reparacion = {
+                        id: row.reparacion_id,
+                        persona_id: row.persona_id_reparacion,
+                        descripcion: row.descripcion,
+                        tipo: row.tipo,
+                        fecha: row.fecha,
+                        estado: row.estado
+                    };
+                    resultados.reparaciones.push(reparacion);
+                }
+            });
+    
             return resultados;
-
+    
         } catch (error) {
             console.error('Error al consultar personas y reparaciones:', error);
             throw error;
         } finally {
-            await client.end();
+            client.release();
         }
     }
 }
 
-//Requiere modificación de dashboard_editar.js en editarPersonaPOST
-async function updateDataOriginalDatosPersonaV2(personaId, nombre, direccion, telefono, email) {
+async function updateDataOriginalDatosPersona(personaId, nombre, direccion, telefono, email) {
+
+    const client = await pool.connect();
+
     try {
         // Construir la consulta SQL parametrizada
         const query = `
@@ -621,12 +353,14 @@ async function updateDataOriginalDatosPersonaV2(personaId, nombre, direccion, te
         throw error;
     } finally {
         // Cerrar la conexión del pool cuando hayas terminado
-        await pool.end();
+        client.release();
     }
 }
 
-//Requiere modificación de dashboard_editar.js en editarPersonaPOST
-async function updateDataOriginalDatosReparacionDePersonaV2(personaId, reparacionId, descripcion, tipo, fecha, estado) {
+async function updateDataOriginalDatosReparacionDePersona(personaId, reparacionId, descripcion, tipo, fecha, estado) {
+
+    const client = await pool.connect();
+
     try {
         const query = `
             UPDATE reparaciones
@@ -641,11 +375,14 @@ async function updateDataOriginalDatosReparacionDePersonaV2(personaId, reparacio
         throw error;
     } finally {
         // Cerrar la conexión del pool cuando hayas terminado
-        await pool.end();
+        client.release();
     }
 }
 
-async function dataOriginalEliminarPersonaIdV2(personaId) {
+async function dataOriginalEliminarPersonaId(personaId) {
+
+    const client = await pool.connect();
+
     try {
         // Consulta para verificar si la persona tiene reparaciones asociadas
         const query = `
@@ -664,11 +401,14 @@ async function dataOriginalEliminarPersonaIdV2(personaId) {
         throw error;
     } finally {
         // Cerrar la conexión del pool cuando hayas terminado
-        await pool.end();
+        client.release();
     }
 }
 
-async function dataOriginalEliminarReparacionIdV2(reparacionId) {
+async function dataOriginalEliminarReparacionId(reparacionId) {
+
+    const client = await pool.connect();
+
     try {
         // Construir la consulta SQL parametrizada
         const query = `
@@ -684,11 +424,14 @@ async function dataOriginalEliminarReparacionIdV2(reparacionId) {
 
     } finally {
         // Cerrar la conexión del pool cuando hayas terminado
-        await pool.end();
+        client.release();
     }
 }
 
-async function realizarConsultaReparacionClienteV2(nombreBusqueda) {
+async function realizarConsultaReparacionCliente(nombreBusqueda) {
+
+    const client = await pool.connect();
+
     try {
         // Construir la consulta SQL parametrizada
         const query = `
@@ -706,29 +449,39 @@ async function realizarConsultaReparacionClienteV2(nombreBusqueda) {
         const searchTerm = `%${nombreBusqueda.toLowerCase()}%`;
         const result = await pool.query(query, [searchTerm]);
 
+        console.log(result)
+
         // Procesar los resultados
         let personasProcesadas = [];
         let reparacionesProcesadas = [];
 
-        result.forEach(row => {
-            
-            personasProcesadas.push({
-                id: row.persona_id,
-                nombre: row.nombre,
-                direccion: row.direccion,
-                telefono: row.telefono,
-                email: row.email
-            });
-
-            if (row.reparacion_id !== null && row.descripcion !== null && row.tipo !== null && row.fecha !== null && row.estado !== null) {
-                // Agregar la reparación a la lista de reparaciones procesadas
+        result.rows.forEach(row => {
+            // Verificar si la persona ya existe en personasProcesadas
+            const personaExistente = personasProcesadas.some(persona => persona.id === row.persona_id);
+        
+            if (!personaExistente) {
+                personasProcesadas.push({
+                    id: row.persona_id,
+                    nombre: row.nombre_persona,
+                    direccion: row.direccion_persona,
+                    telefono: row.telefono_persona,
+                    email: row.email_persona
+                });
+            }
+        
+            // Verificar si la reparación ya existe en reparacionesProcesadas
+            const reparacionExistente = reparacionesProcesadas.some(reparacion => reparacion.id === row.reparacion_id);
+        
+            if (row.reparacion_id !== null && !reparacionExistente &&
+                row.descripcion_reparacion !== null && row.tipo_reparacion !== null &&
+                row.fecha_reparacion !== null && row.estado_reparacion !== null) {
                 reparacionesProcesadas.push({
                     id: row.reparacion_id,
                     persona_id: row.persona_id,
-                    descripcion: row.descripcion,
-                    tipo: row.tipo,
-                    fecha: row.fecha,
-                    estado: row.estado
+                    descripcion: row.descripcion_reparacion,
+                    tipo: row.tipo_reparacion,
+                    fecha: row.fecha_reparacion,
+                    estado: row.estado_reparacion
                 });
             }
         });
@@ -738,7 +491,7 @@ async function realizarConsultaReparacionClienteV2(nombreBusqueda) {
         console.error('Error al realizar consulta de personas y reparaciones:', error);
         throw error;
     } finally {
-        await pool.end();
+        client.release();
     }
 }
 
