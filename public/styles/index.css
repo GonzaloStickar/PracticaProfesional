@@ -1,10 +1,40 @@
 * {
     margin:0;
-    font-family: 'Segoe UI';
+    font-family: 'Open Sans', Arial, Helvetica Neue, sans-serif;
+}
+
+p, h1, h2, h3, h4 {
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 body {
-    background-color: antiquewhite;
+    background: linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+    background-size: 400% 400%;
+
+    -webkit-animation: AnimationName 5s ease infinite;
+    -moz-animation: AnimationName 5s ease infinite;
+    animation: AnimationName 5s ease infinite;
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+body {
+    /*background-color: antiquewhite;*/
     /*
     background: rgb(238,174,202);
     background: linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
@@ -55,7 +85,12 @@ body {
 
 .texto_header {
     position: relative;
-    top: -4.5px;
+    font-size: 20px;
+    bottom:2.5px;
+}
+
+.material-symbols-outlined {
+    font-size: 20px;
 }
 
 .img_header {
@@ -98,7 +133,6 @@ body {
 /*contenedor_fotos*/
 .contenedor_fotos {
     width: 100%;
-    padding: 25px;
     box-sizing: border-box;
 }
 
@@ -111,7 +145,6 @@ body {
 .titulo_seccion h2 {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
 }
 
 .galeria_figure_figcaption {
@@ -136,19 +169,56 @@ body {
 
 .galeria_figure_figcaption figure img {
     width: 100%;
-    height: auto;
+    height: 200px;
     border-radius: 7.5px;
 }
 
 .galeria_figure_figcaption figcaption {
     margin-top: 10px;
     font-size: 14px;
-    color: #555;
 }
 
 @media (min-width: 2500px) {
     .texto_centrado {
         width: 30%;
+    }
+}
+
+@media (min-width: 1220px) {
+    @keyframes appearFotoContenedor_consulta_reparacion {
+        from {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0px);
+        }
+    }
+
+    @keyframes appearFotoContenedor_info_contacto {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0px);
+        }
+    }
+    
+    .contenedor_consulta_reparacion aside,
+    .contenedor_info_contacto article {
+        animation: appearFotoContenedor_consulta_reparacion 5s linear;
+        animation-timeline: view();
+        animation-range: entry 0 cover 40%;
+    }
+    
+    .contenedor_info_contacto aside,
+    .contenedor_consulta_reparacion article {
+        animation: appearFotoContenedor_info_contacto 5s linear;
+        animation-timeline: view();
+        animation-range: entry 0 cover 40%;
     }
 }
 
@@ -177,11 +247,30 @@ body {
     }
 
     .contenedor_consulta_reparacion article {
-        padding-right:0 !important;
+        padding-right:10px !important;
     }
 
     .contenedor_info_contacto article {
-        padding-left:0 !important; /*Tiene que ir !important por que hay un padding-left:75px; fuera del media query*/
+        padding-left:10px !important; /*Tiene que ir !important por que hay un padding-left:75px; fuera del media query*/
+    }
+}
+
+@media (min-width: 1000px) {
+    @keyframes appearContenedorFotos {
+        from {
+            opacity: 0;
+            scale:0.5;
+        }
+        to {
+            opacity: 1;
+            scale: 1;
+        }
+    }
+    
+    .contenedor_fotos {
+        animation: appearContenedorFotos 5s linear;
+        animation-timeline: view();
+        animation-range: entry 0 cover 40%;
     }
 }
 
@@ -197,6 +286,10 @@ body {
     .galeria_figure_figcaption article {
         width: 100%;
     }
+
+    .galeria_figure_figcaption figure img {
+        height: auto;
+    }
 }
 
 @media (max-width: 850px) {
@@ -206,8 +299,11 @@ body {
             rgba(13, 50, 69, 0.4) 12%, 
             rgba(0, 0, 2, 0.1) 77%
         );
+        background-blend-mode: normal;
+        box-shadow: 0px 4px 24px 1px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(5px);
         padding: 0;
-        transition: transform 0.3s ease;
+        transition: transform 0.4s ease;
         position: fixed; /* Añade posición fija para cubrir toda la pantalla */
         left: 0;
         top: 0;
@@ -217,17 +313,28 @@ body {
         height: 100vh;
     }
 
+    .navbar a {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        text-decoration: none;
+        font-size: 50px;
+    }
+
+    .texto_header {
+        position: relative;
+        font-size: 40px;
+        bottom: 10px;
+    }
+
+    .material-symbols-outlined {
+        font-size: 40px;
+    }
+
     .navbar.active {
         transform: translateY(-100%);
     }
 
     .navbar.active .hamburger {
         margin-top: 40%;
-    }
-
-    .texto_centrado.active h2,
-    .texto_centrado.active p {
-        color: #cccccc82;
     }
 
     .navbar ul {
@@ -269,7 +376,7 @@ body {
     }
 
     .hamburger .bar {
-        transition: transform 0.3s ease, opacity 0.3s ease;
+        transition: transform 0.4s ease, opacity 0.4s ease;
     }
 
     .hamburger.open .bar:first-child {
@@ -309,7 +416,12 @@ body {
 
 @media (max-width: 650px) {
     .texto_header {
-        font-size: 16px;
+        font-size: 35px;
+        bottom:5px;
+    }
+
+    .material-symbols-outlined {
+        font-size: 35px;
     }
     
     .texto_centrado h2 {
@@ -346,15 +458,14 @@ body {
     }
 }
 
-@media (max-width: 550px) {
-    .texto_header {
-        top:-7px;
-    }
-}
-
 @media (max-width: 520px) {
+    .texto_header {
+        font-size: 30px;
+        bottom:5px;
+    }
+
     .material-symbols-outlined {
-        font-size: 22px;
+        font-size: 30px;
     }
 
     .contenedor_consulta_reparacion aside {
@@ -423,11 +534,14 @@ body {
         margin-bottom: 0.5px !important;
     }
 
+    .texto_header {
+        font-size: 25px;
+    }
+
     .material-symbols-outlined {
-        font-size: 22px;
+        font-size: 25px;
     }
 }
-
 
 /*contenedor_consulta_reparacion y contenedor_info_contacto*/
 .contenedor_consulta_reparacion, 
@@ -512,13 +626,11 @@ article form input[type="text"]:focus {
 
 .contenedor_info_contacto h3 {
     font-size: 18px;
-    color: #555;
     margin-top: 15px;
 }
 
 .contenedor_info_contacto p {
     font-size: 16px;
-    color: #666;
     margin-bottom: 10px;
 }
 

@@ -300,7 +300,6 @@ th {
         background-blend-mode: normal;
         box-shadow: 0px 4px 24px 1px rgba(0, 0, 0, 0.28);
         backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
         padding: 0;
         transition: transform 0.3s ease;
         position: fixed;
@@ -335,7 +334,7 @@ th {
         background-color: transparent;
         color: white;
         cursor: pointer;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
         transition: background-color 0.3s ease;
     }
     
