@@ -49,8 +49,8 @@
           <img src="/img/index_header.jpg" class="img_header" alt="index_header">
           <div class="overlay"></div>
           <div class="texto_centrado">
-            <h2>Reparación Profesional de Televisores y Electrodomésticos</h2>
-            <p>Servicio confiable y rápido para tu hogar.</p>
+            <h2>Reparación Profesional de Televisores</h2>
+            <p>Servicio confiable y rápido.</p>
           </div>
         </div>
       </div>
@@ -115,6 +115,14 @@
           
           <form id="consulta_reparacion_form" action="/consulta" method="POST">
             <input type="text" id="input_consulta_reparacion_form" name="nombre_apellido_consulta" placeholder="Ej: 'Juan Perez'" required pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]+">
+            
+            <div style="margin:5px;">
+              <input type="checkbox" id="aceptar_terminos" name="aceptar_terminos" required>
+              <label for="aceptar_terminos" style="color: white; margin:5px;">
+                  Acepto los <a href="/consulta/terminos_de_uso" target="_blank">Términos de Uso</a> y la <a href="/consulta/politica_de_privacidad" target="_blank">Política de Privacidad</a>
+              </label>
+            </div>
+
             <button type="submit">Consultar</button>
           </form>
         </article>
@@ -122,31 +130,34 @@
       
       <div class="contenedor_info_contacto"  id="sobre_nosotros">
         <article>
-          <h2>Sobre nosotros</h2>
-          <h3>Garantía de 3 Meses en Todas las Reparaciones</h3>
+          <h3>Sobre nosotros</h3>
+          <h3>Garantía de <u>3 Meses</u> en Todas las Reparaciones</h3>
           <p>Somos especialistas en reparación de televisores y electrodomésticos.</p>
-          <p>Garantía completa de <u>3</u> meses en todas nuestras reparaciones.</p>
+          <p>Ofrecemos una garantía completa de <u>3</u> meses en todas nuestras reparaciones.</p>
           <p>Equipo comprometido con brindar un servicio confiable y eficiente, utilizando la mejor tecnología avanzada.</p>
-          <h3>¿Dudas? No dudes en contactarnos!</h3>
-          <p>Número: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+          <h2>Nuestros Horarios de atención:</h2>
+          <p><strong>Abierto</strong> - Lunes a Viernes <strong>9</strong> a.m. a <strong>12:30</strong> p.m.</p>
+          <p><strong>Cerrado</strong> - Sábado y Domingo</p>          
+          <h2>¿Dudas? No dudes en contactarnos!</h2>
+          <p>Número: <a href="tel:+1234567890">02914532539</a></p>
+          <p>Recordá nuestros horarios de atención, <u>no respondemos fuera de horario.</u></p>
+          <p>Estamos ubicados en Brown 811, B8000 Bahía Blanca, Provincia de Buenos Aires</p>
         </article>
 
         <aside>
           <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12450.414368823274!2d-62.2592339!3d-38.7269092!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95eda335a47d6f73%3A0xed0ba9885519377a!2sTRUSSI-VIDEO!5e0!3m2!1ses-419!2sar!4v1720224267730!5m2!1ses-419!2sar" width="600" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <!--img src="/img/index_contenedor_info_contacto.jpg" alt="index_contenedor_info_contacto"-->
         </aside>
       </div>
     </main>
 
     <footer>
-      <div class="links">
-        <a href="#">Términos y Condiciones de Uso</a> - 
-        <a href="#">Privacidad y Seguridad</a>
+      <div class="info_footer">
+        <p>&copy; 2024 Trussi Videos - Todos los derechos reservados.</p>
+        <p><a href="#sobre_nosotros">Contacto</p>
       </div>
 
-      <div class="info_footer">
-        <p>&copy; 2024 Nombre de la empresa (Ej: "aaaaaa") - Todos los derechos reservados.</p>
-        <p>Contacto: aaa@gmail.com</p>
+      <div class="links">
+        <a href="/consulta/terminos_de_uso" target="_blank">Términos de Uso</a> - <a href="/consulta/politica_de_privacidad" target="_blank">Política de Privacidad</a>
       </div>
     </footer>
   </body>

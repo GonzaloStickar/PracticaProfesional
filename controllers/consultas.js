@@ -61,6 +61,16 @@ async function consultaReparacion(req, res) {
     armarTablaInformacionConsultaCliente(req, res, dataOriginalPersonaReparacionRecibidaBusqueda);
 }
 
+const terminos_de_uso = (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'components', 'terminos_condiciones.htm'));
+}
+
+const politica_de_privacidad = (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'components', 'politica_privacidad.htm'));
+}
+
 module.exports = { 
-    consultaReparacion 
+    consultaReparacion,
+    terminos_de_uso,
+    politica_de_privacidad
 }

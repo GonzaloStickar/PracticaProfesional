@@ -9,36 +9,7 @@ p, h1, h2, h3, h4 {
 }
 
 body {
-    background: linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
-    background-size: 400% 400%;
-
-    -webkit-animation: AnimationName 5s ease infinite;
-    -moz-animation: AnimationName 5s ease infinite;
-    animation: AnimationName 5s ease infinite;
-}
-
-@-webkit-keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-}
-@-moz-keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-}
-@keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-}
-
-body {
-    /*background-color: antiquewhite;*/
-    /*
-    background: rgb(238,174,202);
-    background: linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
-    */
+    background: linear-gradient(#9891e5 50%, #e66464cf);
     overflow-x: hidden;
 }
 
@@ -104,7 +75,6 @@ body {
     width: 100%;
     height: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.5),rgba(83, 83, 83, 0.5));
-    /*background: rgba(0, 0, 0, 0.75);*/
 }
 
 .texto_centrado {
@@ -211,20 +181,28 @@ body {
     .contenedor_info_contacto article {
         animation: appearFotoContenedor_consulta_reparacion 5s linear;
         animation-timeline: view();
-        animation-range: entry 0 cover 40%;
+        animation-range: entry 0 cover 35%;
     }
     
     .contenedor_info_contacto aside,
     .contenedor_consulta_reparacion article {
         animation: appearFotoContenedor_info_contacto 5s linear;
         animation-timeline: view();
-        animation-range: entry 0 cover 40%;
+        animation-range: entry 0 cover 35%;
     }
 }
 
 @media (max-width: 1220px) {
     .contenedor_consulta_reparacion {
         flex-direction: column;
+    }
+
+    .contenedor_consulta_reparacion aside {
+        padding-left: 0 !important;
+    }
+
+    .contenedor_info_contacto aside {
+        padding-right: 0 !important;
     }
 
     .contenedor_consulta_reparacion article {
@@ -248,10 +226,6 @@ body {
 
     .contenedor_consulta_reparacion article {
         padding-right:10px !important;
-    }
-
-    .contenedor_info_contacto article {
-        padding-left:10px !important; /*Tiene que ir !important por que hay un padding-left:75px; fuera del media query*/
     }
 }
 
@@ -311,6 +285,7 @@ body {
         align-items: stretch;
         justify-content: flex-start;
         height: 100vh;
+        z-index: 2;
     }
 
     .navbar a {
@@ -392,11 +367,11 @@ body {
     }
     
     .texto_centrado h2 {
-        font-size: 32px;
+        font-size: 40px;
     }
     
     .texto_centrado p {
-        font-size: 16px;
+        font-size: 20px;
     }
 }
 
@@ -425,19 +400,20 @@ body {
     }
     
     .texto_centrado h2 {
-        font-size:16px;
+        font-size:35px;
     }
     
     .texto_centrado p {
-        font-size: 8px;
+        font-size: 22.5px;
+    }
+
+    .contenedor_info_contacto article {
+        padding-left: 25px;
+        padding-right: 25px;
     }
 }
 
 @media (max-width: 600px) {
-    .contenedor_consulta_reparacion aside {
-        padding-left: 0;
-    }
-
     .contenedor_consulta_reparacion article {
         display: flex;
         flex-direction: column;
@@ -451,10 +427,9 @@ body {
     }
 
     .contenedor_consulta_reparacion aside img, 
-    .contenedor_info_contacto aside img {
+    .contenedor_info_contacto aside iframe {
         width:100% !important;
         height:500px;
-        border-radius: 15px;
     }
 }
 
@@ -468,12 +443,12 @@ body {
         font-size: 30px;
     }
 
-    .contenedor_consulta_reparacion aside {
-        padding-left: 0 !important;
+    .texto_centrado h2 {
+        font-size:25px;
     }
-
-    .contenedor_info_contacto aside {
-        padding-right: 0 !important;
+    
+    .texto_centrado p {
+        font-size: 12.5px;
     }
 }
 
@@ -566,7 +541,7 @@ body {
 }
 
 .contenedor_consulta_reparacion aside {
-    padding-left: 10px;
+    padding-left: 30px;
 }
 
 .contenedor_consulta_reparacion article {
@@ -617,15 +592,19 @@ article form input[type="text"]:focus {
 }
 
 .contenedor_info_contacto aside {
-    padding-right: 10px;
+    padding-right: 30px;
+}
+
+.contenedor_info_contacto aside iframe {
+    border-radius: 1rem;
 }
 
 .contenedor_info_contacto article {
     padding-left: 75px;
+    padding-right: 75px;
 }
 
 .contenedor_info_contacto h3 {
-    font-size: 18px;
     margin-top: 15px;
 }
 
