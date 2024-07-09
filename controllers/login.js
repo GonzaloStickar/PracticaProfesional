@@ -101,12 +101,7 @@ const login = {
                 res.cookie('session_id', sessionSecret, {
                     secret: sessionSecret, 
                     resave: false, 
-                    saveUninitialized: false,
-                    httpOnly: true,
-                    sameSite: "none",
-                    secure: true,
-                    domain: ".practica-profesional-vercel.vercel.app",
-                    path: "/"
+                    saveUninitialized: false
                 });
                 return res.redirect('/dashboard')
             }
