@@ -99,8 +99,11 @@ const login = {
 
             if (usernamesIguales && passwordsIguales) {
                 res.cookie('session_id', sessionSecret, {
+                    secret: sessionSecret, 
+                    resave: false, 
+                    saveUninitialized: false
                     httpOnly: true,
-                    sameSite: "None",
+                    sameSite: "none",
                     secure: true,
                     domain: ".practica-profesional-vercel.vercel.app",
                     path: "/"
