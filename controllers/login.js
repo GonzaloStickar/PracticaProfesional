@@ -101,7 +101,7 @@ const login = {
                 res.cookie('session_id', sessionSecret, {
                     secret: sessionSecret, 
                     resave: false, 
-                    saveUninitialized: false
+                    saveUninitialized: false,
                     httpOnly: true,
                     sameSite: "none",
                     secure: true,
