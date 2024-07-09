@@ -5,12 +5,12 @@ const isAuthV2 = (req, res) => {
 	const { cookies } = req;
 	if (cookies.session_id) {
 		if (cookies.session_id===sessionSecret) {
-            res.sendFile(path.join(__dirname, '..', 'components', 'indexLogout.htm'));
+            return res.sendFile(path.join(__dirname, '..', 'components', 'indexLogout.htm'));
         } else {
-            res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
+            return res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
         }
 	} else {
-        res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
+        return res.sendFile(path.join(__dirname, '..', 'components', 'index.htm'));
     }
 };
 
