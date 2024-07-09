@@ -100,9 +100,10 @@ const login = {
             if (usernamesIguales && passwordsIguales) {
                 res.cookie('session_id', sessionSecret, {
                     httpOnly: true,
-  sameSite: "None",
-  secure: true,
-  domain: ".practica-profesional-vercel.vercel.app"
+                    sameSite: "None",
+                    secure: true,
+                    domain: ".practica-profesional-vercel.vercel.app",
+                    path: "/"
                 });
                 return res.redirect('/dashboard')
             }
