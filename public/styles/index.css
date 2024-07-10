@@ -328,8 +328,8 @@ body {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 80px;
-        height: 50px;
+        width: 50px;
+        height: 30px;
         background: transparent;
         border: none;
         cursor: pointer;
@@ -349,8 +349,8 @@ body {
         width: 100%;
         background-color: white;
         border-radius: 10px;
-        padding: 5px;
-        margin: 5px;
+        padding: 3px;
+        margin: 3px;
     }
 
     .hamburger .bar {
@@ -358,7 +358,7 @@ body {
     }
 
     .hamburger.open .bar:first-child {
-        transform: translateY(20px) rotate(45deg);
+        transform: translateY(10px) rotate(45deg);
     }
     
     .hamburger.open .bar:nth-child(2) {
@@ -366,7 +366,7 @@ body {
     }
       
     .hamburger.open .bar:last-child {
-        transform: translateY(-20px) rotate(-45deg);
+        transform: translateY(-15px) rotate(-45deg);
     }
     
     .texto_centrado h2 {
