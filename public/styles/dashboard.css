@@ -328,14 +328,13 @@ th {
     }
     
     .botones_side_izquierda button {
-        margin: 10px 0;
-        padding: 10px 20px;
         border: none;
         background-color: transparent;
         color: white;
         cursor: pointer;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
         transition: background-color 0.3s ease;
+        font-size: 35px;
     }
     
     .botones_side_izquierda button:hover {
@@ -343,19 +342,24 @@ th {
     }
     
     .hamburger {
-        display: flex;
+        display:flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 30px;
-        height: 21px;
+        width: 50px;
+        height: 30px;
         background: transparent;
         border: none;
         cursor: pointer;
         z-index: 2;
+        display: flex;
+        position: absolute;
+        right: 2%;
+        top: 15px;
+    }
+
+    .hamburger.open {
         position: fixed;
-        right: 20px;
-        top: 20px;
     }
     
     .bar {
@@ -363,12 +367,13 @@ th {
         width: 100%;
         background-color: white;
         border-radius: 10px;
-        margin: 2px 0;
+        padding: 3px;
+        margin: 3px;
         transition: transform 0.3s ease, opacity 0.3s ease;
     }
     
     .hamburger.open .bar:first-child {
-        transform: translateY(4px) rotate(45deg);
+        transform: translateY(10px) rotate(45deg);
     }
     
     .hamburger.open .bar:nth-child(2) {
@@ -376,7 +381,7 @@ th {
     }
     
     .hamburger.open .bar:last-child {
-        transform: translateY(-8px) rotate(-45deg);
+        transform: translateY(-15px) rotate(-45deg);
     }
 }
 
@@ -390,7 +395,7 @@ th {
 
 @media (max-width: 600px) {
     .botones_side_izquierda button {
-        font-size: 16px;
+        font-size: 30px;
     }
 }
 

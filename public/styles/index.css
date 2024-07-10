@@ -132,7 +132,6 @@ body {
 }
 
 .galeria_figure_figcaption figure {
-    margin: 0;
     padding: 0;
     text-align: inherit;
 }
@@ -318,7 +317,6 @@ body {
         justify-content: center;
         height: 100%;
         padding: 0;
-        margin: 0;
     }
 
     li a {
@@ -330,16 +328,20 @@ body {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 30px;
-        height: 21px;
+        width: 80px;
+        height: 50px;
         background: transparent;
         border: none;
         cursor: pointer;
         z-index: 2;
-        margin-top:10px;
         display: flex;
         position: absolute;
-        right: 1%;
+        right: 2%;
+        top: 4%;
+    }
+
+    .hamburger.open {
+        position: fixed;
     }
     
     .bar {
@@ -347,7 +349,8 @@ body {
         width: 100%;
         background-color: white;
         border-radius: 10px;
-        margin: 2px 0;
+        padding: 5px;
+        margin: 5px;
     }
 
     .hamburger .bar {
@@ -355,7 +358,7 @@ body {
     }
 
     .hamburger.open .bar:first-child {
-        transform: translateY(4px) rotate(45deg);
+        transform: translateY(20px) rotate(45deg);
     }
     
     .hamburger.open .bar:nth-child(2) {
@@ -363,7 +366,7 @@ body {
     }
       
     .hamburger.open .bar:last-child {
-        transform: translateY(-8px) rotate(-45deg);
+        transform: translateY(-20px) rotate(-45deg);
     }
     
     .texto_centrado h2 {
@@ -626,13 +629,16 @@ footer {
 
 footer a {
     color: white;
-    text-decoration: none;
 }
 
 footer a:hover {
     text-decoration: underline;
 }
 
+footer .info_footer {
+    margin-top: 10px;
+}
+
 footer .links {
-    margin: 10px;
+    margin-bottom: 10px;
 }
