@@ -337,7 +337,7 @@ body {
         display: flex;
         position: absolute;
         right: 2%;
-        top: 4%;
+        margin-top: 20px;
     }
 
     .hamburger.open {

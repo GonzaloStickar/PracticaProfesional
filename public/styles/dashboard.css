@@ -18,14 +18,10 @@ body {
 }
 
 .side_izquierda {
-    background-color: #00172e;
+    background-color: rgb(33, 33, 37);
     color: white;
     box-sizing: border-box; 
     width: 15%;
-}
-
-.side_izquierda:hover {
-    background-color: #003d64;
 }
 
 .hamburger {
@@ -36,14 +32,14 @@ body {
 .botones_side_izquierda button, .botones_side_izquierda button:hover, 
 .boton_agregar, .boton_agregar:hover
 .boton_buscar, .boton_buscar:hover,
-.boton_inicio, .boton_inicio:hover,
 td button, td button:hover,
 tr, tr:hover {
     transition: background-color 0.2s;
 }
 
 .side_derecha {
-    background-color: rgb(255, 249, 239);
+    /*background-color: #383838;*/
+    background-color: #eeeeee;
 }
 
 .titulo_side_izquierda {
@@ -52,25 +48,35 @@ tr, tr:hover {
 }
 
 .botones_side_izquierda button {
-    width: 100%;
+    width: calc(100% - 20px); /* Ancho total menos el espaciado */
+    margin: 10px 0; /* Espaciado entre botones y entre botones y la barra lateral */
+    padding: 10px; /* Espaciado interior para los botones */
+    color: #fff; /* Color del texto de los botones */
+    border: none; /* Eliminar borde predeterminado */
+    border-radius: 5px; /* Bordes redondeados para los botones */
+    cursor: pointer; /* Cambiar cursor a mano */
+    margin-left:10px;
 }
 
 .boton_clientes,
 .boton_cargar_mas,
-.boton_utlima_busqueda {
-    background-color: #00172e;
+.boton_utlima_busqueda,
+.boton_inicio {
+    background-color: rgb(33, 33, 37);
 }
 
 .boton_clientes:hover,
 .boton_cargar_mas:hover,
-.boton_utlima_busqueda:hover {
-    background-color: #006ea5;
+.boton_utlima_busqueda:hover,
+.boton_inicio:hover {
+    background-color: rgb(61, 61, 67);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .boton_clientes:active,
 .boton_cargar_mas:active,
-.boton_utlima_busqueda:active {
+.boton_utlima_busqueda:active,
+.boton_inicio:active {
     background-color: #00172e;
 }
 
@@ -79,8 +85,7 @@ tr, tr:hover {
 .boton_utlima_busqueda,
 .boton_cerrar_sesion,
 .boton_agregar,
-.boton_buscar,
-.boton_inicio {
+.boton_buscar {
     border: none;
     padding: 14px 28px;
     cursor: pointer;
@@ -131,7 +136,6 @@ tr, tr:hover {
 
 .boton_agregar,
 .boton_buscar, 
-.boton_inicio, 
 .boton_editar,
 .boton_eliminar,
 .boton_informe {
@@ -149,11 +153,11 @@ tr, tr:hover {
     background: #e68a00;
 }
 
-.boton_informe, .boton_inicio {
+.boton_informe {
     background-color: #007bff;
 }
 
-.boton_informe:hover, .boton_inicio:hover {
+.boton_informe:hover {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
     background: #0a69b7;
 }
@@ -173,50 +177,47 @@ tr, tr:hover {
 }
 
 .container_tabla {
-    padding:10px;
-    background-color: #aaaaaa;
-    overflow-x: auto;
-    margin-top:20px;
-    border-radius: 10px;
+    width: 100%;
+    margin: 20px 0;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    padding:20px;
-    margin-bottom: 0 !important;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #e0e1f6;
-}
-
-thead {
-    background-color: #131a35;
-    color:white;
-}
-
-tbody tr:nth-child(odd) {
-    background-color: #d5d5d5;
-}
-
-tbody tr:hover {
-    background-color: #fdf1ff;
-}
-
-table, th, td {
-    border: 0.1px solid #000;
+    background-color: #2b2b2b; /* Fondo gris oscuro para la tabla */
+    color: #e0e0e0; /* Color de texto gris claro */
+    font-family: 'Arial', sans-serif; /* Fuente moderna */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden;
 }
 
 th, td {
+    padding: 12px 15px; /* Espaciado interior */
     text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width:0;
+    border-bottom: 1px solid #3c3c3c; /* Línea divisoria gris oscuro */
 }
 
 th {
-    padding-left: 3px;
+    letter-spacing: 0.1em; /* Espaciado de letras */
+}
+
+tbody tr:hover {
+    background-color: #454545; /* Fondo gris más claro al pasar el mouse */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+td {
+    border-right: none; /* Eliminar líneas verticales */
+}
+
+th:last-child, td:last-child {
+    text-align: center; /* Centrar acciones */
+}
+
+td:last-child {
+    color: #f39c12; /* Color especial para la columna de acciones */
+    font-weight: bold;
 }
 
 .container_botones {
@@ -229,8 +230,7 @@ th {
 .boton_utlima_busqueda,
 .boton_cerrar_sesion,
 .boton_agregar,
-.boton_buscar, 
-.boton_inicio {
+.boton_buscar {
     font-size: 12.5px;
     box-sizing: border-box;
 }
