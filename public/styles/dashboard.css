@@ -50,7 +50,7 @@ tr, tr:hover {
 .botones_side_izquierda button {
     width: calc(100% - 20px); /* Ancho total menos el espaciado */
     margin: 10px 0; /* Espaciado entre botones y entre botones y la barra lateral */
-    padding: 10px; /* Espaciado interior para los botones */
+    padding: 5px; /* Espaciado interior para los botones */
     color: #fff; /* Color del texto de los botones */
     border: none; /* Eliminar borde predeterminado */
     border-radius: 5px; /* Bordes redondeados para los botones */

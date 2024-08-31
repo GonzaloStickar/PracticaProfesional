@@ -1,15 +1,15 @@
 * {
     margin:0;
-    font-family: 'Open Sans', Arial, Helvetica Neue, sans-serif;
+    font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
 }
 
-p, h1, h2, h3, h4 {
-    color: white !important;
+p, h1, h2, h3, h4, a {
+    color: rgb(231, 226, 207);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 body {
-    background: linear-gradient(#9891e5 50%, #e66464cf);
+    /*background: linear-gradient(#9891e5 50%, #e66464cf);*/
     overflow-x: hidden;
 }
 
@@ -17,11 +17,23 @@ body {
     margin-bottom: -5px;
 }
 
+main {
+    margin-top: -5px;
+}
+
 /*header*/
 .texto_sobre_img {
     width: 100%;
     position: relative;
     display: inline-block;
+}
+
+.texto_sobre_img h2 {
+    color: white !important;
+}
+
+.texto_centrado p {
+    color: white !important;
 }
 
 .navbar {
@@ -104,12 +116,13 @@ body {
 .contenedor_fotos {
     width: 100%;
     box-sizing: border-box;
+    background-color: rgb(61,61,67);
 }
 
 .titulo_seccion {
     text-align: center;
     margin-bottom: 20px;
-    padding-top: 50px;
+    padding-top: 25px;
 }
 
 .titulo_seccion h2 {
@@ -220,7 +233,8 @@ body {
 
     .contenedor_consulta_reparacion article, 
     .contenedor_info_contacto article {
-        padding-top: 50px;
+        padding-top: 25px;
+        padding-bottom: 25px;
     }
 
     .contenedor_consulta_reparacion article {
@@ -527,7 +541,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 50px;
+    padding-top: 25px;
+    padding-bottom: 25px;
 }
 
 .contenedor_consulta_reparacion aside img, 
@@ -538,6 +553,10 @@ body {
 }
 
 /*contenedor_consulta_reparacion*/
+.contenedor_consulta_reparacion {
+    background-color: rgb(15, 15, 16);
+}
+
 .contenedor_consulta_reparacion p {
     margin-top:15px;
     margin-bottom: 15px;
@@ -591,7 +610,9 @@ article form input[type="text"]:focus {
 
 /*contenedor_info_contacto*/
 .contenedor_info_contacto {
-    padding-bottom: 50px;
+    background-color: rgb(61,61,67);
+    padding-bottom: 25px;
+    padding-top: 25px;
 }
 
 .contenedor_info_contacto aside {
@@ -618,17 +639,12 @@ article form input[type="text"]:focus {
 
 /*footer*/
 footer {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
+    background-color: rgb(15, 15, 16);
     padding: 8px;
     position: relative;
     width: 100%;
     text-align: center;
     box-sizing: border-box;
-}
-
-footer a {
-    color: white;
 }
 
 footer a:hover {
