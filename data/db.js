@@ -90,11 +90,11 @@ async function dataOriginalGET(min, max) {
                    r.fecha AS fecha_reparacion, r.estado AS estado_reparacion
             FROM personas p
             LEFT JOIN reparaciones r ON p.id = r.persona_id
-            WHERE p.id BETWEEN $1 AND $2
-            ORDER BY r.fecha DESC;
+            ORDER BY r.fecha ASC
+            LIMIT $2 OFFSET $1;
         `;
 
-        const values = [min+1, max];  //Valores para los parámetros $1 y $2
+        const values = [min, max];  // Valores para los parámetros $1 y $2
 
         const result = await client.query(query, values);
 

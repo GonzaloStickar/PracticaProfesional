@@ -19,6 +19,7 @@ body {
 
 main {
     margin-top: -5px;
+    background-color: rgb(61,61,67);
 }
 
 /*header*/
@@ -645,6 +646,10 @@ footer {
     width: 100%;
     text-align: center;
     box-sizing: border-box;
+}
+
+footer a, footer p {
+    color:white !important;
 }
 
 footer a:hover {
