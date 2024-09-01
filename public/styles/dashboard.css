@@ -50,7 +50,6 @@ tr, tr:hover {
 .botones_side_izquierda button {
     width: calc(100% - 20px); /* Ancho total menos el espaciado */
     margin: 10px 0; /* Espaciado entre botones y entre botones y la barra lateral */
-    padding: 5px; /* Espaciado interior para los botones */
     color: #fff; /* Color del texto de los botones */
     border: none; /* Eliminar borde predeterminado */
     border-radius: 5px; /* Bordes redondeados para los botones */
@@ -77,14 +76,15 @@ tr, tr:hover {
 .boton_cargar_mas:active,
 .boton_utlima_busqueda:active,
 .boton_inicio:active {
-    background-color: #00172e;
+    background-color: rgb(40, 40, 43);
 }
 
-.boton_clientes,
-.boton_cargar_mas,
-.boton_utlima_busqueda,
-.boton_cerrar_sesion,
-.boton_agregar,
+.boton_inicio, 
+.boton_clientes, 
+.boton_cargar_mas, 
+.boton_utlima_busqueda, 
+.boton_cerrar_sesion, 
+.boton_agregar, 
 .boton_buscar {
     border: none;
     padding: 14px 28px;
@@ -106,6 +106,10 @@ tr, tr:hover {
 
 .boton_cerrar_sesion:hover, .boton_eliminar:hover {
     background: #a81107;
+}
+
+.boton_cerrar_sesion:active, .boton_eliminar:active {
+    background: #a81207bc;
 }
 
 .boton_eliminar:hover {
@@ -132,6 +136,10 @@ tr, tr:hover {
 .boton_buscar:hover {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
     background: #ddd;
+}
+
+.boton_buscar:active {
+    background-color: #dfdfdfcf; color: black;
 }
 
 .boton_agregar,
@@ -218,6 +226,25 @@ th:last-child, td:last-child {
 td:last-child {
     color: #f39c12; /* Color especial para la columna de acciones */
     font-weight: bold;
+}
+
+#loadingMessage {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px; /* Tamaño del cuadrado */
+    height: 100px; /* Tamaño del cuadrado */
+    background: rgba(0, 0, 0, 0.7); /* Fondo más oscuro */
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    border-radius: 10px; /* Bordes redondeados */
+    z-index: 3;
+    text-align: center; /* Centrar el texto */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra para decoración */
 }
 
 .container_botones {

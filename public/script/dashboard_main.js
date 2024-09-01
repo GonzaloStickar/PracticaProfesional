@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCantidadPersonasReparaciones();
 });
 
+function showLoadingMessage() {
+    document.getElementById('loadingMessage').style.display = 'flex';
+}
+
+function hideLoadingMessage() {
+    document.getElementById('loadingMessage').style.display = 'none';
+}
+
 function loadCantidadPersonasReparaciones() {
     fetch('/dashboard/numReparacionesQueryMaxOld')
     .then(response => {
@@ -37,6 +45,8 @@ document.getElementById('loadMoreBtn').addEventListener('click', function() {
 });
 
 function loadReparaciones(count) {
+    showLoadingMessage();
+
     fetch(`/dashboard/reparaciones?reparaciones=${count}`)
     .then(response => {
         if (!response.ok) {
@@ -111,6 +121,7 @@ function loadReparaciones(count) {
         // Manejar el error según sea necesario
     })
     .finally(() => {
+        hideLoadingMessage();
         loadingReparaciones = false; // Reiniciar estado de carga
     });
 }
